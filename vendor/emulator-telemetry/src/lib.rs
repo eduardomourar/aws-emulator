@@ -10,9 +10,23 @@
 //! Identity is also injected: [`TelemetryOptions`] carries the canonical
 //! [`ProjectId`] the emulator was generated for and its [`ProductVersion`].
 
+// WASM-EMBEDDED EXPERIMENT: wasm32-wasip2 has no equivalent of the real client's worker
+// thread, SQLite outbox or `reqwest::blocking` sender, so these swap in no-op stand-ins
+// (`client_wasm.rs`/`config_wasm.rs`) with the same public API — see their module docs.
+#[cfg(not(target_family = "wasm"))]
+#[path = "client.rs"]
 mod client;
+#[cfg(target_family = "wasm")]
+#[path = "client_wasm.rs"]
+mod client;
+#[cfg(not(target_family = "wasm"))]
+#[path = "config.rs"]
+mod config;
+#[cfg(target_family = "wasm")]
+#[path = "config_wasm.rs"]
 mod config;
 mod metadata;
+#[cfg(not(target_family = "wasm"))]
 mod outbox;
 pub mod policy;
 #[cfg(test)]
@@ -30,9 +44,12 @@ pub use client::{
     recording_active, ModelOperation, OperationFailure, OperationHandle, TelemetryClient,
     TelemetryOptions, TelemetryRequestGuard,
 };
+#[cfg(not(target_family = "wasm"))]
 pub use config::{
     resolve_config_file, Endpoint, EndpointError, ServerConfig, Switch, SwitchSource,
 };
+#[cfg(target_family = "wasm")]
+pub use config::{Endpoint, EndpointError};
 pub use metadata::{sanitize_request_metadata, SanitizedRequestMetadata};
 pub use policy::{
     ConsentMode, CLIENT_VERSION, CONFIG_DIR_NAME, EMULATOR_CONFIG_ENV, EMULATOR_CONFIG_FILE_NAME,

@@ -16,14 +16,19 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
 tracing = { workspace = true }
 # A secret value is stored enveloped under the secret's KMS key: this is the KMS
 # client the seal and open calls go out over the in-process callback with.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # AES-256-GCM (and the OS CSPRNG for its nonce) for the envelope a secret value is
 # sealed in under the data key KMS wrapped, and the SHA-256 an idempotent replay
 # compares a value by; already in this workspace's lock file.
@@ -49,13 +54,19 @@ service-common = { path = "../common" }
 service-com-amazonaws-kms-trentservice = { workspace = true }
 # The Lambda client a rotation drives its rotation function over, in process through the
 # emulator's own callback.
-aws-sdk-lambda = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: see the aws-sdk-kms entry above re: "rt-tokio" and `tokio?/fs`.
+aws-sdk-lambda = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # Evaluates the cron() rotation schedule a secret stores: the occurrences it names on the
 # calendar, which is what the next rotation of such a secret is due at.
 cron = "0.15"
 # The UTC calendar those occurrences are counted on ("Secrets Manager rotation schedules use
 # UTC time zone"), which is also the clock type the cron evaluator reads.
 chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-lambda = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

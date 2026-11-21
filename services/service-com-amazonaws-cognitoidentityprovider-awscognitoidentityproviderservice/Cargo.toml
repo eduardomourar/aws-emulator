@@ -52,7 +52,9 @@ aws-sdk-s3 = { version = "1", default-features = false }
 # `time` on top of the workspace features: a user-pool Lambda trigger invocation is
 # bounded by Amazon Cognito's own trigger budget (`src/state/lambda_triggers.rs`), which
 # `tokio::time::timeout` applies.
-tokio = { workspace = true, features = ["time"] }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["io-util", "macros", "rt", "sync", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -108,6 +110,9 @@ ipnet = "2"
 # for an issued signing certificate, so the two instants are converted from the pool's
 # `SystemTime`s into the date-time type rcgen takes.
 time = { version = "0.3.55", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

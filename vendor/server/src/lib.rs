@@ -26,15 +26,26 @@ pub use emulator_paths::set_emulator_home_dir;
 pub mod embedded;
 
 /// The PKCS#12 trust store published next to `ca.pem` for JVM clients.
+#[cfg(not(target_family = "wasm"))]
 pub mod java_truststore;
 
+#[cfg(not(target_family = "wasm"))]
 mod tls_certificate_authority;
+#[cfg(not(target_family = "wasm"))]
 pub use tls_certificate_authority::TlsCertificateAuthority;
 
 /// Resource-listener surfaces: the agent-facing `tcp()`/`http()` listeners a generated
 /// service opens for a resource (RDS Postgres port, API Gateway invoke URL),
 /// plus the pure transport-safety enforcement the core owns for them.
 mod listener_guard;
+// WASM-EMBEDDED EXPERIMENT: `wasm32-wasip2` has no real socket to bind, so this swaps in
+// `listeners_wasm.rs`, which keeps the same public types (`engine::InMemoryEngine` holds an
+// `Arc<Listeners>` unconditionally) but refuses every listener with `SurfaceError::Bind`.
+#[cfg(not(target_family = "wasm"))]
+#[path = "listeners.rs"]
+mod listeners;
+#[cfg(target_family = "wasm")]
+#[path = "listeners_wasm.rs"]
 mod listeners;
 pub use listener_guard::{
     caps as listener_caps, classify_browser_request, is_loopback_host, is_websocket_upgrade,
@@ -830,6 +841,7 @@ pub fn with_panic_guard(router: axum::Router) -> axum::Router {
 ///
 /// Returns `(endpoint_url, service)` after the server is ready to accept connections.
 /// The server runs in a background tokio task.
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_on_ephemeral_port<S: EmulatorService>(service: S) -> (String, S) {
     let std_listener = std::net::TcpListener::bind(SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0))
         .expect("failed to bind ephemeral port");
@@ -910,15 +922,18 @@ pub async fn serve_on_ephemeral_port<S: EmulatorService>(service: S) -> (String,
 /// through a [`EmulatorService`] on the production serve path. The emulator serves
 /// small canned fixtures; this only guards against an accidentally unbounded
 /// stream. A larger request is answered `413 Payload Too Large`.
+#[cfg(not(target_family = "wasm"))]
 const MAX_PRODUCTION_BODY_BYTES: usize = 16 * 1024 * 1024;
 
 /// How long a client on the production data port may take to send a request's
 /// headers before its connection is closed, so a client that opens connections
 /// and trickles their headers cannot hold them open.
+#[cfg(not(target_family = "wasm"))]
 const HEADER_READ_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
 
 /// How long a client on the production data port may take to send a request's
 /// body before it is answered `408 Request Timeout`, for the same reason.
+#[cfg(not(target_family = "wasm"))]
 const BODY_READ_TIMEOUT: std::time::Duration =
     std::time::Duration::from_secs(listener_caps::HTTP_REQUEST_DEADLINE_SECS);
 
@@ -967,6 +982,7 @@ impl std::error::Error for ServeError {
 /// converts the `http::Response<Bytes>` back into an axum response. The whole
 /// AWS surface is a fallback because AWS wire protocols route by header/body,
 /// not by URL path.
+#[cfg(not(target_family = "wasm"))]
 async fn emulator_service_fallback<S: EmulatorService>(
     axum::extract::State(service): axum::extract::State<Arc<S>>,
     req: axum::extract::Request,
@@ -990,6 +1006,7 @@ async fn emulator_service_fallback<S: EmulatorService>(
 /// Buffers a request body: declared past [`MAX_PRODUCTION_BODY_BYTES`] it is a `413` before any
 /// of it is read, past the cap as it arrives a `413`, not finished within [`BODY_READ_TIMEOUT`] a
 /// `408`, and unreadable (a reset or malformed stream) a `400`.
+#[cfg(not(target_family = "wasm"))]
 async fn read_production_body(body: axum::body::Body) -> Result<bytes::Bytes, http::StatusCode> {
     let declared = axum::body::HttpBody::size_hint(&body).exact();
     if declared.is_some_and(|length| length > MAX_PRODUCTION_BODY_BYTES as u64) {
@@ -1004,12 +1021,14 @@ async fn read_production_body(body: axum::body::Body) -> Result<bytes::Bytes, ht
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
 fn is_over_the_size_cap(error: &axum::Error) -> bool {
     let cause = std::error::Error::source(error);
     cause.is_some_and(|cause| cause.is::<http_body_util::LengthLimitError>())
 }
 
 /// A `413` before an over-cap declared body is read; the rest is dropped so its client reads it.
+#[cfg(not(target_family = "wasm"))]
 fn refused_unread(mut body: axum::body::Body) -> http::StatusCode {
     let discard =
         async move { while let Some(Ok(_)) = http_body_util::BodyExt::frame(&mut body).await {} };
@@ -1019,15 +1038,18 @@ fn refused_unread(mut body: axum::body::Body) -> http::StatusCode {
 
 /// Default data (HTTPS) listener port when [`DATA_PORT_ENV`] is unset — the
 /// well-known port the emulator has always served on.
+#[cfg(not(target_family = "wasm"))]
 pub const DEFAULT_DATA_PORT: u16 = 9297;
 
 /// The readiness path, served over HTTPS on the data port ahead of the service
 /// surface: `GET` answers `200 ok` once the emulator accepts requests.
+#[cfg(not(target_family = "wasm"))]
 pub const HEALTH_PATH: &str = "/__admin/health";
 
 /// Environment variable a caller can set to override the data (HTTPS) listener
 /// port. A value of `0` requests an OS-assigned (ephemeral) port; any other
 /// value pins that port.
+#[cfg(not(target_family = "wasm"))]
 pub const DATA_PORT_ENV: &str = "EMULATOR_DATA_PORT";
 
 /// Interface the production listeners bind when [`BIND_ADDRESS_ENV`] is unset.
@@ -1129,6 +1151,7 @@ fn parse_bind_address(raw: Option<&str>) -> Result<IpAddr, ServeError> {
 /// `Address already in use` failures that fixed ports caused. The caller learns
 /// the actual port from [`serve_production`]'s post-bind startup announcement
 /// (`endpoint_url`, the URL clients dial).
+#[cfg(not(target_family = "wasm"))]
 pub fn data_port_from_env() -> u16 {
     parse_port(std::env::var(DATA_PORT_ENV).ok().as_deref(), DEFAULT_DATA_PORT)
 }
@@ -1137,6 +1160,7 @@ pub fn data_port_from_env() -> u16 {
 /// unit-testable without mutating (and racing on) process-global environment
 /// variables: returns `default` for an absent or unparseable value, and
 /// preserves `0`.
+#[cfg(not(target_family = "wasm"))]
 fn parse_port(raw: Option<&str>, default: u16) -> u16 {
     match raw {
         Some(v) => v.trim().parse::<u16>().unwrap_or(default),
@@ -1154,6 +1178,7 @@ fn parse_port(raw: Option<&str>, default: u16) -> u16 {
 /// `endpoint_url` carry the *real* port when `data_port == 0`; otherwise the
 /// announcement would advertise the placeholder `:0` and the launcher could not
 /// discover the endpoint.
+#[cfg(not(target_family = "wasm"))]
 fn bind_production_listener(
     bind_address: IpAddr,
     data_port: u16,
@@ -1181,6 +1206,7 @@ fn bind_production_listener(
 ///
 /// Delegates to [`serve_production_on_address`]; callers that must pin explicit
 /// ports (e.g. tests) can call [`serve_production_on`] directly.
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_production<S: EmulatorService>(service: S) -> Result<(), ServeError> {
     let bind_address = bind_address()?;
     let data_port = cli::listen_overrides().1.unwrap_or_else(data_port_from_env);
@@ -1214,6 +1240,7 @@ pub async fn serve_production<S: EmulatorService>(service: S) -> Result<(), Serv
 /// [`serve_production`] and set [`BIND_ADDRESS_ENV`] in the task definition. This
 /// is the out-of-process counterpart to [`serve_on_ephemeral_port`], which binds
 /// a loopback ephemeral port for in-process tests.
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_production_on<S: EmulatorService>(
     service: S,
     data_port: u16,
@@ -1231,6 +1258,7 @@ pub async fn serve_production_on<S: EmulatorService>(
 /// because the emulator authenticates nothing and holds whatever state its
 /// callers created). [`serve_production`] resolves this from
 /// [`BIND_ADDRESS_ENV`].
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_production_on_address<S: EmulatorService>(
     service: S,
     bind_address: IpAddr,
@@ -1344,6 +1372,7 @@ pub async fn serve_production_on_address<S: EmulatorService>(
 /// What a start must warn about: a bind other machines can reach, and request authentication
 /// being off. Each names who can reach the emulator and how to narrow it, so the log alone says
 /// what to change.
+#[cfg(not(target_family = "wasm"))]
 fn exposure_warnings(bind_address: IpAddr, port: u16, authentication: bool) -> Vec<String> {
     let reachable = !bind_address.to_canonical().is_loopback();
     let reachable_bind = reachable.then(|| reachable_bind_warning(bind_address, port));
@@ -1354,6 +1383,7 @@ fn exposure_warnings(bind_address: IpAddr, port: u16, authentication: bool) -> V
         .collect()
 }
 
+#[cfg(not(target_family = "wasm"))]
 fn reachable_bind_warning(bind_address: IpAddr, port: u16) -> String {
     format!(
         "the emulator listens on {bind_address}, port {port}, so other machines on your \
@@ -1363,11 +1393,13 @@ fn reachable_bind_warning(bind_address: IpAddr, port: u16) -> String {
     )
 }
 
+#[cfg(not(target_family = "wasm"))]
 const AUTHENTICATION_OFF_WARNING: &str = "request authentication is off: the emulator accepts \
      any request, signed or not; start it with -a on to require signatures";
 
 /// The address a client dials to reach a listener bound on `bind_address`: the address itself,
 /// or loopback for a wildcard bind, which has no single address to name.
+#[cfg(not(target_family = "wasm"))]
 pub(crate) fn dialable_host(bind_address: IpAddr) -> IpAddr {
     match bind_address {
         IpAddr::V6(ip) if ip.is_unspecified() => IpAddr::V6(std::net::Ipv6Addr::LOCALHOST),
@@ -1387,10 +1419,12 @@ pub(crate) fn dialable_host(bind_address: IpAddr) -> IpAddr {
 /// that answers it, which also matches the S3 endpoints these clients target.
 /// Every request on this listener is fully buffered, so nothing here relies on
 /// HTTP/2 streaming.
+#[cfg(not(target_family = "wasm"))]
 const DATA_LISTENER_ALPN: &[&[u8]] = &[b"http/1.1"];
 
 /// The rustls server config for the data listener: the process certificate `ca`, no
 /// client auth, and [`DATA_LISTENER_ALPN`].
+#[cfg(not(target_family = "wasm"))]
 fn data_listener_tls_config(
     ca: &TlsCertificateAuthority,
 ) -> Result<Arc<rustls::ServerConfig>, rustls::Error> {
@@ -1400,6 +1434,7 @@ fn data_listener_tls_config(
 }
 
 /// The AWS shared config (`AWS_CONFIG_FILE`) that points an SDK or the CLI at this emulator.
+#[cfg(not(target_family = "wasm"))]
 fn shared_config_text(endpoint_url: &str, ca_file: &std::path::Path) -> String {
     let ca_file = ca_file.display();
     format!(
@@ -1412,6 +1447,7 @@ fn shared_config_text(endpoint_url: &str, ca_file: &std::path::Path) -> String {
 /// emulator cleanly instead of by the signal's default action. Each signal is listened for on its
 /// own, so one that cannot be registered does not disable the other. The returned future
 /// completes once one arrives, even if it arrived before the future was polled.
+#[cfg(not(target_family = "wasm"))]
 #[cfg(unix)]
 fn shutdown_signal() -> impl std::future::Future<Output = ()> {
     use tokio::signal::unix::{signal, SignalKind};
@@ -1426,6 +1462,7 @@ fn shutdown_signal() -> impl std::future::Future<Output = ()> {
 }
 
 /// Completes when `listening` receives its signal; never, when it could not be registered.
+#[cfg(not(target_family = "wasm"))]
 #[cfg(unix)]
 async fn signal_received(listening: Option<tokio::signal::unix::Signal>) {
     match listening {
@@ -1435,6 +1472,7 @@ async fn signal_received(listening: Option<tokio::signal::unix::Signal>) {
 }
 
 /// [`shutdown_signal`] where only Ctrl+C exists.
+#[cfg(not(target_family = "wasm"))]
 #[cfg(not(unix))]
 fn shutdown_signal() -> impl std::future::Future<Output = ()> {
     async {
@@ -2006,6 +2044,7 @@ pub fn sigv4_credential_scope(headers: &http::HeaderMap) -> Option<SigV4Scope> {
 /// // `smithy_server_runtime::MultiServiceRouter` assembled from the mounted services.
 /// serve_emulator(router).await;
 /// ```
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_emulator<R: EmulatorService>(router: R) -> ! {
     match serve_emulator_until_shutdown(router).await {
         Ok(()) => std::process::exit(0),
@@ -2023,6 +2062,7 @@ pub async fn serve_emulator<R: EmulatorService>(router: R) -> ! {
 /// gets control back after a shutdown signal (Ctrl+C / SIGTERM) or a serve
 /// error — the seam a generated `main.rs` needs to run bounded cleanup such
 /// as a final telemetry flush before the process exits.
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_emulator_until_shutdown<R: EmulatorService>(
     router: R,
 ) -> Result<(), ServeError> {
@@ -2032,6 +2072,7 @@ pub async fn serve_emulator_until_shutdown<R: EmulatorService>(
 /// [`serve_emulator_until_shutdown`] with explicit bind address and port
 /// (bypassing the `EMULATOR_*` environment), for tests and embedders
 /// that manage their own port allocation.
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_emulator_on<R: EmulatorService>(
     router: R,
     bind_address: IpAddr,
@@ -2042,6 +2083,7 @@ pub async fn serve_emulator_on<R: EmulatorService>(
 
 /// Telemetry reports a serve that ended in an error before it was ready as a
 /// failed startup; an error after ready leaves the startup outcome as it is.
+#[cfg(not(target_family = "wasm"))]
 fn reporting_startup_failure(result: Result<(), ServeError>) -> Result<(), ServeError> {
     if result.is_err()
         && let Some(telemetry) = emulator_telemetry::global()

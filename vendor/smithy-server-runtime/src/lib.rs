@@ -48,7 +48,9 @@ pub use service::{
 // dispatches each request to the one service that claims it.
 pub use multi_service_router::MultiServiceRouter;
 // The TLS root a host trusts this process's listeners by, and the URLs a handler hands out that
-// address this emulator.
+// address this emulator. wasm32 has no real listener/TLS CA (see emulator-server's listeners
+// module docs); EmbeddedEmulator::certificate_authority() is gated out alongside this import.
+#[cfg(not(target_family = "wasm"))]
 pub use emulator_server::TlsCertificateAuthority;
 pub use endpoint::{EndpointUrl, UNSERVED_URL_BASE};
 pub use signed_url::{SignError, SignedUrl, SignedUrlRequest, UrlSigner, MAX_SIGNED_URL_EXPIRY};

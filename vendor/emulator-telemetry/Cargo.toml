@@ -12,8 +12,6 @@ name = "emulator_telemetry"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 http = "1"
-reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
-rusqlite = { version = ">=0.37, <0.43", features = ["bundled"] }
 time = { version = "0.3.55", default-features = false, features = ["formatting", "parsing"] }
 toml = "0.9"
 tracing = { version = "0.1", default-features = false, features = ["std"] }
@@ -25,3 +23,10 @@ libc = "0.2"
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_ProcessStatus", "Win32_System_Threading"] }
+
+# WASM-EMBEDDED EXPERIMENT: `client.rs`/`config.rs`/`outbox.rs` (native only — see src/lib.rs)
+# are the only consumers of `reqwest::blocking`/`rusqlite`; both are unsupported off-wasm32
+# equivalents as well (bundled SQLite, a blocking HTTP client), so wasm32 never builds them.
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+rusqlite = { version = ">=0.37, <0.43", features = ["bundled"] }

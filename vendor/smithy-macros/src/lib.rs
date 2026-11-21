@@ -3833,7 +3833,7 @@ fn smithy_service_impl(
     let opts = SmithyServiceOpts::from_list(&attr_list)
         .map_err(|e| syn::Error::new(proc_macro2::Span::call_site(), e.to_string()))?;
 
-    let errors_path: syn::Path = match opts.errors.clone() {
+    let _errors_path: syn::Path = match opts.errors.clone() {
         Some(p) => p,
         None => syn::parse_quote! { ::smithy_server_runtime::errors },
     };
@@ -4082,7 +4082,7 @@ fn smithy_service_impl(
     let mut op_items: Vec<proc_macro2::TokenStream> = Vec::new();
     let mut table_inits: Vec<proc_macro2::TokenStream> = Vec::new();
 
-    let types_path = &opts.types;
+    let _types_path = &opts.types;
 
     for op_target in &operation_targets {
         let op_target = op_target.as_str();

@@ -135,7 +135,10 @@ uuid = { version = "1", features = ["v4"] }
 # workspace's own feature set), and the clock its own cases wait on.
 # `iot_mqtt_broker`: `sync` carries the per-connection channel the broker hands a live
 # client's session its deliveries over, and the notification that closes one.
-tokio = { workspace = true, features = ["io-util", "rt", "sync", "time"] }
+# WASM-EMBEDDED EXPERIMENT: these features are already within tokio's wasm-safe subset
+# (sync,macros,io-util,rt,time), but the WORKSPACE tokio entry also adds "rt-multi-thread",
+# unsupported on wasm32 — so this is split the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["io-util", "rt", "sync", "time"] }
 # `iot_mqtt_broker`: the MQTT 3.1.1 packet codec the broker reads a client's CONNECT,
 # SUBSCRIBE and PUBLISH with and writes its own CONNACK, SUBACK, PUBLISH and PINGRESP
 # with — the maintained serializer of the protocol, so the wire a stock MQTT client
@@ -291,6 +294,9 @@ regex = "1.13"
 # PNGs with, so the one renderer every such service shares writes a real image rather than
 # hand-assembled bytes.
 png = "0.18"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["io-util", "rt", "sync", "time"] }
 
 [dev-dependencies]
 # `acm_certificate_termination`'s own cases load REAL certificate material, minted by the

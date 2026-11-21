@@ -593,6 +593,11 @@ pub mod openid_discovery;
 /// The ONE bounded evaluation of a caller-written JSONata expression, for every service
 /// whose API carries one — so the ceilings that confine an engine evaluating a caller's
 /// text are stated, and met, in one place rather than per service.
+///
+/// WASM-EMBEDDED EXPERIMENT: the module itself refuses to build under `panic = "abort"`
+/// (its containment needs `catch_unwind`), which wasm32 targets default to; no secrets-only
+/// consumer reaches this module, so it is simply excluded from that build.
+#[cfg(not(target_family = "wasm"))]
 pub mod jsonata;
 /// The ONE bounded, session-local POSIX/bash shell session every service that has to
 /// PERFORM caller-supplied shell text drives — a build's command lines, a container's

@@ -106,10 +106,16 @@ type ServedDefinition<Eng> = service_common::query_error_envelope::RequestIdEnve
 /// `#[tokio::test]`, or a caller driving the router in-process) the work runs inline, where
 /// there is no other worker to protect.
 pub(crate) fn off_the_async_worker<T>(work: impl FnOnce() -> T) -> T {
-    match tokio::runtime::Handle::try_current().map(|handle| handle.runtime_flavor()) {
-        Ok(tokio::runtime::RuntimeFlavor::MultiThread) => tokio::task::block_in_place(work),
-        _ => work(),
+    // WASM-EMBEDDED EXPERIMENT: `tokio::task::block_in_place` needs the "rt-multi-thread"
+    // feature to exist at all, which wasm32 cannot build; wasm32 has no multi-thread runtime
+    // flavor to match below either, so this arm is unreachable there regardless.
+    #[cfg(not(target_family = "wasm"))]
+    if let Ok(tokio::runtime::RuntimeFlavor::MultiThread) =
+        tokio::runtime::Handle::try_current().map(|handle| handle.runtime_flavor())
+    {
+        return tokio::task::block_in_place(work);
     }
+    work()
 }
 
 /// The `com-amazonaws-cloudwatch-graniteserviceversion20100801` emulated service: the generated [`ServiceDefinition`] plus

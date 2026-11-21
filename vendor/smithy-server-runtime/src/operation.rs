@@ -28,7 +28,9 @@
 
 use crate::service::ServiceIdentity;
 use emulator_server::embedded::{aws_credentials_provider, SharedCredentialsProvider};
-use emulator_server::{CredentialStore, TlsCertificateAuthority, VendedCredentials};
+#[cfg(not(target_family = "wasm"))]
+use emulator_server::TlsCertificateAuthority;
+use emulator_server::{CredentialStore, VendedCredentials};
 use aws_smithy_runtime_api::client::http::{
     HttpClient, HttpConnector, HttpConnectorFuture, HttpConnectorSettings, SharedHttpClient,
     SharedHttpConnector,
@@ -162,6 +164,7 @@ impl EmbeddedEmulator {
     /// # Panics
     ///
     /// When the process cannot generate a key pair, which leaves it no TLS at all.
+    #[cfg(not(target_family = "wasm"))]
     pub fn certificate_authority(&self) -> &TlsCertificateAuthority {
         TlsCertificateAuthority::for_this_process()
     }

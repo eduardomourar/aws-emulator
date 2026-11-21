@@ -9,7 +9,9 @@ license = "Apache-2.0"
 smithy-macros = { path = "../smithy-macros", package = "aws-emulator-smithy-macros", version = "*" }
 aws-smithy-schema-server = { path = "../smithy-schema-server", package = "aws-emulator-smithy-schema-server", version = "*" }
 aws-smithy-schema = "0.2.1"
-axum = "0.7"
+# WASM-EMBEDDED EXPERIMENT: axum's default features pull in its own "tokio" feature, which
+# demands tokio's "net" (sockets); nothing here calls `axum::serve`, only re-exports `axum`.
+axum = { version = "0.7", default-features = false }
 http = "1"
 http-body-util = "0.1"
 aws-smithy-runtime-api = "1"
