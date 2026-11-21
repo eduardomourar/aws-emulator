@@ -444,9 +444,22 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-iam-awsidentitymanagementv20100508",
- "service-com-amazonaws-kms-trentservice",
  "service-com-amazonaws-secretsmanager-secretsmanager",
  "service-com-amazonaws-sts-awssecuritytokenservicev20110615",
+ "tokio",
+ "wit-bindgen 0.63.0",
+]
+
+[[package]]
+name = "aws-emulator-embedded-browser-kms"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-kms-trentservice",
  "tokio",
  "wit-bindgen 0.63.0",
 ]

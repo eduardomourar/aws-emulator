@@ -3677,6 +3677,7 @@ import { preopens, types } from "@bytecodealliance/preview2-shim/filesystem";
 import { types as types$1 } from "@bytecodealliance/preview2-shim/http";
 import { error, poll as poll$1, streams } from "@bytecodealliance/preview2-shim/io";
 import { insecureSeed as insecureSeed$1, random } from "@bytecodealliance/preview2-shim/random";
+import { dispatch } from "aws-emulator:callback/dispatch";
 const { getEnvironment } = environment;
 if (getEnvironment === void 0) {
 	let err = Error("unexpectedly undefined local import 'getEnvironment', was 'getEnvironment' available at instantiation?");
@@ -4053,6 +4054,16 @@ const HANDLE_TABLES = _jcoInitializeHandleTables();
 const hasOwnProperty = _jcoInitializeHasOwnProperty();
 WebAssembly.RuntimeError;
 let exports0;
+const handleTable8 = [T_FLAG, 0];
+handleTable8._createdReps = new Set();
+handleTable8._componentIdx = 0;
+const captureTable8 = new Map();
+let captureCnt8 = 0;
+STORE_TRAP.resourceTables.push({
+	handles: handleTable8,
+	captures: captureTable8
+});
+HANDLE_TABLES[8] = handleTable8;
 const handleTable7 = [T_FLAG, 0];
 handleTable7._createdReps = new Set();
 handleTable7._componentIdx = 0;
@@ -4063,6 +4074,95 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable7
 });
 HANDLE_TABLES[7] = handleTable7;
+const _trampoline5 = function(arg0) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.headers\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "headers",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.headers())
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	if (!(ret instanceof Fields)) throw TypeError("Resource error: Not a valid \"Headers\" resource.");
+	var handle3 = ret[symbolRscHandle];
+	if (!handle3) {
+		let rep = (ret[symbolRscRep] ?? ++captureCnt7) >>> 0;
+		captureTable7.set(rep, ret);
+		handle3 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable7, rep);
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.headers\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.headers",
+		paramCount: 1,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([handle3]);
+	task.exit();
+	return handle3;
+};
+_trampoline5.fnName = "wasi:http/types@0.2.12#headers";
 const handleTable5 = [T_FLAG, 0];
 handleTable5._createdReps = new Set();
 handleTable5._componentIdx = 0;
@@ -4073,7 +4173,7 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable5
 });
 HANDLE_TABLES[5] = handleTable5;
-const _trampoline2 = function(arg0) {
+const _trampoline9 = function(arg0) {
 	var handle1 = arg0;
 	var rep2 = handleTable7[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable7.get(rep2);
@@ -4156,8 +4256,8 @@ const _trampoline2 = function(arg0) {
 	task.exit();
 	return handle3;
 };
-_trampoline2.fnName = "wasi:http/types@0.2.12#new OutgoingResponse";
-const _trampoline4 = function(arg0, arg1) {
+_trampoline9.fnName = "wasi:http/types@0.2.12#new OutgoingResponse";
+const _trampoline10 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable5[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable5.get(rep2);
@@ -4255,106 +4355,7 @@ const _trampoline4 = function(arg0, arg1) {
 	task.exit();
 	return variant4_0;
 };
-_trampoline4.fnName = "wasi:http/types@0.2.12#setStatusCode";
-const handleTable9 = [T_FLAG, 0];
-handleTable9._createdReps = new Set();
-handleTable9._componentIdx = 0;
-const captureTable9 = new Map();
-let captureCnt9 = 0;
-STORE_TRAP.resourceTables.push({
-	handles: handleTable9,
-	captures: captureTable9
-});
-HANDLE_TABLES[9] = handleTable9;
-const _trampoline6 = function(arg0) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.headers\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "headers",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "none",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.headers())
-		});
-	} catch (err) {
-		_debugLog("[Instruction::CallInterface] error during sync call", {
-			taskID: task.id(),
-			subtaskID: task.getParentSubtask()?.id(),
-			err
-		});
-		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
-		task.setErrored(err);
-		task.reject(err);
-		task.exit();
-		throw err;
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	if (!(ret instanceof Fields)) throw TypeError("Resource error: Not a valid \"Headers\" resource.");
-	var handle3 = ret[symbolRscHandle];
-	if (!handle3) {
-		let rep = (ret[symbolRscRep] ?? ++captureCnt7) >>> 0;
-		captureTable7.set(rep, ret);
-		handle3 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable7, rep);
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.headers\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.headers",
-		paramCount: 1,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([handle3]);
-	task.exit();
-	return handle3;
-};
-_trampoline6.fnName = "wasi:http/types@0.2.12#headers";
+_trampoline10.fnName = "wasi:http/types@0.2.12#setStatusCode";
 const _trampoline12 = function() {
 	_debugLog("[iface=\"wasi:random/random@0.2.12\", function=\"get-random-u64\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
@@ -5247,6 +5248,963 @@ let exports2;
 let memory0;
 let realloc0;
 let realloc1;
+const _trampoline28 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+	var ptr0 = arg0 >>> 0 >>> 0;
+	var len0 = arg1 >>> 0;
+	if (ptr0 > memory0.buffer.byteLength || len0 > Math.floor((memory0.buffer.byteLength - ptr0) / 1)) throw new WebAssemblyRuntimeError("string pointer/length out of bounds of memory");
+	var result0 = _decodeUtf8(WebAssemblyRuntimeError, TEXT_DECODER_UTF8, new Uint8Array(memory0.buffer, ptr0, len0));
+	var ptr1 = arg2 >>> 0 >>> 0;
+	var len1 = arg3 >>> 0;
+	if (ptr1 > memory0.buffer.byteLength || len1 > Math.floor((memory0.buffer.byteLength - ptr1) / 1)) throw new WebAssemblyRuntimeError("string pointer/length out of bounds of memory");
+	var result1 = _decodeUtf8(WebAssemblyRuntimeError, TEXT_DECODER_UTF8, new Uint8Array(memory0.buffer, ptr1, len1));
+	var len4 = arg5;
+	var base4 = arg4 >>> 0 >>> 0;
+	if (base4 < 0 || len4 < 0 || len4 > 16777215 || base4 > memory0.buffer.byteLength || len4 > Math.floor((memory0.buffer.byteLength - base4) / 16)) throw new WebAssemblyRuntimeError("wasm trap: out of bounds memory access");
+	if (base4 % 4 != 0) throw TypeError(`list pointer [${base4}] is not aligned to 4`);
+	var result4 = [];
+	for (let i = 0; i < len4; i++) {
+		let base = base4 + i * 16;
+		var ptr2 = dataView(_jcoDataViewCacheContext, memory0).getUint32(base + 0, !0) >>> 0;
+		var len2 = dataView(_jcoDataViewCacheContext, memory0).getUint32(base + 4, !0) >>> 0;
+		if (ptr2 > memory0.buffer.byteLength || len2 > Math.floor((memory0.buffer.byteLength - ptr2) / 1)) throw new WebAssemblyRuntimeError("string pointer/length out of bounds of memory");
+		var result2 = _decodeUtf8(WebAssemblyRuntimeError, TEXT_DECODER_UTF8, new Uint8Array(memory0.buffer, ptr2, len2));
+		var ptr3 = dataView(_jcoDataViewCacheContext, memory0).getUint32(base + 8, !0) >>> 0;
+		var len3 = dataView(_jcoDataViewCacheContext, memory0).getUint32(base + 12, !0) >>> 0;
+		if (ptr3 > memory0.buffer.byteLength || len3 > Math.floor((memory0.buffer.byteLength - ptr3) / 1)) throw new WebAssemblyRuntimeError("string pointer/length out of bounds of memory");
+		var result3 = _decodeUtf8(WebAssemblyRuntimeError, TEXT_DECODER_UTF8, new Uint8Array(memory0.buffer, ptr3, len3));
+		result4.push({
+			name: result2,
+			value: result3
+		});
+	}
+	var ptr5 = arg6 >>> 0 >>> 0;
+	var len5 = arg7;
+	if (ptr5 < 0 || len5 < 0 || len5 > 268435455 || ptr5 > memory0.buffer.byteLength || len5 > Math.floor((memory0.buffer.byteLength - ptr5) / 1)) throw new WebAssemblyRuntimeError("wasm trap: out of bounds memory access");
+	if (ptr5 % 1 != 0) throw TypeError(`list pointer [${ptr5}] is not aligned to 1`);
+	var result5 = new Uint8Array(memory0.buffer.slice(ptr5, ptr5 + len5 * 1));
+	_debugLog("[iface=\"aws-emulator:callback/dispatch@0.1.0\", function=\"dispatch\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "dispatch",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => dispatch({
+				method: result0,
+				uri: result1,
+				headers: result4,
+				body: result5
+			}))
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	var { status: v6_0, headers: v6_1, body: v6_2 } = ret;
+	dataView(_jcoDataViewCacheContext, memory0).setInt16((arg8 >>> 0) + 0, toUint16(_jcoStrictNumericContext, v6_0), !0);
+	var vec10 = v6_1;
+	var len10 = vec10.length;
+	var result10 = ((...args) => {
+		let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+		let previousMayLeave = state.mayLeave;
+		let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+		let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+		let previousStorage = thread?.storage;
+		thread && (thread.storage = [0, 0]);
+		state.mayLeave = !1;
+		let restore = () => {
+			state.mayLeave = previousMayLeave;
+			thread && (thread.storage = previousStorage);
+		};
+		let result;
+		try {
+			result = realloc0(...args);
+		} catch (err) {
+			restore();
+			throw err;
+		}
+		if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+		restore();
+		return result;
+	})(0, 0, 4, len10 * 16);
+	result10 >>>= 0;
+	if (result10 % 4 != 0) throw new WebAssemblyRuntimeError("realloc return: result not aligned");
+	if (result10 > memory0.buffer.byteLength || len10 > Math.floor((memory0.buffer.byteLength - result10) / 16)) throw new WebAssemblyRuntimeError("realloc return: beyond end of memory");
+	if (result10 < 0 || len10 < 0 || len10 > 16777215 || result10 > memory0.buffer.byteLength || len10 > Math.floor((memory0.buffer.byteLength - result10) / 16)) throw new WebAssemblyRuntimeError("wasm trap: out of bounds memory access");
+	for (let i = 0; i < vec10.length; i++) {
+		let e = vec10[i];
+		let base = result10 + i * 16;
+		var { name: v7_0, value: v7_1 } = e;
+		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, v7_0, ((...args) => {
+			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+			let previousMayLeave = state.mayLeave;
+			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+			let previousStorage = thread?.storage;
+			thread && (thread.storage = [0, 0]);
+			state.mayLeave = !1;
+			let restore = () => {
+				state.mayLeave = previousMayLeave;
+				thread && (thread.storage = previousStorage);
+			};
+			let result;
+			try {
+				result = realloc0(...args);
+			} catch (err) {
+				restore();
+				throw err;
+			}
+			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+			restore();
+			return result;
+		}), memory0);
+		var ptr8 = encodeRes.ptr;
+		var len8 = encodeRes.len;
+		dataView(_jcoDataViewCacheContext, memory0).setUint32(base + 4, len8, !0);
+		dataView(_jcoDataViewCacheContext, memory0).setUint32(base + 0, ptr8, !0);
+		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, v7_1, ((...args) => {
+			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+			let previousMayLeave = state.mayLeave;
+			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+			let previousStorage = thread?.storage;
+			thread && (thread.storage = [0, 0]);
+			state.mayLeave = !1;
+			let restore = () => {
+				state.mayLeave = previousMayLeave;
+				thread && (thread.storage = previousStorage);
+			};
+			let result;
+			try {
+				result = realloc0(...args);
+			} catch (err) {
+				restore();
+				throw err;
+			}
+			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+			restore();
+			return result;
+		}), memory0);
+		var ptr9 = encodeRes.ptr;
+		var len9 = encodeRes.len;
+		dataView(_jcoDataViewCacheContext, memory0).setUint32(base + 12, len9, !0);
+		dataView(_jcoDataViewCacheContext, memory0).setUint32(base + 8, ptr9, !0);
+	}
+	dataView(_jcoDataViewCacheContext, memory0).setUint32((arg8 >>> 0) + 8, len10, !0);
+	dataView(_jcoDataViewCacheContext, memory0).setUint32((arg8 >>> 0) + 4, result10, !0);
+	var val11 = v6_2;
+	var len11 = Array.isArray(val11) ? val11.length : val11.byteLength;
+	var ptr11 = ((...args) => {
+		let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+		let previousMayLeave = state.mayLeave;
+		let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+		let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+		let previousStorage = thread?.storage;
+		thread && (thread.storage = [0, 0]);
+		state.mayLeave = !1;
+		let restore = () => {
+			state.mayLeave = previousMayLeave;
+			thread && (thread.storage = previousStorage);
+		};
+		let result;
+		try {
+			result = realloc0(...args);
+		} catch (err) {
+			restore();
+			throw err;
+		}
+		if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+		restore();
+		return result;
+	})(0, 0, 1, len11 * 1);
+	ptr11 >>>= 0;
+	if (ptr11 % 1 != 0) throw new WebAssemblyRuntimeError("realloc return: result not aligned");
+	if (ptr11 > memory0.buffer.byteLength || len11 > Math.floor((memory0.buffer.byteLength - ptr11) / 1)) throw new WebAssemblyRuntimeError("realloc return: beyond end of memory");
+	let valData11;
+	let valLenBytes11 = len11 * 1;
+	if (Array.isArray(val11)) {
+		let offset = 0;
+		let dv11 = new DataView(memory0.buffer);
+		for (let v of val11) {
+			_requireValidNumericPrimitive.bind(null, "u8")(v);
+			dv11.setUint8(ptr11 + offset, v, !0);
+			offset += 1;
+		}
+	} else {
+		valData11 = new Uint8Array(val11.buffer || val11, val11.byteOffset, valLenBytes11);
+		new Uint8Array(memory0.buffer, ptr11, valLenBytes11).set(valData11);
+	}
+	dataView(_jcoDataViewCacheContext, memory0).setUint32((arg8 >>> 0) + 16, len11, !0);
+	dataView(_jcoDataViewCacheContext, memory0).setUint32((arg8 >>> 0) + 12, ptr11, !0);
+	_debugLog("[iface=\"aws-emulator:callback/dispatch@0.1.0\", function=\"dispatch\"][Instruction::Return]", {
+		funcName: "dispatch",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline28.fnName = "aws-emulator:callback/dispatch@0.1.0#dispatch";
+const _trampoline29 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.method\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "method",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.method())
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant4 = ret;
+	switch (variant4.tag) {
+		case "get":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+			break;
+		case "head":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+			break;
+		case "post":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 2, !0);
+			break;
+		case "put":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 3, !0);
+			break;
+		case "delete":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 4, !0);
+			break;
+		case "connect":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 5, !0);
+			break;
+		case "options":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 6, !0);
+			break;
+		case "trace":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 7, !0);
+			break;
+		case "patch":
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 8, !0);
+			break;
+		case "other": {
+			let e = variant4.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 9, !0);
+			var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
+				let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+				let previousMayLeave = state.mayLeave;
+				let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+				let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+				let previousStorage = thread?.storage;
+				thread && (thread.storage = [0, 0]);
+				state.mayLeave = !1;
+				let restore = () => {
+					state.mayLeave = previousMayLeave;
+					thread && (thread.storage = previousStorage);
+				};
+				let result;
+				try {
+					result = realloc0(...args);
+				} catch (err) {
+					restore();
+					throw err;
+				}
+				if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+				restore();
+				return result;
+			}), memory0);
+			var ptr3 = encodeRes.ptr;
+			var len3 = encodeRes.len;
+			dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
+			dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
+			break;
+		}
+		default: throw TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Method\``);
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.method\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.method",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline29.fnName = "wasi:http/types@0.2.12#method";
+const _trampoline30 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.path-with-query\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "pathWithQuery",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.pathWithQuery())
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant4 = ret;
+	if (variant4 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+	else {
+		let e = variant4;
+		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
+			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+			let previousMayLeave = state.mayLeave;
+			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+			let previousStorage = thread?.storage;
+			thread && (thread.storage = [0, 0]);
+			state.mayLeave = !1;
+			let restore = () => {
+				state.mayLeave = previousMayLeave;
+				thread && (thread.storage = previousStorage);
+			};
+			let result;
+			try {
+				result = realloc0(...args);
+			} catch (err) {
+				restore();
+				throw err;
+			}
+			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+			restore();
+			return result;
+		}), memory0);
+		var ptr3 = encodeRes.ptr;
+		var len3 = encodeRes.len;
+		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
+		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.path-with-query\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.path-with-query",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline30.fnName = "wasi:http/types@0.2.12#pathWithQuery";
+const _trampoline31 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.authority\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "authority",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.authority())
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant4 = ret;
+	if (variant4 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+	else {
+		let e = variant4;
+		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
+			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+			let previousMayLeave = state.mayLeave;
+			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+			let previousStorage = thread?.storage;
+			thread && (thread.storage = [0, 0]);
+			state.mayLeave = !1;
+			let restore = () => {
+				state.mayLeave = previousMayLeave;
+				thread && (thread.storage = previousStorage);
+			};
+			let result;
+			try {
+				result = realloc0(...args);
+			} catch (err) {
+				restore();
+				throw err;
+			}
+			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+			restore();
+			return result;
+		}), memory0);
+		var ptr3 = encodeRes.ptr;
+		var len3 = encodeRes.len;
+		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
+		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.authority\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.authority",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline31.fnName = "wasi:http/types@0.2.12#authority";
+const _trampoline32 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.scheme\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "scheme",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "none",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.scheme())
+		});
+	} catch (err) {
+		_debugLog("[Instruction::CallInterface] error during sync call", {
+			taskID: task.id(),
+			subtaskID: task.getParentSubtask()?.id(),
+			err
+		});
+		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
+		task.setErrored(err);
+		task.reject(err);
+		task.exit();
+		throw err;
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant5 = ret;
+	if (variant5 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+	else {
+		let e = variant5;
+		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+		var variant4 = e;
+		switch (variant4.tag) {
+			case "HTTP":
+				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 0, !0);
+				break;
+			case "HTTPS":
+				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 1, !0);
+				break;
+			case "other": {
+				let e = variant4.val;
+				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 2, !0);
+				var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
+					let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
+					let previousMayLeave = state.mayLeave;
+					let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
+					let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+					let previousStorage = thread?.storage;
+					thread && (thread.storage = [0, 0]);
+					state.mayLeave = !1;
+					let restore = () => {
+						state.mayLeave = previousMayLeave;
+						thread && (thread.storage = previousStorage);
+					};
+					let result;
+					try {
+						result = realloc0(...args);
+					} catch (err) {
+						restore();
+						throw err;
+					}
+					if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
+					restore();
+					return result;
+				}), memory0);
+				var ptr3 = encodeRes.ptr;
+				var len3 = encodeRes.len;
+				dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 12, len3, !0);
+				dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, ptr3, !0);
+				break;
+			}
+			default: throw TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Scheme\``);
+		}
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.scheme\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.scheme",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline32.fnName = "wasi:http/types@0.2.12#scheme";
+const handleTable9 = [T_FLAG, 0];
+handleTable9._createdReps = new Set();
+handleTable9._componentIdx = 0;
+const captureTable9 = new Map();
+let captureCnt9 = 0;
+STORE_TRAP.resourceTables.push({
+	handles: handleTable9,
+	captures: captureTable9
+});
+HANDLE_TABLES[9] = handleTable9;
+const _trampoline33 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable8.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingRequest.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.consume\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "consume",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "result-catch-handler",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.consume())
+		});
+		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
+			tag: "ok",
+			val: hostRet3
+		};
+	} catch (e) {
+		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
+		ret = {
+			tag: "err",
+			val: getErrorPayload(hasOwnProperty, e)
+		};
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant5 = ret;
+	switch (variant5.tag) {
+		case "ok": {
+			let e = variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+			if (!(e instanceof IncomingBody)) throw TypeError("Resource error: Not a valid \"IncomingBody\" resource.");
+			var handle4 = e[symbolRscHandle];
+			if (!handle4) {
+				let rep = (e[symbolRscRep] ?? ++captureCnt9) >>> 0;
+				captureTable9.set(rep, e);
+				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable9, rep);
+			}
+			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
+			break;
+		}
+		case "err":
+			variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+			break;
+		default:
+			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
+				value: variant5,
+				valueType: typeof variant5
+			});
+			throw TypeError("invalid variant specified for result");
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.consume\"][Instruction::Return]", {
+		funcName: "[method]incoming-request.consume",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline33.fnName = "wasi:http/types@0.2.12#consume";
+const _trampoline34 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable9.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(IncomingBody.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-body.stream\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "stream",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "result-catch-handler",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.stream())
+		});
+		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
+			tag: "ok",
+			val: hostRet3
+		};
+	} catch (e) {
+		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
+		ret = {
+			tag: "err",
+			val: getErrorPayload(hasOwnProperty, e)
+		};
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant5 = ret;
+	switch (variant5.tag) {
+		case "ok": {
+			let e = variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+			if (!(e instanceof InputStream)) throw TypeError("Resource error: Not a valid \"InputStream\" resource.");
+			var handle4 = e[symbolRscHandle];
+			if (!handle4) {
+				let rep = (e[symbolRscRep] ?? ++captureCnt2) >>> 0;
+				captureTable2.set(rep, e);
+				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable2, rep);
+			}
+			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
+			break;
+		}
+		case "err":
+			variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+			break;
+		default:
+			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
+				value: variant5,
+				valueType: typeof variant5
+			});
+			throw TypeError("invalid variant specified for result");
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-body.stream\"][Instruction::Return]", {
+		funcName: "[method]incoming-body.stream",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline34.fnName = "wasi:http/types@0.2.12#stream";
 const handleTable4 = [T_FLAG, 0];
 handleTable4._createdReps = new Set();
 handleTable4._componentIdx = 0;
@@ -5257,11 +6215,233 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable4
 });
 HANDLE_TABLES[4] = handleTable4;
-const _trampoline28 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+const _trampoline35 = function(arg0, arg1) {
+	var handle1 = arg0;
+	var rep2 = handleTable5[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable5.get(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(OutgoingResponse.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-response.body\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "body",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "result-catch-handler",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.body())
+		});
+		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
+			tag: "ok",
+			val: hostRet3
+		};
+	} catch (e) {
+		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
+		ret = {
+			tag: "err",
+			val: getErrorPayload(hasOwnProperty, e)
+		};
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant5 = ret;
+	switch (variant5.tag) {
+		case "ok": {
+			let e = variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+			if (!(e instanceof OutgoingBody)) throw TypeError("Resource error: Not a valid \"OutgoingBody\" resource.");
+			var handle4 = e[symbolRscHandle];
+			if (!handle4) {
+				let rep = (e[symbolRscRep] ?? ++captureCnt4) >>> 0;
+				captureTable4.set(rep, e);
+				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable4, rep);
+			}
+			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
+			break;
+		}
+		case "err":
+			variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+			break;
+		default:
+			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
+				value: variant5,
+				valueType: typeof variant5
+			});
+			throw TypeError("invalid variant specified for result");
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-response.body\"][Instruction::Return]", {
+		funcName: "[method]outgoing-response.body",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline35.fnName = "wasi:http/types@0.2.12#body";
+const _trampoline36 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable4[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable4.get(rep2);
-	if (rsc0) captureTable4.delete(rep2);
+	if (!rsc0) {
+		rsc0 = Object.create(OutgoingBody.prototype);
+		Object.defineProperty(rsc0, symbolRscHandle, {
+			writable: !0,
+			value: handle1
+		});
+		Object.defineProperty(rsc0, symbolRscRep, {
+			writable: !0,
+			value: rep2
+		});
+	}
+	_jcoCurrentBorrowContext.borrows.push(rsc0);
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-body.write\"] [Instruction::CallInterface] (sync, @ enter)");
+	let parentTask;
+	let task;
+	let threadID;
+	let subtask;
+	let createTask = () => {
+		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
+			componentIdx: -1,
+			isAsync: !1,
+			entryFnName: "write",
+			getCallbackFn: () => null,
+			callbackFnName: null,
+			errHandling: "result-catch-handler",
+			callingWasmExport: !1
+		}));
+	};
+	taskCreation: {
+		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
+		if (!parentTask) {
+			createTask();
+			break taskCreation;
+		}
+		createTask();
+		subtask = parentTask.getLatestSubtask();
+		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+		task.setParentSubtask(subtask);
+	}
+	task.enterSync();
+	let ret;
+	try {
+		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
+			componentIdx: task.componentIdx(),
+			taskID: task.id(),
+			threadID,
+			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.write())
+		});
+		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
+			tag: "ok",
+			val: hostRet3
+		};
+	} catch (e) {
+		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
+		ret = {
+			tag: "err",
+			val: getErrorPayload(hasOwnProperty, e)
+		};
+	}
+	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
+	for (let entry of _jcoCurrentBorrowContext.borrows) {
+		let rsc = entry.rsc ?? entry;
+		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
+		rsc[symbolRscHandle] = void 0;
+	}
+	_jcoCurrentBorrowContext.borrows = [];
+	var variant5 = ret;
+	switch (variant5.tag) {
+		case "ok": {
+			let e = variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
+			if (!(e instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
+			var handle4 = e[symbolRscHandle];
+			if (!handle4) {
+				let rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
+				captureTable3.set(rep, e);
+				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
+			}
+			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
+			break;
+		}
+		case "err":
+			variant5.val;
+			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
+			break;
+		default:
+			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
+				value: variant5,
+				valueType: typeof variant5
+			});
+			throw TypeError("invalid variant specified for result");
+	}
+	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-body.write\"][Instruction::Return]", {
+		funcName: "[method]outgoing-body.write",
+		paramCount: 0,
+		async: !1,
+		postReturn: !1
+	});
+	task.resolve([ret]);
+	task.exit();
+};
+_trampoline36.fnName = "wasi:http/types@0.2.12#write";
+const handleTable6 = [T_FLAG, 0];
+handleTable6._createdReps = new Set();
+handleTable6._componentIdx = 0;
+const captureTable6 = new Map();
+let captureCnt6 = 0;
+STORE_TRAP.resourceTables.push({
+	handles: handleTable6,
+	captures: captureTable6
+});
+HANDLE_TABLES[6] = handleTable6;
+const _trampoline37 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) {
+	var handle1 = arg0;
+	var rep2 = handleTable6[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable6.get(rep2);
+	if (rsc0) captureTable6.delete(rep2);
 	else {
 		rsc0 = Object.create(ResponseOutparam.prototype);
 		Object.defineProperty(rsc0, symbolRscHandle, {
@@ -5273,7 +6453,7 @@ const _trampoline28 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, a
 			value: rep2
 		});
 	}
-	rscTableRemove(_jcoResourceRemoveContext, handleTable4, handle1);
+	rscTableRemove(_jcoResourceRemoveContext, handleTable6, handle1);
 	let variant38;
 	switch (arg1) {
 		case 0:
@@ -5812,350 +6992,12 @@ const _trampoline28 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, a
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline28.fnName = "wasi:http/types@0.2.12#ResponseOutparam.set";
-const handleTable6 = [T_FLAG, 0];
-handleTable6._createdReps = new Set();
-handleTable6._componentIdx = 0;
-const captureTable6 = new Map();
-let captureCnt6 = 0;
-STORE_TRAP.resourceTables.push({
-	handles: handleTable6,
-	captures: captureTable6
-});
-HANDLE_TABLES[6] = handleTable6;
-const _trampoline29 = function(arg0, arg1) {
+_trampoline37.fnName = "wasi:http/types@0.2.12#ResponseOutparam.set";
+const _trampoline38 = function(arg0, arg1, arg2, arg3) {
 	var handle1 = arg0;
-	var rep2 = handleTable6[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable6.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingBody.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-body.stream\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "stream",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "result-catch-handler",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.stream())
-		});
-		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
-			tag: "ok",
-			val: hostRet3
-		};
-	} catch (e) {
-		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
-		ret = {
-			tag: "err",
-			val: getErrorPayload(hasOwnProperty, e)
-		};
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant5 = ret;
-	switch (variant5.tag) {
-		case "ok": {
-			let e = variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-			if (!(e instanceof InputStream)) throw TypeError("Resource error: Not a valid \"InputStream\" resource.");
-			var handle4 = e[symbolRscHandle];
-			if (!handle4) {
-				let rep = (e[symbolRscRep] ?? ++captureCnt2) >>> 0;
-				captureTable2.set(rep, e);
-				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable2, rep);
-			}
-			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
-			break;
-		}
-		case "err":
-			variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-			break;
-		default:
-			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
-				value: variant5,
-				valueType: typeof variant5
-			});
-			throw TypeError("invalid variant specified for result");
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-body.stream\"][Instruction::Return]", {
-		funcName: "[method]incoming-body.stream",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline29.fnName = "wasi:http/types@0.2.12#stream";
-const handleTable8 = [T_FLAG, 0];
-handleTable8._createdReps = new Set();
-handleTable8._componentIdx = 0;
-const captureTable8 = new Map();
-let captureCnt8 = 0;
-STORE_TRAP.resourceTables.push({
-	handles: handleTable8,
-	captures: captureTable8
-});
-HANDLE_TABLES[8] = handleTable8;
-const _trampoline30 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable5[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable5.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(OutgoingResponse.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-response.body\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "body",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "result-catch-handler",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.body())
-		});
-		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
-			tag: "ok",
-			val: hostRet3
-		};
-	} catch (e) {
-		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
-		ret = {
-			tag: "err",
-			val: getErrorPayload(hasOwnProperty, e)
-		};
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant5 = ret;
-	switch (variant5.tag) {
-		case "ok": {
-			let e = variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-			if (!(e instanceof OutgoingBody)) throw TypeError("Resource error: Not a valid \"OutgoingBody\" resource.");
-			var handle4 = e[symbolRscHandle];
-			if (!handle4) {
-				let rep = (e[symbolRscRep] ?? ++captureCnt8) >>> 0;
-				captureTable8.set(rep, e);
-				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable8, rep);
-			}
-			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
-			break;
-		}
-		case "err":
-			variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-			break;
-		default:
-			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
-				value: variant5,
-				valueType: typeof variant5
-			});
-			throw TypeError("invalid variant specified for result");
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-response.body\"][Instruction::Return]", {
-		funcName: "[method]outgoing-response.body",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline30.fnName = "wasi:http/types@0.2.12#body";
-const _trampoline31 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable8.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(OutgoingBody.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-body.write\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "write",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "result-catch-handler",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.write())
-		});
-		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
-			tag: "ok",
-			val: hostRet3
-		};
-	} catch (e) {
-		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
-		ret = {
-			tag: "err",
-			val: getErrorPayload(hasOwnProperty, e)
-		};
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant5 = ret;
-	switch (variant5.tag) {
-		case "ok": {
-			let e = variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-			if (!(e instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
-			var handle4 = e[symbolRscHandle];
-			if (!handle4) {
-				let rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
-				captureTable3.set(rep, e);
-				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
-			}
-			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
-			break;
-		}
-		case "err":
-			variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-			break;
-		default:
-			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
-				value: variant5,
-				valueType: typeof variant5
-			});
-			throw TypeError("invalid variant specified for result");
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]outgoing-body.write\"][Instruction::Return]", {
-		funcName: "[method]outgoing-body.write",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline31.fnName = "wasi:http/types@0.2.12#write";
-const _trampoline32 = function(arg0, arg1, arg2, arg3) {
-	var handle1 = arg0;
-	var rep2 = handleTable8[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable8.get(rep2);
-	if (rsc0) captureTable8.delete(rep2);
+	var rep2 = handleTable4[(handle1 << 1) + 1] % T_OWN;
+	var rsc0 = captureTable4.get(rep2);
+	if (rsc0) captureTable4.delete(rep2);
 	else {
 		rsc0 = Object.create(OutgoingBody.prototype);
 		Object.defineProperty(rsc0, symbolRscHandle, {
@@ -6167,7 +7009,7 @@ const _trampoline32 = function(arg0, arg1, arg2, arg3) {
 			value: rep2
 		});
 	}
-	rscTableRemove(_jcoResourceRemoveContext, handleTable8, handle1);
+	rscTableRemove(_jcoResourceRemoveContext, handleTable4, handle1);
 	let variant6;
 	switch (arg1) {
 		case 0:
@@ -6813,8 +7655,8 @@ const _trampoline32 = function(arg0, arg1, arg2, arg3) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline32.fnName = "wasi:http/types@0.2.12#OutgoingBody.finish";
-const _trampoline33 = function(arg0, arg1) {
+_trampoline38.fnName = "wasi:http/types@0.2.12#OutgoingBody.finish";
+const _trampoline39 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable7[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable7.get(rep2);
@@ -7001,615 +7843,8 @@ const _trampoline33 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline33.fnName = "wasi:http/types@0.2.12#entries";
-const _trampoline34 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.method\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "method",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "none",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.method())
-		});
-	} catch (err) {
-		_debugLog("[Instruction::CallInterface] error during sync call", {
-			taskID: task.id(),
-			subtaskID: task.getParentSubtask()?.id(),
-			err
-		});
-		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
-		task.setErrored(err);
-		task.reject(err);
-		task.exit();
-		throw err;
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant4 = ret;
-	switch (variant4.tag) {
-		case "get":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-			break;
-		case "head":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-			break;
-		case "post":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 2, !0);
-			break;
-		case "put":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 3, !0);
-			break;
-		case "delete":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 4, !0);
-			break;
-		case "connect":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 5, !0);
-			break;
-		case "options":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 6, !0);
-			break;
-		case "trace":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 7, !0);
-			break;
-		case "patch":
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 8, !0);
-			break;
-		case "other": {
-			let e = variant4.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 9, !0);
-			var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
-				let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
-				let previousMayLeave = state.mayLeave;
-				let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
-				let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-				let previousStorage = thread?.storage;
-				thread && (thread.storage = [0, 0]);
-				state.mayLeave = !1;
-				let restore = () => {
-					state.mayLeave = previousMayLeave;
-					thread && (thread.storage = previousStorage);
-				};
-				let result;
-				try {
-					result = realloc0(...args);
-				} catch (err) {
-					restore();
-					throw err;
-				}
-				if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
-				restore();
-				return result;
-			}), memory0);
-			var ptr3 = encodeRes.ptr;
-			var len3 = encodeRes.len;
-			dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
-			dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
-			break;
-		}
-		default: throw TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Method\``);
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.method\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.method",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline34.fnName = "wasi:http/types@0.2.12#method";
-const _trampoline35 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.path-with-query\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "pathWithQuery",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "none",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.pathWithQuery())
-		});
-	} catch (err) {
-		_debugLog("[Instruction::CallInterface] error during sync call", {
-			taskID: task.id(),
-			subtaskID: task.getParentSubtask()?.id(),
-			err
-		});
-		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
-		task.setErrored(err);
-		task.reject(err);
-		task.exit();
-		throw err;
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant4 = ret;
-	if (variant4 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-	else {
-		let e = variant4;
-		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
-			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
-			let previousMayLeave = state.mayLeave;
-			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
-			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-			let previousStorage = thread?.storage;
-			thread && (thread.storage = [0, 0]);
-			state.mayLeave = !1;
-			let restore = () => {
-				state.mayLeave = previousMayLeave;
-				thread && (thread.storage = previousStorage);
-			};
-			let result;
-			try {
-				result = realloc0(...args);
-			} catch (err) {
-				restore();
-				throw err;
-			}
-			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
-			restore();
-			return result;
-		}), memory0);
-		var ptr3 = encodeRes.ptr;
-		var len3 = encodeRes.len;
-		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
-		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.path-with-query\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.path-with-query",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline35.fnName = "wasi:http/types@0.2.12#pathWithQuery";
-const _trampoline36 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.scheme\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "scheme",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "none",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.scheme())
-		});
-	} catch (err) {
-		_debugLog("[Instruction::CallInterface] error during sync call", {
-			taskID: task.id(),
-			subtaskID: task.getParentSubtask()?.id(),
-			err
-		});
-		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
-		task.setErrored(err);
-		task.reject(err);
-		task.exit();
-		throw err;
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant5 = ret;
-	if (variant5 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-	else {
-		let e = variant5;
-		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-		var variant4 = e;
-		switch (variant4.tag) {
-			case "HTTP":
-				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 0, !0);
-				break;
-			case "HTTPS":
-				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 1, !0);
-				break;
-			case "other": {
-				let e = variant4.val;
-				dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 4, 2, !0);
-				var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
-					let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
-					let previousMayLeave = state.mayLeave;
-					let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
-					let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-					let previousStorage = thread?.storage;
-					thread && (thread.storage = [0, 0]);
-					state.mayLeave = !1;
-					let restore = () => {
-						state.mayLeave = previousMayLeave;
-						thread && (thread.storage = previousStorage);
-					};
-					let result;
-					try {
-						result = realloc0(...args);
-					} catch (err) {
-						restore();
-						throw err;
-					}
-					if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
-					restore();
-					return result;
-				}), memory0);
-				var ptr3 = encodeRes.ptr;
-				var len3 = encodeRes.len;
-				dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 12, len3, !0);
-				dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, ptr3, !0);
-				break;
-			}
-			default: throw TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Scheme\``);
-		}
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.scheme\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.scheme",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline36.fnName = "wasi:http/types@0.2.12#scheme";
-const _trampoline37 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.authority\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "authority",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "none",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		ret = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.authority())
-		});
-	} catch (err) {
-		_debugLog("[Instruction::CallInterface] error during sync call", {
-			taskID: task.id(),
-			subtaskID: task.getParentSubtask()?.id(),
-			err
-		});
-		getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(err);
-		task.setErrored(err);
-		task.reject(err);
-		task.exit();
-		throw err;
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant4 = ret;
-	if (variant4 == null) dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-	else {
-		let e = variant4;
-		dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-		var encodeRes = _utf8AllocateAndEncode(TEXT_ENCODER_UTF8, e, ((...args) => {
-			let state = getOrCreateAsyncState(_jcoComponentStateLookupContext, 0);
-			let previousMayLeave = state.mayLeave;
-			let meta = _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0);
-			let thread = meta && getCurrentThread(_jcoThreadLookupContext, meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-			let previousStorage = thread?.storage;
-			thread && (thread.storage = [0, 0]);
-			state.mayLeave = !1;
-			let restore = () => {
-				state.mayLeave = previousMayLeave;
-				thread && (thread.storage = previousStorage);
-			};
-			let result;
-			try {
-				result = realloc0(...args);
-			} catch (err) {
-				restore();
-				throw err;
-			}
-			if (result && typeof result.then == "function") return Promise.resolve(result).finally(restore);
-			restore();
-			return result;
-		}), memory0);
-		var ptr3 = encodeRes.ptr;
-		var len3 = encodeRes.len;
-		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 8, len3, !0);
-		dataView(_jcoDataViewCacheContext, memory0).setUint32((arg1 >>> 0) + 4, ptr3, !0);
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.authority\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.authority",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline37.fnName = "wasi:http/types@0.2.12#authority";
-const _trampoline38 = function(arg0, arg1) {
-	var handle1 = arg0;
-	var rep2 = handleTable9[(handle1 << 1) + 1] % T_OWN;
-	var rsc0 = captureTable9.get(rep2);
-	if (!rsc0) {
-		rsc0 = Object.create(IncomingRequest.prototype);
-		Object.defineProperty(rsc0, symbolRscHandle, {
-			writable: !0,
-			value: handle1
-		});
-		Object.defineProperty(rsc0, symbolRscRep, {
-			writable: !0,
-			value: rep2
-		});
-	}
-	_jcoCurrentBorrowContext.borrows.push(rsc0);
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.consume\"] [Instruction::CallInterface] (sync, @ enter)");
-	let parentTask;
-	let task;
-	let threadID;
-	let subtask;
-	let createTask = () => {
-		({task, threadID} = createNewCurrentImplicitThread(_jcoTaskCreateContext, {
-			componentIdx: -1,
-			isAsync: !1,
-			entryFnName: "consume",
-			getCallbackFn: () => null,
-			callbackFnName: null,
-			errHandling: "result-catch-handler",
-			callingWasmExport: !1
-		}));
-	};
-	taskCreation: {
-		parentTask = getCurrentTask(_jcoTaskLookupContext, 0, _getGlobalCurrentThreadMeta(CURRENT_TASK_META, 0)?.taskID)?.task;
-		if (!parentTask) {
-			createTask();
-			break taskCreation;
-		}
-		createTask();
-		subtask = parentTask.getLatestSubtask();
-		if (!subtask) throw Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-		task.setParentSubtask(subtask);
-	}
-	task.enterSync();
-	let ret;
-	try {
-		let hostRet3 = _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
-			componentIdx: task.componentIdx(),
-			taskID: task.id(),
-			threadID,
-			fn: () => _trackHostOperation(_jcoComponentHostOperationContext, () => rsc0.consume())
-		});
-		ret = typeof hostRet3 == "object" && hostRet3 && (hostRet3.tag === "ok" || hostRet3.tag === "err") ? hostRet3 : {
-			tag: "ok",
-			val: hostRet3
-		};
-	} catch (e) {
-		if (getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).markTrapped(e)) throw e;
-		ret = {
-			tag: "err",
-			val: getErrorPayload(hasOwnProperty, e)
-		};
-	}
-	getOrCreateAsyncState(_jcoComponentStateLookupContext, 0).throwIfInterrupted();
-	for (let entry of _jcoCurrentBorrowContext.borrows) {
-		let rsc = entry.rsc ?? entry;
-		entry.drop && rsc[symbolRscHandle] && entry.drop(rsc[symbolRscHandle]);
-		rsc[symbolRscHandle] = void 0;
-	}
-	_jcoCurrentBorrowContext.borrows = [];
-	var variant5 = ret;
-	switch (variant5.tag) {
-		case "ok": {
-			let e = variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 0, !0);
-			if (!(e instanceof IncomingBody)) throw TypeError("Resource error: Not a valid \"IncomingBody\" resource.");
-			var handle4 = e[symbolRscHandle];
-			if (!handle4) {
-				let rep = (e[symbolRscRep] ?? ++captureCnt6) >>> 0;
-				captureTable6.set(rep, e);
-				handle4 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable6, rep);
-			}
-			dataView(_jcoDataViewCacheContext, memory0).setInt32((arg1 >>> 0) + 4, handle4, !0);
-			break;
-		}
-		case "err":
-			variant5.val;
-			dataView(_jcoDataViewCacheContext, memory0).setInt8((arg1 >>> 0) + 0, 1, !0);
-			break;
-		default:
-			_debugLog("ERROR: invalid value (expected result as object with 'tag' member)", {
-				value: variant5,
-				valueType: typeof variant5
-			});
-			throw TypeError("invalid variant specified for result");
-	}
-	_debugLog("[iface=\"wasi:http/types@0.2.12\", function=\"[method]incoming-request.consume\"][Instruction::Return]", {
-		funcName: "[method]incoming-request.consume",
-		paramCount: 0,
-		async: !1,
-		postReturn: !1
-	});
-	task.resolve([ret]);
-	task.exit();
-};
-_trampoline38.fnName = "wasi:http/types@0.2.12#consume";
-const _trampoline39 = function(arg0, arg1, arg2) {
+_trampoline39.fnName = "wasi:http/types@0.2.12#entries";
+const _trampoline40 = function(arg0, arg1, arg2) {
 	var len2 = arg1;
 	var base2 = arg0 >>> 0 >>> 0;
 	if (base2 < 0 || len2 < 0 || len2 > 16777215 || base2 > memory0.buffer.byteLength || len2 > Math.floor((memory0.buffer.byteLength - base2) / 16)) throw new WebAssemblyRuntimeError("wasm trap: out of bounds memory access");
@@ -7725,7 +7960,7 @@ const _trampoline39 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline39.fnName = "wasi:http/types@0.2.12#Fields.fromList";
+_trampoline40.fnName = "wasi:http/types@0.2.12#Fields.fromList";
 const handleTable1 = [T_FLAG, 0];
 handleTable1._createdReps = new Set();
 handleTable1._componentIdx = 0;
@@ -7736,7 +7971,7 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable1
 });
 HANDLE_TABLES[1] = handleTable1;
-const _trampoline40 = function(arg0, arg1, arg2) {
+const _trampoline41 = function(arg0, arg1, arg2) {
 	var handle1 = arg0;
 	var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable2.get(rep2);
@@ -7898,8 +8133,8 @@ const _trampoline40 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline40.fnName = "wasi:io/streams@0.2.12#blockingRead";
-const _trampoline41 = function(arg0, arg1, arg2, arg3) {
+_trampoline41.fnName = "wasi:io/streams@0.2.12#blockingRead";
+const _trampoline42 = function(arg0, arg1, arg2, arg3) {
 	var handle1 = arg0;
 	var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable3.get(rep2);
@@ -8021,8 +8256,8 @@ const _trampoline41 = function(arg0, arg1, arg2, arg3) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline41.fnName = "wasi:io/streams@0.2.12#blockingWriteAndFlush";
-const _trampoline42 = function(arg0, arg1, arg2) {
+_trampoline42.fnName = "wasi:io/streams@0.2.12#blockingWriteAndFlush";
+const _trampoline43 = function(arg0, arg1, arg2) {
 	var handle1 = arg0;
 	var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable2.get(rep2);
@@ -8184,8 +8419,8 @@ const _trampoline42 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline42.fnName = "wasi:io/streams@0.2.12#read";
-const _trampoline43 = function(arg0, arg1) {
+_trampoline43.fnName = "wasi:io/streams@0.2.12#read";
+const _trampoline44 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable3.get(rep2);
@@ -8304,8 +8539,8 @@ const _trampoline43 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline43.fnName = "wasi:io/streams@0.2.12#checkWrite";
-const _trampoline44 = function(arg0, arg1, arg2, arg3) {
+_trampoline44.fnName = "wasi:io/streams@0.2.12#checkWrite";
+const _trampoline45 = function(arg0, arg1, arg2, arg3) {
 	var handle1 = arg0;
 	var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable3.get(rep2);
@@ -8427,8 +8662,8 @@ const _trampoline44 = function(arg0, arg1, arg2, arg3) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline44.fnName = "wasi:io/streams@0.2.12#write";
-const _trampoline45 = function(arg0, arg1) {
+_trampoline45.fnName = "wasi:io/streams@0.2.12#write";
+const _trampoline46 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable3.get(rep2);
@@ -8545,8 +8780,8 @@ const _trampoline45 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline45.fnName = "wasi:io/streams@0.2.12#blockingFlush";
-const _trampoline46 = function(arg0) {
+_trampoline46.fnName = "wasi:io/streams@0.2.12#blockingFlush";
+const _trampoline47 = function(arg0) {
 	_debugLog("[iface=\"wasi:random/insecure-seed@0.2.12\", function=\"insecure-seed\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -8608,8 +8843,8 @@ const _trampoline46 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline46.fnName = "wasi:random/insecure-seed@0.2.12#insecureSeed";
-const _trampoline47 = function(arg0, arg1, arg2) {
+_trampoline47.fnName = "wasi:random/insecure-seed@0.2.12#insecureSeed";
+const _trampoline48 = function(arg0, arg1, arg2) {
 	var len3 = arg1;
 	var base3 = arg0 >>> 0 >>> 0;
 	if (base3 < 0 || len3 < 0 || len3 > 67108863 || base3 > memory0.buffer.byteLength || len3 > Math.floor((memory0.buffer.byteLength - base3) / 4)) throw new WebAssemblyRuntimeError("wasm trap: out of bounds memory access");
@@ -8742,7 +8977,7 @@ const _trampoline47 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline47.fnName = "wasi:io/poll@0.2.12#poll";
+_trampoline48.fnName = "wasi:io/poll@0.2.12#poll";
 const handleTable12 = [T_FLAG, 0];
 handleTable12._createdReps = new Set();
 handleTable12._componentIdx = 0;
@@ -8753,7 +8988,7 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable12
 });
 HANDLE_TABLES[12] = handleTable12;
-const _trampoline48 = function(arg0, arg1, arg2) {
+const _trampoline49 = function(arg0, arg1, arg2) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -8978,8 +9213,8 @@ const _trampoline48 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline48.fnName = "wasi:filesystem/types@0.2.12#readViaStream";
-const _trampoline49 = function(arg0, arg1, arg2) {
+_trampoline49.fnName = "wasi:filesystem/types@0.2.12#readViaStream";
+const _trampoline50 = function(arg0, arg1, arg2) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -9204,8 +9439,8 @@ const _trampoline49 = function(arg0, arg1, arg2) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline49.fnName = "wasi:filesystem/types@0.2.12#writeViaStream";
-const _trampoline50 = function(arg0, arg1) {
+_trampoline50.fnName = "wasi:filesystem/types@0.2.12#writeViaStream";
+const _trampoline51 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -9430,8 +9665,8 @@ const _trampoline50 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline50.fnName = "wasi:filesystem/types@0.2.12#appendViaStream";
-const _trampoline51 = function(arg0, arg1) {
+_trampoline51.fnName = "wasi:filesystem/types@0.2.12#appendViaStream";
+const _trampoline52 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -9652,8 +9887,8 @@ const _trampoline51 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline51.fnName = "wasi:filesystem/types@0.2.12#getFlags";
-const _trampoline52 = function(arg0, arg1) {
+_trampoline52.fnName = "wasi:filesystem/types@0.2.12#getFlags";
+const _trampoline53 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -9932,8 +10167,8 @@ const _trampoline52 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline52.fnName = "wasi:filesystem/types@0.2.12#stat";
-const _trampoline53 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+_trampoline53.fnName = "wasi:filesystem/types@0.2.12#stat";
+const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -10180,8 +10415,8 @@ const _trampoline53 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline53.fnName = "wasi:filesystem/types@0.2.12#openAt";
-const _trampoline54 = function(arg0, arg1) {
+_trampoline54.fnName = "wasi:filesystem/types@0.2.12#openAt";
+const _trampoline55 = function(arg0, arg1) {
 	var handle1 = arg0;
 	var rep2 = handleTable12[(handle1 << 1) + 1] % T_OWN;
 	var rsc0 = captureTable12.get(rep2);
@@ -10401,8 +10636,8 @@ const _trampoline54 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline54.fnName = "wasi:filesystem/types@0.2.12#metadataHash";
-const _trampoline55 = function(arg0) {
+_trampoline55.fnName = "wasi:filesystem/types@0.2.12#metadataHash";
+const _trampoline56 = function(arg0) {
 	_debugLog("[iface=\"wasi:cli/environment@0.2.12\", function=\"get-environment\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10551,7 +10786,7 @@ const _trampoline55 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline55.fnName = "wasi:cli/environment@0.2.12#getEnvironment";
+_trampoline56.fnName = "wasi:cli/environment@0.2.12#getEnvironment";
 const handleTable10 = [T_FLAG, 0];
 handleTable10._createdReps = new Set();
 handleTable10._componentIdx = 0;
@@ -10562,7 +10797,7 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable10
 });
 HANDLE_TABLES[10] = handleTable10;
-const _trampoline56 = function(arg0) {
+const _trampoline57 = function(arg0) {
 	_debugLog("[iface=\"wasi:cli/terminal-stdin@0.2.12\", function=\"get-terminal-stdin\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10635,7 +10870,7 @@ const _trampoline56 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline56.fnName = "wasi:cli/terminal-stdin@0.2.12#getTerminalStdin";
+_trampoline57.fnName = "wasi:cli/terminal-stdin@0.2.12#getTerminalStdin";
 const handleTable11 = [T_FLAG, 0];
 handleTable11._createdReps = new Set();
 handleTable11._componentIdx = 0;
@@ -10646,7 +10881,7 @@ STORE_TRAP.resourceTables.push({
 	captures: captureTable11
 });
 HANDLE_TABLES[11] = handleTable11;
-const _trampoline57 = function(arg0) {
+const _trampoline58 = function(arg0) {
 	_debugLog("[iface=\"wasi:cli/terminal-stdout@0.2.12\", function=\"get-terminal-stdout\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10719,8 +10954,8 @@ const _trampoline57 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline57.fnName = "wasi:cli/terminal-stdout@0.2.12#getTerminalStdout";
-const _trampoline58 = function(arg0) {
+_trampoline58.fnName = "wasi:cli/terminal-stdout@0.2.12#getTerminalStdout";
+const _trampoline59 = function(arg0) {
 	_debugLog("[iface=\"wasi:cli/terminal-stderr@0.2.12\", function=\"get-terminal-stderr\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10793,8 +11028,8 @@ const _trampoline58 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline58.fnName = "wasi:cli/terminal-stderr@0.2.12#getTerminalStderr";
-const _trampoline59 = function(arg0) {
+_trampoline59.fnName = "wasi:cli/terminal-stderr@0.2.12#getTerminalStderr";
+const _trampoline60 = function(arg0) {
 	_debugLog("[iface=\"wasi:clocks/wall-clock@0.2.12\", function=\"now\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10856,8 +11091,8 @@ const _trampoline59 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline59.fnName = "wasi:clocks/wall-clock@0.2.12#now$1";
-const _trampoline60 = function(arg0) {
+_trampoline60.fnName = "wasi:clocks/wall-clock@0.2.12#now$1";
+const _trampoline61 = function(arg0) {
 	_debugLog("[iface=\"wasi:filesystem/preopens@0.2.12\", function=\"get-directories\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -10987,8 +11222,8 @@ const _trampoline60 = function(arg0) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline60.fnName = "wasi:filesystem/preopens@0.2.12#getDirectories";
-const _trampoline61 = function(arg0, arg1) {
+_trampoline61.fnName = "wasi:filesystem/preopens@0.2.12#getDirectories";
+const _trampoline62 = function(arg0, arg1) {
 	_debugLog("[iface=\"wasi:random/random@0.2.12\", function=\"get-random-bytes\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -11091,8 +11326,8 @@ const _trampoline61 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline61.fnName = "wasi:random/random@0.2.12#getRandomBytes";
-const _trampoline62 = function(arg0, arg1) {
+_trampoline62.fnName = "wasi:random/random@0.2.12#getRandomBytes";
+const _trampoline63 = function(arg0, arg1) {
 	_debugLog("[iface=\"wasi:random/random@0.2.12\", function=\"get-random-bytes\"] [Instruction::CallInterface] (sync, @ enter)");
 	let parentTask;
 	let task;
@@ -11195,14 +11430,14 @@ const _trampoline62 = function(arg0, arg1) {
 	task.resolve([ret]);
 	task.exit();
 };
-_trampoline62.fnName = "wasi:random/random@0.2.12#getRandomBytes";
+_trampoline63.fnName = "wasi:random/random@0.2.12#getRandomBytes";
 let exports3;
 const handleTable13 = [T_FLAG, 0];
 handleTable13._createdReps = new Set();
 handleTable13._componentIdx = 1;
 STORE_TRAP.resourceTables.push({
 	handles: handleTable13,
-	captures: captureTable9
+	captures: captureTable8
 });
 HANDLE_TABLES[13] = handleTable13;
 const handleTable14 = [T_FLAG, 0];
@@ -11210,7 +11445,7 @@ handleTable14._createdReps = new Set();
 handleTable14._componentIdx = 1;
 STORE_TRAP.resourceTables.push({
 	handles: handleTable14,
-	captures: captureTable4
+	captures: captureTable6
 });
 HANDLE_TABLES[14] = handleTable14;
 let incomingHandler0212Handle;
@@ -11229,7 +11464,7 @@ function handle(arg0, arg1) {
 	});
 	task.setCalleeIsAsync(!1);
 	task.setFuncTypeIsAsync(!1);
-	task.setReturnResultTypeIdx(1);
+	task.setReturnResultTypeIdx(3);
 	task.enterSync();
 	CURRENT_TASK_MAY_BLOCK.value = +!!task.mayBlock();
 	return _withGlobalCurrentThreadMeta(CURRENT_TASK_META, {
@@ -11241,16 +11476,16 @@ function handle(arg0, arg1) {
 				if (!(arg0 instanceof IncomingRequest)) throw TypeError("Resource error: Not a valid \"IncomingRequest\" resource.");
 				var handle0 = arg0[symbolRscHandle];
 				if (!handle0) {
-					let rep = (arg0[symbolRscRep] ?? ++captureCnt9) >>> 0;
-					captureTable9.set(rep, arg0);
-					handle0 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable9, rep);
+					let rep = (arg0[symbolRscRep] ?? ++captureCnt8) >>> 0;
+					captureTable8.set(rep, arg0);
+					handle0 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable8, rep);
 				}
 				if (!(arg1 instanceof ResponseOutparam)) throw TypeError("Resource error: Not a valid \"ResponseOutparam\" resource.");
 				var handle1 = arg1[symbolRscHandle];
 				if (!handle1) {
-					let rep = (arg1[symbolRscRep] ?? ++captureCnt4) >>> 0;
-					captureTable4.set(rep, arg1);
-					handle1 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable4, rep);
+					let rep = (arg1[symbolRscRep] ?? ++captureCnt6) >>> 0;
+					captureTable6.set(rep, arg1);
+					handle1 = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable6, rep);
 				}
 				_debugLog("[iface=\"wasi:http/incoming-handler@0.2.12\", function=\"handle\"][Instruction::CallWasm] enter", {
 					funcName: "handle",
@@ -11298,14 +11533,14 @@ function handle(arg0, arg1) {
 	});
 }
 function trampoline0(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable5, handle);
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable1, handle);
 	if (handleEntry.own) {
-		let rsc = captureTable5.get(handleEntry.rep);
+		let rsc = captureTable1.get(handleEntry.rep);
 		if (rsc) {
-			captureTable5.delete(handleEntry.rep);
+			captureTable1.delete(handleEntry.rep);
 			STORE_TRAP.disposed.add(rsc);
 			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else OutgoingResponse[symbolCabiDispose] && OutgoingResponse[symbolCabiDispose](handleEntry.rep);
+		} else Error$1[symbolCabiDispose] && Error$1[symbolCabiDispose](handleEntry.rep);
 	}
 }
 function trampoline1(handle) {
@@ -11316,14 +11551,111 @@ function trampoline1(handle) {
 			captureTable4.delete(handleEntry.rep);
 			STORE_TRAP.disposed.add(rsc);
 			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else OutgoingBody[symbolCabiDispose] && OutgoingBody[symbolCabiDispose](handleEntry.rep);
+	}
+}
+function trampoline2(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable5, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable5.get(handleEntry.rep);
+		if (rsc) {
+			captureTable5.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else OutgoingResponse[symbolCabiDispose] && OutgoingResponse[symbolCabiDispose](handleEntry.rep);
+	}
+}
+function trampoline3(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable6, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable6.get(handleEntry.rep);
+		if (rsc) {
+			captureTable6.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
 		} else ResponseOutparam[symbolCabiDispose] && ResponseOutparam[symbolCabiDispose](handleEntry.rep);
 	}
 }
-let trampoline2 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 2,
+function trampoline4(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable7, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable7.get(handleEntry.rep);
+		if (rsc) {
+			captureTable7.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else Fields[symbolCabiDispose] && Fields[symbolCabiDispose](handleEntry.rep);
+	}
+}
+let trampoline5 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 5,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline2.manuallyAsync,
+	isManualAsync: _trampoline5.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatOwn(_jcoStrictNumericContext, {
+		componentIdx: 0,
+		tableIdx: 7,
+		lowerFn: function lowerImportedOwnedHost_Fields(obj) {
+			if (!(obj instanceof Fields)) throw TypeError("Resource error: Not a valid \"Fields\" resource.");
+			let handle = obj[symbolRscHandle];
+			if (!handle) {
+				let rep = (obj[symbolRscRep] ?? ++captureCnt7) >>> 0;
+				captureTable7.set(rep, obj);
+				handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable7, rep);
+			}
+			return handle;
+		}
+	})],
+	hasResultPointer: !1,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: null,
+	stringEncoding: "utf8",
+	getMemoryFn: () => null,
+	getReallocFn: void 0,
+	importFn: _trampoline5
+});
+function trampoline6(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable2, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable2.get(handleEntry.rep);
+		if (rsc) {
+			captureTable2.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else InputStream[symbolCabiDispose] && InputStream[symbolCabiDispose](handleEntry.rep);
+	}
+}
+function trampoline7(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable9, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable9.get(handleEntry.rep);
+		if (rsc) {
+			captureTable9.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else IncomingBody[symbolCabiDispose] && IncomingBody[symbolCabiDispose](handleEntry.rep);
+	}
+}
+function trampoline8(handle) {
+	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable8, handle);
+	if (handleEntry.own) {
+		let rsc = captureTable8.get(handleEntry.rep);
+		if (rsc) {
+			captureTable8.delete(handleEntry.rep);
+			STORE_TRAP.disposed.add(rsc);
+			rsc[symbolDispose] && rsc[symbolDispose]();
+		} else IncomingRequest[symbolCabiDispose] && IncomingRequest[symbolCabiDispose](handleEntry.rep);
+	}
+}
+let trampoline9 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 9,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline9.manuallyAsync,
 	paramLiftFns: [_liftFlatOwn({
 		componentIdx: 0,
 		tableIdx: 7,
@@ -11370,24 +11702,13 @@ let trampoline2 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCon
 	stringEncoding: "utf8",
 	getMemoryFn: () => null,
 	getReallocFn: void 0,
-	importFn: _trampoline2
+	importFn: _trampoline9
 });
-function trampoline3(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable7, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable7.get(handleEntry.rep);
-		if (rsc) {
-			captureTable7.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else Fields[symbolCabiDispose] && Fields[symbolCabiDispose](handleEntry.rep);
-	}
-}
-let trampoline4 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 4,
+let trampoline10 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 10,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline4.manuallyAsync,
+	isManualAsync: _trampoline10.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 5), _liftFlatU16],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -11417,73 +11738,9 @@ let trampoline4 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCon
 	stringEncoding: "utf8",
 	getMemoryFn: () => null,
 	getReallocFn: void 0,
-	importFn: _trampoline4
+	importFn: _trampoline10
 });
-function trampoline5(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable8, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable8.get(handleEntry.rep);
-		if (rsc) {
-			captureTable8.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else OutgoingBody[symbolCabiDispose] && OutgoingBody[symbolCabiDispose](handleEntry.rep);
-	}
-}
-let trampoline6 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 6,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline6.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatOwn(_jcoStrictNumericContext, {
-		componentIdx: 0,
-		tableIdx: 7,
-		lowerFn: function lowerImportedOwnedHost_Fields(obj) {
-			if (!(obj instanceof Fields)) throw TypeError("Resource error: Not a valid \"Fields\" resource.");
-			let handle = obj[symbolRscHandle];
-			if (!handle) {
-				let rep = (obj[symbolRscRep] ?? ++captureCnt7) >>> 0;
-				captureTable7.set(rep, obj);
-				handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable7, rep);
-			}
-			return handle;
-		}
-	})],
-	hasResultPointer: !1,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: null,
-	stringEncoding: "utf8",
-	getMemoryFn: () => null,
-	getReallocFn: void 0,
-	importFn: _trampoline6
-});
-function trampoline7(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable1, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable1.get(handleEntry.rep);
-		if (rsc) {
-			captureTable1.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else Error$1[symbolCabiDispose] && Error$1[symbolCabiDispose](handleEntry.rep);
-	}
-}
-function trampoline8(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable2, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable2.get(handleEntry.rep);
-		if (rsc) {
-			captureTable2.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else InputStream[symbolCabiDispose] && InputStream[symbolCabiDispose](handleEntry.rep);
-	}
-}
-function trampoline9(handle) {
+function trampoline11(handle) {
 	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable3, handle);
 	if (handleEntry.own) {
 		let rsc = captureTable3.get(handleEntry.rep);
@@ -11492,28 +11749,6 @@ function trampoline9(handle) {
 			STORE_TRAP.disposed.add(rsc);
 			rsc[symbolDispose] && rsc[symbolDispose]();
 		} else OutputStream[symbolCabiDispose] && OutputStream[symbolCabiDispose](handleEntry.rep);
-	}
-}
-function trampoline10(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable6, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable6.get(handleEntry.rep);
-		if (rsc) {
-			captureTable6.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else IncomingBody[symbolCabiDispose] && IncomingBody[symbolCabiDispose](handleEntry.rep);
-	}
-}
-function trampoline11(handle) {
-	let handleEntry = rscTableRemove(_jcoResourceRemoveContext, handleTable9, handle);
-	if (handleEntry.own) {
-		let rsc = captureTable9.get(handleEntry.rep);
-		if (rsc) {
-			captureTable9.delete(handleEntry.rep);
-			STORE_TRAP.disposed.add(rsc);
-			rsc[symbolDispose] && rsc[symbolDispose]();
-		} else IncomingRequest[symbolCabiDispose] && IncomingRequest[symbolCabiDispose](handleEntry.rep);
 	}
 }
 let trampoline12 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
@@ -11893,14 +12128,562 @@ let trampoline28 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	componentIdx: 0,
 	isAsync: !1,
 	isManualAsync: _trampoline28.manuallyAsync,
+	paramLiftFns: [_liftFlatRecord({
+		fieldMetas: [
+			[
+				"method",
+				_liftFlatStringAny.bind(void 0, _jcoLiftStringContext),
+				8,
+				4
+			],
+			[
+				"uri",
+				_liftFlatStringAny.bind(void 0, _jcoLiftStringContext),
+				8,
+				4
+			],
+			[
+				"headers",
+				_liftFlatList(_jcoLiftListContext, {
+					elemLiftFn: _liftFlatRecord({
+						fieldMetas: [[
+							"name",
+							_liftFlatStringAny.bind(void 0, _jcoLiftStringContext),
+							8,
+							4
+						], [
+							"value",
+							_liftFlatStringAny.bind(void 0, _jcoLiftStringContext),
+							8,
+							4
+						]],
+						size32: 16,
+						align32: 4
+					}),
+					elemAlign32: 4,
+					elemSize32: 16,
+					typedArray: void 0
+				}),
+				8,
+				4
+			],
+			[
+				"body",
+				_liftFlatList(_jcoLiftListContext, {
+					elemLiftFn: _liftFlatU8,
+					elemAlign32: 1,
+					elemSize32: 1,
+					typedArray: Uint8Array
+				}),
+				8,
+				4
+			]
+		],
+		size32: 32,
+		align32: 4
+	})],
+	resultLowerFns: [_lowerFlatRecord({
+		fieldMetas: [
+			[
+				"status",
+				_lowerFlatU16.bind(void 0, _jcoStrictNumericContext),
+				2,
+				2
+			],
+			[
+				"headers",
+				_lowerFlatList(_jcoLowerListContext, {
+					elemLowerFn: _lowerFlatRecord({
+						fieldMetas: [[
+							"name",
+							_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+							8,
+							4
+						], [
+							"value",
+							_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+							8,
+							4
+						]],
+						size32: 16,
+						align32: 4
+					}),
+					elemSize32: 16,
+					elemAlign32: 4,
+					typedArray: void 0
+				}),
+				8,
+				4
+			],
+			[
+				"body",
+				_lowerFlatList(_jcoLowerListContext, {
+					elemLowerFn: _lowerFlatU8.bind(void 0, _jcoStrictNumericContext),
+					elemSize32: 1,
+					elemAlign32: 1,
+					typedArray: Uint8Array
+				}),
+				8,
+				4
+			]
+		],
+		size32: 20,
+		align32: 4
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc0,
+	importFn: _trampoline28
+});
+let trampoline29 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 29,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline29.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatVariant(_jcoStrictNumericContext, {
+		caseMetas: [
+			[
+				"get",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"head",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"post",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"put",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"delete",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"connect",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"options",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"trace",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"patch",
+				null,
+				0,
+				0,
+				0
+			],
+			[
+				"other",
+				_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+				8,
+				4,
+				2
+			]
+		],
+		variantSize32: 12,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 3
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc0,
+	importFn: _trampoline29
+});
+let trampoline30 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 30,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline30.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"none",
+			null,
+			0,
+			0,
+			0
+		], [
+			"some",
+			_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+			8,
+			4,
+			2
+		]],
+		variantSize32: 12,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 3,
+		payloadMaybeNull: !1
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc0,
+	importFn: _trampoline30
+});
+let trampoline31 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 31,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline31.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"none",
+			null,
+			0,
+			0,
+			0
+		], [
+			"some",
+			_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+			8,
+			4,
+			2
+		]],
+		variantSize32: 12,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 3,
+		payloadMaybeNull: !1
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc0,
+	importFn: _trampoline31
+});
+let trampoline32 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 32,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline32.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"none",
+			null,
+			0,
+			0,
+			0
+		], [
+			"some",
+			_lowerFlatVariant(_jcoStrictNumericContext, {
+				caseMetas: [
+					[
+						"HTTP",
+						null,
+						0,
+						0,
+						0
+					],
+					[
+						"HTTPS",
+						null,
+						0,
+						0,
+						0
+					],
+					[
+						"other",
+						_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
+						8,
+						4,
+						2
+					]
+				],
+				variantSize32: 12,
+				variantAlign32: 4,
+				variantPayloadOffset32: 4,
+				variantFlatCount: 3
+			}),
+			12,
+			4,
+			3
+		]],
+		variantSize32: 16,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 4,
+		payloadMaybeNull: !1
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc0,
+	importFn: _trampoline32
+});
+let trampoline33 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 33,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline33.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 9,
+				lowerFn: function lowerImportedOwnedHost_IncomingBody(obj) {
+					if (!(obj instanceof IncomingBody)) throw TypeError("Resource error: Not a valid \"IncomingBody\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt9) >>> 0;
+						captureTable9.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable9, rep);
+					}
+					return handle;
+				}
+			}),
+			8,
+			4,
+			4
+		], [
+			"err",
+			null,
+			8,
+			4,
+			4
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline33
+});
+let trampoline34 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 34,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline34.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 2,
+				lowerFn: function lowerImportedOwnedHost_InputStream(obj) {
+					if (!(obj instanceof InputStream)) throw TypeError("Resource error: Not a valid \"InputStream\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
+						captureTable2.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable2, rep);
+					}
+					return handle;
+				}
+			}),
+			8,
+			4,
+			4
+		], [
+			"err",
+			null,
+			8,
+			4,
+			4
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline34
+});
+let trampoline35 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 35,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline35.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 5)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 4,
+				lowerFn: function lowerImportedOwnedHost_OutgoingBody(obj) {
+					if (!(obj instanceof OutgoingBody)) throw TypeError("Resource error: Not a valid \"OutgoingBody\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt4) >>> 0;
+						captureTable4.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable4, rep);
+					}
+					return handle;
+				}
+			}),
+			8,
+			4,
+			4
+		], [
+			"err",
+			null,
+			8,
+			4,
+			4
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline35
+});
+let trampoline36 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 36,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline36.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 4)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 3,
+				lowerFn: function lowerImportedOwnedHost_OutputStream(obj) {
+					if (!(obj instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+						captureTable3.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
+					}
+					return handle;
+				}
+			}),
+			8,
+			4,
+			4
+		], [
+			"err",
+			null,
+			8,
+			4,
+			4
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline36
+});
+let trampoline37 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 37,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline37.manuallyAsync,
 	paramLiftFns: [_liftFlatOwn({
 		componentIdx: 0,
-		tableIdx: 4,
+		tableIdx: 6,
 		classNameFn: () => ResponseOutparam,
 		createResourceFn: (handle) => {
-			let rep = handleTable4[(handle << 1) + 1] % T_OWN;
-			let resourceObj = captureTable4.get(rep);
-			if (resourceObj) captureTable4.delete(rep);
+			let rep = handleTable6[(handle << 1) + 1] % T_OWN;
+			let resourceObj = captureTable6.get(rep);
+			if (resourceObj) captureTable6.delete(rep);
 			else {
 				resourceObj = Object.create(ResponseOutparam.prototype);
 				Object.defineProperty(resourceObj, symbolRscHandle, {
@@ -11912,7 +12695,7 @@ let trampoline28 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 					value: rep
 				});
 			}
-			rscTableRemove(_jcoResourceRemoveContext, handleTable4, handle);
+			rscTableRemove(_jcoResourceRemoveContext, handleTable6, handle);
 			return resourceObj;
 		}
 	}), _liftFlatResult(_jcoLiftVariantContext, {
@@ -12941,168 +13724,21 @@ let trampoline28 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline28
+	importFn: _trampoline37
 });
-let trampoline29 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 29,
+let trampoline38 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 38,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline29.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 6)],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 2,
-				lowerFn: function lowerImportedOwnedHost_InputStream(obj) {
-					if (!(obj instanceof InputStream)) throw TypeError("Resource error: Not a valid \"InputStream\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-						captureTable2.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable2, rep);
-					}
-					return handle;
-				}
-			}),
-			8,
-			4,
-			4
-		], [
-			"err",
-			null,
-			8,
-			4,
-			4
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
-	importFn: _trampoline29
-});
-let trampoline30 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 30,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline30.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 5)],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 8,
-				lowerFn: function lowerImportedOwnedHost_OutgoingBody(obj) {
-					if (!(obj instanceof OutgoingBody)) throw TypeError("Resource error: Not a valid \"OutgoingBody\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt8) >>> 0;
-						captureTable8.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable8, rep);
-					}
-					return handle;
-				}
-			}),
-			8,
-			4,
-			4
-		], [
-			"err",
-			null,
-			8,
-			4,
-			4
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
-	importFn: _trampoline30
-});
-let trampoline31 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 31,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline31.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 8)],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 3,
-				lowerFn: function lowerImportedOwnedHost_OutputStream(obj) {
-					if (!(obj instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-						captureTable3.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
-					}
-					return handle;
-				}
-			}),
-			8,
-			4,
-			4
-		], [
-			"err",
-			null,
-			8,
-			4,
-			4
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
-	importFn: _trampoline31
-});
-let trampoline32 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 32,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline32.manuallyAsync,
+	isManualAsync: _trampoline38.manuallyAsync,
 	paramLiftFns: [_liftFlatOwn({
 		componentIdx: 0,
-		tableIdx: 8,
+		tableIdx: 4,
 		classNameFn: () => OutgoingBody,
 		createResourceFn: (handle) => {
-			let rep = handleTable8[(handle << 1) + 1] % T_OWN;
-			let resourceObj = captureTable8.get(rep);
-			if (resourceObj) captureTable8.delete(rep);
+			let rep = handleTable4[(handle << 1) + 1] % T_OWN;
+			let resourceObj = captureTable4.get(rep);
+			if (resourceObj) captureTable4.delete(rep);
 			else {
 				resourceObj = Object.create(OutgoingBody.prototype);
 				Object.defineProperty(resourceObj, symbolRscHandle, {
@@ -13114,7 +13750,7 @@ let trampoline32 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 					value: rep
 				});
 			}
-			rscTableRemove(_jcoResourceRemoveContext, handleTable8, handle);
+			rscTableRemove(_jcoResourceRemoveContext, handleTable4, handle);
 			return resourceObj;
 		}
 	}), _liftFlatOption(_jcoLiftVariantContext, {
@@ -13972,13 +14608,13 @@ let trampoline32 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline32
+	importFn: _trampoline38
 });
-let trampoline33 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 33,
+let trampoline39 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 39,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline33.manuallyAsync,
+	isManualAsync: _trampoline39.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 7)],
 	resultLowerFns: [_lowerFlatList(_jcoLowerListContext, {
 		elemLowerFn: _lowerFlatTuple({
@@ -14012,296 +14648,13 @@ let trampoline33 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline33
+	importFn: _trampoline39
 });
-let trampoline34 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 34,
+let trampoline40 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 40,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline34.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatVariant(_jcoStrictNumericContext, {
-		caseMetas: [
-			[
-				"get",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"head",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"post",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"put",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"delete",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"connect",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"options",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"trace",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"patch",
-				null,
-				0,
-				0,
-				0
-			],
-			[
-				"other",
-				_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
-				8,
-				4,
-				2
-			]
-		],
-		variantSize32: 12,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 3
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc0,
-	importFn: _trampoline34
-});
-let trampoline35 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 35,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline35.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"none",
-			null,
-			0,
-			0,
-			0
-		], [
-			"some",
-			_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
-			8,
-			4,
-			2
-		]],
-		variantSize32: 12,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 3,
-		payloadMaybeNull: !1
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc0,
-	importFn: _trampoline35
-});
-let trampoline36 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 36,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline36.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"none",
-			null,
-			0,
-			0,
-			0
-		], [
-			"some",
-			_lowerFlatVariant(_jcoStrictNumericContext, {
-				caseMetas: [
-					[
-						"HTTP",
-						null,
-						0,
-						0,
-						0
-					],
-					[
-						"HTTPS",
-						null,
-						0,
-						0,
-						0
-					],
-					[
-						"other",
-						_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
-						8,
-						4,
-						2
-					]
-				],
-				variantSize32: 12,
-				variantAlign32: 4,
-				variantPayloadOffset32: 4,
-				variantFlatCount: 3
-			}),
-			12,
-			4,
-			3
-		]],
-		variantSize32: 16,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 4,
-		payloadMaybeNull: !1
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc0,
-	importFn: _trampoline36
-});
-let trampoline37 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 37,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline37.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"none",
-			null,
-			0,
-			0,
-			0
-		], [
-			"some",
-			_lowerFlatStringAny.bind(void 0, _jcoLowerStringContext),
-			8,
-			4,
-			2
-		]],
-		variantSize32: 12,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 3,
-		payloadMaybeNull: !1
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc0,
-	importFn: _trampoline37
-});
-let trampoline38 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 38,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline38.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 9)],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 6,
-				lowerFn: function lowerImportedOwnedHost_IncomingBody(obj) {
-					if (!(obj instanceof IncomingBody)) throw TypeError("Resource error: Not a valid \"IncomingBody\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt6) >>> 0;
-						captureTable6.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable6, rep);
-					}
-					return handle;
-				}
-			}),
-			8,
-			4,
-			4
-		], [
-			"err",
-			null,
-			8,
-			4,
-			4
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
-	importFn: _trampoline38
-});
-let trampoline39 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 39,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline39.manuallyAsync,
+	isManualAsync: _trampoline40.manuallyAsync,
 	paramLiftFns: [_liftFlatList(_jcoLiftListContext, {
 		elemLiftFn: _liftFlatTuple({
 			elemLiftFns: [[
@@ -14394,13 +14747,13 @@ let trampoline39 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline39
+	importFn: _trampoline40
 });
-let trampoline40 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 40,
+let trampoline41 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 41,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline40.manuallyAsync,
+	isManualAsync: _trampoline41.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 2), _liftFlatU64],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -14466,13 +14819,13 @@ let trampoline40 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline40
+	importFn: _trampoline41
 });
-let trampoline41 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 41,
+let trampoline42 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 42,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline41.manuallyAsync,
+	isManualAsync: _trampoline42.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 3), _liftFlatList(_jcoLiftListContext, {
 		elemLiftFn: _liftFlatU8,
 		elemAlign32: 1,
@@ -14538,13 +14891,13 @@ let trampoline41 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline41
+	importFn: _trampoline42
 });
-let trampoline42 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 42,
+let trampoline43 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 43,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline42.manuallyAsync,
+	isManualAsync: _trampoline43.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 2), _liftFlatU64],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -14610,13 +14963,13 @@ let trampoline42 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline42
+	importFn: _trampoline43
 });
-let trampoline43 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 43,
+let trampoline44 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 44,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline43.manuallyAsync,
+	isManualAsync: _trampoline44.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -14677,78 +15030,6 @@ let trampoline43 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline43
-});
-let trampoline44 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 44,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline44.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 3), _liftFlatList(_jcoLiftListContext, {
-		elemLiftFn: _liftFlatU8,
-		elemAlign32: 1,
-		elemSize32: 1,
-		typedArray: Uint8Array
-	})],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			null,
-			12,
-			4,
-			4
-		], [
-			"err",
-			_lowerFlatVariant(_jcoStrictNumericContext, {
-				caseMetas: [[
-					"last-operation-failed",
-					_lowerFlatOwn(_jcoStrictNumericContext, {
-						componentIdx: 0,
-						tableIdx: 1,
-						lowerFn: function lowerImportedOwnedHost_Error$1(obj) {
-							if (!(obj instanceof Error$1)) throw TypeError("Resource error: Not a valid \"Error$1\" resource.");
-							let handle = obj[symbolRscHandle];
-							if (!handle) {
-								let rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
-								captureTable1.set(rep, obj);
-								handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable1, rep);
-							}
-							return handle;
-						}
-					}),
-					4,
-					4,
-					1
-				], [
-					"closed",
-					null,
-					0,
-					0,
-					0
-				]],
-				variantSize32: 8,
-				variantAlign32: 4,
-				variantPayloadOffset32: 4,
-				variantFlatCount: 2
-			}),
-			12,
-			4,
-			4
-		]],
-		variantSize32: 12,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 3
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
 	importFn: _trampoline44
 });
 let trampoline45 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
@@ -14756,7 +15037,12 @@ let trampoline45 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	componentIdx: 0,
 	isAsync: !1,
 	isManualAsync: _trampoline45.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
+	paramLiftFns: [_liftFlatBorrow.bind(null, 3), _liftFlatList(_jcoLiftListContext, {
+		elemLiftFn: _liftFlatU8,
+		elemAlign32: 1,
+		elemSize32: 1,
+		typedArray: Uint8Array
+	})],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
 			"ok",
@@ -14823,6 +15109,73 @@ let trampoline46 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	componentIdx: 0,
 	isAsync: !1,
 	isManualAsync: _trampoline46.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
+			null,
+			12,
+			4,
+			4
+		], [
+			"err",
+			_lowerFlatVariant(_jcoStrictNumericContext, {
+				caseMetas: [[
+					"last-operation-failed",
+					_lowerFlatOwn(_jcoStrictNumericContext, {
+						componentIdx: 0,
+						tableIdx: 1,
+						lowerFn: function lowerImportedOwnedHost_Error$1(obj) {
+							if (!(obj instanceof Error$1)) throw TypeError("Resource error: Not a valid \"Error$1\" resource.");
+							let handle = obj[symbolRscHandle];
+							if (!handle) {
+								let rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
+								captureTable1.set(rep, obj);
+								handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable1, rep);
+							}
+							return handle;
+						}
+					}),
+					4,
+					4,
+					1
+				], [
+					"closed",
+					null,
+					0,
+					0,
+					0
+				]],
+				variantSize32: 8,
+				variantAlign32: 4,
+				variantPayloadOffset32: 4,
+				variantFlatCount: 2
+			}),
+			12,
+			4,
+			4
+		]],
+		variantSize32: 12,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 3
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline46
+});
+let trampoline47 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 47,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline47.manuallyAsync,
 	paramLiftFns: [],
 	resultLowerFns: [_lowerFlatTuple({
 		elemLowerMetas: [[
@@ -14846,13 +15199,13 @@ let trampoline46 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline46
+	importFn: _trampoline47
 });
-let trampoline47 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 47,
+let trampoline48 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 48,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline47.manuallyAsync,
+	isManualAsync: _trampoline48.manuallyAsync,
 	paramLiftFns: [_liftFlatList(_jcoLiftListContext, {
 		elemLiftFn: _liftFlatBorrow.bind(null, 0),
 		elemAlign32: 4,
@@ -14874,13 +15227,13 @@ let trampoline47 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline47
+	importFn: _trampoline48
 });
-let trampoline48 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 48,
+let trampoline49 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 49,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline48.manuallyAsync,
+	isManualAsync: _trampoline49.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 12), _liftFlatU64],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -15189,321 +15542,6 @@ let trampoline48 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline48
-});
-let trampoline49 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 49,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline49.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 12), _liftFlatU64],
-	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"ok",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 3,
-				lowerFn: function lowerImportedOwnedHost_OutputStream(obj) {
-					if (!(obj instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-						captureTable3.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
-					}
-					return handle;
-				}
-			}),
-			8,
-			4,
-			4
-		], [
-			"err",
-			_lowerFlatEnum(_jcoStrictNumericContext, {
-				caseMetas: [
-					[
-						"access",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"would-block",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"already",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"bad-descriptor",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"busy",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"deadlock",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"quota",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"exist",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"file-too-large",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"illegal-byte-sequence",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"in-progress",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"interrupted",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"invalid",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"io",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"is-directory",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"loop",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"too-many-links",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"message-size",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"name-too-long",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"no-device",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"no-entry",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"no-lock",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"insufficient-memory",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"insufficient-space",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"not-directory",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"not-empty",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"not-recoverable",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"unsupported",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"no-tty",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"no-such-device",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"overflow",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"not-permitted",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"pipe",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"read-only",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"invalid-seek",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"text-file-busy",
-						null,
-						1,
-						1,
-						1
-					],
-					[
-						"cross-device",
-						null,
-						1,
-						1,
-						1
-					]
-				],
-				variantSize32: 1,
-				variantAlign32: 1,
-				variantPayloadOffset32: 1,
-				variantFlatCount: 1
-			}),
-			8,
-			4,
-			4
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
 	importFn: _trampoline49
 });
 let trampoline50 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
@@ -15511,7 +15549,7 @@ let trampoline50 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	componentIdx: 0,
 	isAsync: !1,
 	isManualAsync: _trampoline50.manuallyAsync,
-	paramLiftFns: [_liftFlatBorrow.bind(null, 12)],
+	paramLiftFns: [_liftFlatBorrow.bind(null, 12), _liftFlatU64],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
 			"ok",
@@ -15830,6 +15868,321 @@ let trampoline51 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
 			"ok",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 3,
+				lowerFn: function lowerImportedOwnedHost_OutputStream(obj) {
+					if (!(obj instanceof OutputStream)) throw TypeError("Resource error: Not a valid \"OutputStream\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+						captureTable3.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable3, rep);
+					}
+					return handle;
+				}
+			}),
+			8,
+			4,
+			4
+		], [
+			"err",
+			_lowerFlatEnum(_jcoStrictNumericContext, {
+				caseMetas: [
+					[
+						"access",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"would-block",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"already",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"bad-descriptor",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"busy",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"deadlock",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"quota",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"exist",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"file-too-large",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"illegal-byte-sequence",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"in-progress",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"interrupted",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"invalid",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"io",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"is-directory",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"loop",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"too-many-links",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"message-size",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"name-too-long",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"no-device",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"no-entry",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"no-lock",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"insufficient-memory",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"insufficient-space",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"not-directory",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"not-empty",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"not-recoverable",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"unsupported",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"no-tty",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"no-such-device",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"overflow",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"not-permitted",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"pipe",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"read-only",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"invalid-seek",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"text-file-busy",
+						null,
+						1,
+						1,
+						1
+					],
+					[
+						"cross-device",
+						null,
+						1,
+						1,
+						1
+					]
+				],
+				variantSize32: 1,
+				variantAlign32: 1,
+				variantPayloadOffset32: 1,
+				variantFlatCount: 1
+			}),
+			8,
+			4,
+			4
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline51
+});
+let trampoline52 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 52,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline52.manuallyAsync,
+	paramLiftFns: [_liftFlatBorrow.bind(null, 12)],
+	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"ok",
 			_lowerFlatFlags(_jcoLiftFlagsContext, {
 				names: [
 					"read",
@@ -16133,13 +16486,13 @@ let trampoline51 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline51
+	importFn: _trampoline52
 });
-let trampoline52 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 52,
+let trampoline53 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 53,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline52.manuallyAsync,
+	isManualAsync: _trampoline53.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 12)],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -16638,13 +16991,13 @@ let trampoline52 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline52
+	importFn: _trampoline53
 });
-let trampoline53 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 53,
+let trampoline54 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 54,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline53.manuallyAsync,
+	isManualAsync: _trampoline54.manuallyAsync,
 	paramLiftFns: [
 		_liftFlatBorrow.bind(null, 12),
 		_liftFlatFlags(_jcoLiftFlagsContext, {
@@ -16986,13 +17339,13 @@ let trampoline53 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline53
+	importFn: _trampoline54
 });
-let trampoline54 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 54,
+let trampoline55 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 55,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline54.manuallyAsync,
+	isManualAsync: _trampoline55.manuallyAsync,
 	paramLiftFns: [_liftFlatBorrow.bind(null, 12)],
 	resultLowerFns: [_lowerFlatResult(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -17302,13 +17655,13 @@ let trampoline54 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline54
+	importFn: _trampoline55
 });
-let trampoline55 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 55,
+let trampoline56 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 56,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline55.manuallyAsync,
+	isManualAsync: _trampoline56.manuallyAsync,
 	paramLiftFns: [],
 	resultLowerFns: [_lowerFlatList(_jcoLowerListContext, {
 		elemLowerFn: _lowerFlatTuple({
@@ -17337,13 +17690,13 @@ let trampoline55 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline55
+	importFn: _trampoline56
 });
-let trampoline56 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 56,
+let trampoline57 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 57,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline56.manuallyAsync,
+	isManualAsync: _trampoline57.manuallyAsync,
 	paramLiftFns: [],
 	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
 		caseMetas: [[
@@ -17364,56 +17717,6 @@ let trampoline56 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 						let rep = (obj[symbolRscRep] ?? ++captureCnt10) >>> 0;
 						captureTable10.set(rep, obj);
 						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable10, rep);
-					}
-					return handle;
-				}
-			}),
-			4,
-			4,
-			1
-		]],
-		variantSize32: 8,
-		variantAlign32: 4,
-		variantPayloadOffset32: 4,
-		variantFlatCount: 2,
-		payloadMaybeNull: !1
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: void 0,
-	importFn: _trampoline56
-});
-let trampoline57 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 57,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline57.manuallyAsync,
-	paramLiftFns: [],
-	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
-		caseMetas: [[
-			"none",
-			null,
-			0,
-			0,
-			0
-		], [
-			"some",
-			_lowerFlatOwn(_jcoStrictNumericContext, {
-				componentIdx: 0,
-				tableIdx: 11,
-				lowerFn: function lowerImportedOwnedHost_TerminalOutput(obj) {
-					if (!(obj instanceof TerminalOutput)) throw TypeError("Resource error: Not a valid \"TerminalOutput\" resource.");
-					let handle = obj[symbolRscHandle];
-					if (!handle) {
-						let rep = (obj[symbolRscRep] ?? ++captureCnt11) >>> 0;
-						captureTable11.set(rep, obj);
-						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable11, rep);
 					}
 					return handle;
 				}
@@ -17495,6 +17798,56 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	isAsync: !1,
 	isManualAsync: _trampoline59.manuallyAsync,
 	paramLiftFns: [],
+	resultLowerFns: [_lowerFlatOption(_jcoStrictNumericContext, {
+		caseMetas: [[
+			"none",
+			null,
+			0,
+			0,
+			0
+		], [
+			"some",
+			_lowerFlatOwn(_jcoStrictNumericContext, {
+				componentIdx: 0,
+				tableIdx: 11,
+				lowerFn: function lowerImportedOwnedHost_TerminalOutput(obj) {
+					if (!(obj instanceof TerminalOutput)) throw TypeError("Resource error: Not a valid \"TerminalOutput\" resource.");
+					let handle = obj[symbolRscHandle];
+					if (!handle) {
+						let rep = (obj[symbolRscRep] ?? ++captureCnt11) >>> 0;
+						captureTable11.set(rep, obj);
+						handle = rscTableCreateOwn(HANDLE_INDEX_SPACES, handleTable11, rep);
+					}
+					return handle;
+				}
+			}),
+			4,
+			4,
+			1
+		]],
+		variantSize32: 8,
+		variantAlign32: 4,
+		variantPayloadOffset32: 4,
+		variantFlatCount: 2,
+		payloadMaybeNull: !1
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: void 0,
+	importFn: _trampoline59
+});
+let trampoline60 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 60,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline60.manuallyAsync,
+	paramLiftFns: [],
 	resultLowerFns: [_lowerFlatRecord({
 		fieldMetas: [[
 			"seconds",
@@ -17519,13 +17872,13 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: void 0,
-	importFn: _trampoline59
+	importFn: _trampoline60
 });
-let trampoline60 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 60,
+let trampoline61 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 61,
 	componentIdx: 0,
 	isAsync: !1,
-	isManualAsync: _trampoline60.manuallyAsync,
+	isManualAsync: _trampoline61.manuallyAsync,
 	paramLiftFns: [],
 	resultLowerFns: [_lowerFlatList(_jcoLowerListContext, {
 		elemLowerFn: _lowerFlatTuple({
@@ -17567,29 +17920,6 @@ let trampoline60 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
 	getReallocFn: () => realloc0,
-	importFn: _trampoline60
-});
-let trampoline61 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
-	trampolineIdx: 61,
-	componentIdx: 0,
-	isAsync: !1,
-	isManualAsync: _trampoline61.manuallyAsync,
-	paramLiftFns: [_liftFlatU64],
-	resultLowerFns: [_lowerFlatList(_jcoLowerListContext, {
-		elemLowerFn: _lowerFlatU8.bind(void 0, _jcoStrictNumericContext),
-		elemSize32: 1,
-		elemAlign32: 1,
-		typedArray: Uint8Array
-	})],
-	hasResultPointer: !0,
-	funcTypeIsAsync: !1,
-	getCallbackFn: () => null,
-	getPostReturnFn: () => null,
-	isCancellable: !1,
-	memoryIdx: 0,
-	stringEncoding: "utf8",
-	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc0,
 	importFn: _trampoline61
 });
 let trampoline62 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
@@ -17612,8 +17942,31 @@ let trampoline62 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportCo
 	memoryIdx: 0,
 	stringEncoding: "utf8",
 	getMemoryFn: () => memory0,
-	getReallocFn: () => realloc1,
+	getReallocFn: () => realloc0,
 	importFn: _trampoline62
+});
+let trampoline63 = _lowerImportBackwardsCompat.bind(null, _jcoTaskCompatImportContext, {
+	trampolineIdx: 63,
+	componentIdx: 0,
+	isAsync: !1,
+	isManualAsync: _trampoline63.manuallyAsync,
+	paramLiftFns: [_liftFlatU64],
+	resultLowerFns: [_lowerFlatList(_jcoLowerListContext, {
+		elemLowerFn: _lowerFlatU8.bind(void 0, _jcoStrictNumericContext),
+		elemSize32: 1,
+		elemAlign32: 1,
+		typedArray: Uint8Array
+	})],
+	hasResultPointer: !0,
+	funcTypeIsAsync: !1,
+	getCallbackFn: () => null,
+	getPostReturnFn: () => null,
+	isCancellable: !1,
+	memoryIdx: 0,
+	stringEncoding: "utf8",
+	getMemoryFn: () => memory0,
+	getReallocFn: () => realloc1,
+	importFn: _trampoline63
 });
 await (() => {
 	let gen = (function* _initGenerator() {
@@ -17621,9 +17974,9 @@ await (() => {
 		Promise.resolve(module0).catch(() => {});
 		let module1 = base64Compile(_jcoBase64CompileContext, "AGFzbQEAAAABMglgAn9/AGAEf39/fwBgAX8AYAR/f39/AX9gAn5/AGAAAX9gA39/fwF/YAJ/fwF/YAAAAqkCBwNlbnYGbWVtb3J5AgAAFHdhc2k6aW8vZXJyb3JAMC4yLjEyFFtyZXNvdXJjZS1kcm9wXWVycm9yAAIPX19tYWluX21vZHVsZV9fDGNhYmlfcmVhbGxvYwADFndhc2k6aW8vc3RyZWFtc0AwLjIuMTIcW3Jlc291cmNlLWRyb3Bdb3V0cHV0LXN0cmVhbQACGXdhc2k6cmFuZG9tL3JhbmRvbUAwLjIuMTIQZ2V0LXJhbmRvbS1ieXRlcwAEFndhc2k6Y2xpL3N0ZGVyckAwLjIuMTIKZ2V0LXN0ZGVycgAFFndhc2k6aW8vc3RyZWFtc0AwLjIuMTIuW21ldGhvZF1vdXRwdXQtc3RyZWFtLmJsb2NraW5nLXdyaXRlLWFuZC1mbHVzaAABAxEQAgACAQUFBgMHAgIFAgUCCAYQA38BQQALfwFBAAt/AUEACwckAgpyYW5kb21fZ2V0AA4TY2FiaV9pbXBvcnRfcmVhbGxvYwANCv0OEHEBAX8jAEEwayIBJAAgAUEgOgAvIAFB7NK5qwY2ACsgAULhyIWDx66ZuSA3ACMgAUL16JWjhqSYuiA3ABsgAULi2JWD0ozesuMANwATIAFC9dzJq5bsmLThADcACyABQQtqQSUQByAAEA8gAUEwaiQAC2EBAX8jAEEQayICJAAgAhAENgIMIAJBBGogAkEMaiAAIAEQCQJAIAIoAgQiAUECRg0AIAENACACKAIIIgFBf0YNACABEAALAkAgAigCDCIBQX9GDQAgARACCyACQRBqJAALYgEBfyMAQTBrIgEkACABQSA6AC8gAUL0ysmDwq2at+UANwAnIAFCoMLRg5KM2bDwADcAHyABQu7AmIuWjduy5AA3ABcgAULh5s2rpo7dtO8ANwAPIAFBD2pBIRAHIAAQEAALUgEBfyMAQRBrIgQkACABKAIAIAIgAyAEQQRqEAUCQAJAIAQtAAQNAEECIQEMAQsgACAEKAIMNgIEIAQtAAhBAEchAQsgACABNgIAIARBEGokAAuJAQEBfwJAEBNBAkcNAEEDEBRBAEEAQQhBgIAEEAEhAEEEEBQgAEEANgLg/wMgAEECNgKkMCAAQQA2AhggAEL1zqGLwgA3AwAgAEG4/wNqQQBBJfwLACAAQfXOoYsCNgL8/wMgAEEAOgD4/wMgAEIANwPw/wMgAEGu3AA7Aej/AyAADwtByRYQCAALFQEBfwJAEBEiAA0AEAoiABASCyAAC5kDAQN/IwBBIGsiAyQAAkACQAJAIAFpQQFHDQAgACgCBCIEIAEgACgCACIFakF/akEAIAFrcSAFayIBSQ0BIAQgAWsiBCACTw0CQdUDEAYgA0G6wAA7AAMgA0EDakECEAcgA0EKOgAfIANB4eSdqwY2ABsgA0Lp5oGh9+2bkOwANwATIANC79yBmZfN3rIgNwALIANC4dix+7asmLrpADcAAyADQQNqQR0QByADQQo6AAMgA0EDakEBEAcAC0HfAxAGIANBusAAOwADIANBA2pBAhAHIANB9BQ7ABMgA0Lh2KW75q3bsu4ANwALIANC6dzZi8atmrIgNwADIANBA2pBEhAHIANBCjoAAyADQQNqQQEQBwALQeMDEAYgA0G6wAA7AAMgA0EDakECEAcgA0EKOgAVIANB9MoBOwATIANC78CE48bt27HhADcACyADQubCpePWjJmQ9AA3AAMgA0EDakETEAcgA0EKOgADIANBA2pBARAHAAsgACAEIAJrNgIEIAAgBSABaiIBIAJqNgIAIANBIGokACABC5kEAgJ/AX4QFSMAQTBrIgQkAAJAAkACQAJAAkACQAJAAkACQBALIgUoAgBB9c6hiwJHDQACQCAFKAL8/wNB9c6hiwJHDQAgBSkCBCEGIAVBBDYCBCAEIAUoAhQ2AhAgBCAFKQIMNwMIIAQgBjcDACAARQ0CIAEgA00NAyACQQFGDQhBlgMQCAALQaoWEAgAC0GpFhAIAAsgBCgCAA4FAQQDAgYBC0GVAxAIAAsgBEEEciACIAMQDCEAIARBBDYCAAwDCyAEQQxqIQACQCACQQFGDQAgACACIAMQDCEADAMLIAQgBCgCBCICQQFqNgIEAkAgAiAEKAIIRg0AIAQgBCkCDDcCGCAEQRhqQQEgAxAMIQAMAwsgAEEBIAMQDCEADAILAkAgAkEBRg0AIARBDGogAiADEAwhAAwCCyAEQQRyQQEgA0EBahAMIQAMAQsCQCACQQFGDQAgBEEIaiACIAMQDCEADAELIAQgBCgCBCADajYCBCAEIAQpAwg3AhggBEEYakEBIAMQDCEACyAFQQRqIgUgBCgCEDYCECAFIAQpAwg3AgggBSAEKQMANwIAIARBMGokACAADwtBvwMQBiAEQbrAADsAGCAEQRhqQQIQByAEQubSnaunrpmyCjcAKCAEQuHovZOH5Ni37gA3ACAgBELu3oGJxo3bt+MANwAYIARBGGpBGBAHIARBCjoAGCAEQRhqQQEQBwALlQIBA38QFSMAQSBrIgIkAAJAAkACQAJAEBNBfmoOAwABAAELEAsiAygCAEH1zqGLAkcNAQJAIAMoAvz/A0H1zqGLAkcNACADIAE2AgwgAyAANgIIIAMoAgQhBCADQQA2AgQgBEEERw0DIAJCADcDACABrSACEAMgAigCACEBIANBBDYCBCABIABGDQFB5BIQCAALQaoWEAgACyACQSBqJABBAA8LQakWEAgAC0G4FxAGIAJBusAAOwAAIAJBAhAHIAJBCjoAHCACQaDmlaMHNgAYIAJCoMKxk9esmLL5ADcAECACQuzYvZuWjN238gA3AAggAkLp2sH7po6dkOEANwAAIAJBHRAHIAJBCjoAACACQQEQBwALPgECfyMAQRBrIgEkAAJAIABFDQAgAEEKbiICEA8gASAAIAJBCmxrQTByOgAPIAFBD2pBARAHCyABQRBqJAALBgAgABAPCwQAIwELBgAgACQBCwQAIwILBgAgACQCCyUAIwJBAEYEQEEBJAJBAEEAQQhBgIAEEAFBgIAEaiQAQQIkAgsLAL0MBG5hbWUB+wsWAKQBX1pOMTI4XyRMVCR3YXNpX3NuYXBzaG90X3ByZXZpZXcxLi5iaW5kaW5ncy4ud2FzaS4uaW8uLmVycm9yLi5FcnJvciR1MjAkYXMkdTIwJHdhc2lfc25hcHNob3RfcHJldmlldzEuLmJpbmRpbmdzLi5fcnQuLldhc21SZXNvdXJjZSRHVCQ0ZHJvcDRkcm9wMTdoMTBjN2RkYTFkNTA4NjQ0M0UBR19aTjIyd2FzaV9zbmFwc2hvdF9wcmV2aWV3MTVTdGF0ZTNuZXcxMmNhYmlfcmVhbGxvYzE3aGU3NDM1M2JhNTJkMGY0MTJFAq0BX1pOMTM3XyRMVCR3YXNpX3NuYXBzaG90X3ByZXZpZXcxLi5iaW5kaW5ncy4ud2FzaS4uaW8uLnN0cmVhbXMuLk91dHB1dFN0cmVhbSR1MjAkYXMkdTIwJHdhc2lfc25hcHNob3RfcHJldmlldzEuLmJpbmRpbmdzLi5fcnQuLldhc21SZXNvdXJjZSRHVCQ0ZHJvcDRkcm9wMTdoZTg3ZGQ0OWQyOWRkZGM4ZUUDal9aTjIyd2FzaV9zbmFwc2hvdF9wcmV2aWV3MThiaW5kaW5nczR3YXNpNnJhbmRvbTZyYW5kb20xNmdldF9yYW5kb21fYnl0ZXMxMXdpdF9pbXBvcnQxMTdoMzI1ZWI4NWJlNDA4NzhhMkUEYV9aTjIyd2FzaV9zbmFwc2hvdF9wcmV2aWV3MThiaW5kaW5nczR3YXNpM2NsaTZzdGRlcnIxMGdldF9zdGRlcnIxMXdpdF9pbXBvcnQwMTdoMzIzZjkyZGRjYjc2ZTU0YUUFfV9aTjIyd2FzaV9zbmFwc2hvdF9wcmV2aWV3MThiaW5kaW5nczR3YXNpMmlvN3N0cmVhbXMxMk91dHB1dFN0cmVhbTI0YmxvY2tpbmdfd3JpdGVfYW5kX2ZsdXNoMTF3aXRfaW1wb3J0MjE3aDJlMDJiZDI4OWZhOTIxNGJFBkpfWk4yMndhc2lfc25hcHNob3RfcHJldmlldzE2bWFjcm9zMThlcHJpbnRfdW5yZWFjaGFibGUxN2g5YmM0ZmI4ODliZjRkNjJhRQc8X1pOMjJ3YXNpX3NuYXBzaG90X3ByZXZpZXcxNm1hY3JvczVwcmludDE3aDI0OGIyZWE2MmU3NmY5OTRFCENfWk4yMndhc2lfc25hcHNob3RfcHJldmlldzE2bWFjcm9zMTFhc3NlcnRfZmFpbDE3aGJhOGVmMjhmZGJjMDFmZjNFCXBfWk4yMndhc2lfc25hcHNob3RfcHJldmlldzE4YmluZGluZ3M0d2FzaTJpbzdzdHJlYW1zMTJPdXRwdXRTdHJlYW0yNGJsb2NraW5nX3dyaXRlX2FuZF9mbHVzaDE3aDU0NGViZGE0YjBjYTRmZTdFCjlfWk4yMndhc2lfc25hcHNob3RfcHJldmlldzE1U3RhdGUzbmV3MTdoMWY5YmIyNWNiNzc4NmQzYkULOV9aTjIyd2FzaV9zbmFwc2hvdF9wcmV2aWV3MTVTdGF0ZTNwdHIxN2g2ZTNjY2M2ZTg5MjA4NDQwRQw/X1pOMjJ3YXNpX3NuYXBzaG90X3ByZXZpZXcxOUJ1bXBBbGxvYzVhbGxvYzE3aDQ4ZDdmOWQ5M2Y1ZDk2NDVFDRNjYWJpX2ltcG9ydF9yZWFsbG9jDgpyYW5kb21fZ2V0D1NfWk4yMndhc2lfc25hcHNob3RfcHJldmlldzE2bWFjcm9zMTBlcHJpbnRfdTMyMTVlcHJpbnRfdTMyX2ltcGwxN2g5MDMyMDVhMmI1MzhhYmRlRRBCX1pOMjJ3YXNpX3NuYXBzaG90X3ByZXZpZXcxNm1hY3JvczEwZXByaW50X3UzMjE3aDgxZTUwNTBiNDBhNmRjMjNFEQ1nZXRfc3RhdGVfcHRyEg1zZXRfc3RhdGVfcHRyExRnZXRfYWxsb2NhdGlvbl9zdGF0ZRQUc2V0X2FsbG9jYXRpb25fc3RhdGUVDmFsbG9jYXRlX3N0YWNrBzgDAA9fX3N0YWNrX3BvaW50ZXIBEmludGVybmFsX3N0YXRlX3B0cgIQYWxsb2NhdGlvbl9zdGF0ZQBNCXByb2R1Y2VycwIIbGFuZ3VhZ2UBBFJ1c3QADHByb2Nlc3NlZC1ieQEFcnVzdGMdMS45Ni4wIChhYzY4ZmFhMjAgMjAyNi0wNS0yNSk");
 		Promise.resolve(module1).catch(() => {});
-		let module2 = base64Compile(_jcoBase64CompileContext, "AGFzbQEAAAABPglgCX9/f39+f39/fwBgAn9/AGAEf39/fwBgA39/fwBgA39+fwBgAn9/AX9gAX8AYAd/f39/f39/AGACfn8AAyYlAAEBAQIBAQEBAQEDBAIEAQIBBQYDBAQBAQEHAQYGBgYGBggCCAQFAXABJSUHuwEmATAAAAExAAEBMgACATMAAwE0AAQBNQAFATYABgE3AAcBOAAIATkACQIxMAAKAjExAAsCMTIADAIxMwANAjE0AA4CMTUADwIxNgAQAjE3ABECMTgAEgIxOQATAjIwABQCMjEAFQIyMgAWAjIzABcCMjQAGAIyNQAZAjI2ABoCMjcAGwIyOAAcAjI5AB0CMzAAHgIzMQAfAjMyACACMzMAIQIzNAAiAjM1ACMCMzYAJAgkaW1wb3J0cwEACuMDJRkAIAAgASACIAMgBCAFIAYgByAIQQARAAALCwAgACABQQERAQALCwAgACABQQIRAQALCwAgACABQQMRAQALDwAgACABIAIgA0EEEQIACwsAIAAgAUEFEQEACwsAIAAgAUEGEQEACwsAIAAgAUEHEQEACwsAIAAgAUEIEQEACwsAIAAgAUEJEQEACwsAIAAgAUEKEQEACw0AIAAgASACQQsRAwALDQAgACABIAJBDBEEAAsPACAAIAEgAiADQQ0RAgALDQAgACABIAJBDhEEAAsLACAAIAFBDxEBAAsPACAAIAEgAiADQRARAgALCwAgACABQRERAQALCwAgACABQRIRBQALCQAgAEETEQYACw0AIAAgASACQRQRAwALDQAgACABIAJBFREEAAsNACAAIAEgAkEWEQQACwsAIAAgAUEXEQEACwsAIAAgAUEYEQEACwsAIAAgAUEZEQEACxUAIAAgASACIAMgBCAFIAZBGhEHAAsLACAAIAFBGxEBAAsJACAAQRwRBgALCQAgAEEdEQYACwkAIABBHhEGAAsJACAAQR8RBgALCQAgAEEgEQYACwkAIABBIREGAAsLACAAIAFBIhEIAAsPACAAIAEgAiADQSMRAgALCwAgACABQSQRCAALAC8JcHJvZHVjZXJzAQxwcm9jZXNzZWQtYnkBDXdpdC1jb21wb25lbnQHMC4yNTcuMQ");
+		let module2 = base64Compile(_jcoBase64CompileContext, "AGFzbQEAAAABSgpgCX9/f39/f39/fwBgAn9/AGAJf39/f35/f39/AGAEf39/fwBgA39/fwBgA39+fwBgAn9/AX9gAX8AYAd/f39/f39/AGACfn8AAycmAAEBAQEBAQEBAgMBBAUDBQEDAQYHBAUFAQEBCAEHBwcHBwcJAwkEBQFwASYmB8ABJwEwAAABMQABATIAAgEzAAMBNAAEATUABQE2AAYBNwAHATgACAE5AAkCMTAACgIxMQALAjEyAAwCMTMADQIxNAAOAjE1AA8CMTYAEAIxNwARAjE4ABICMTkAEwIyMAAUAjIxABUCMjIAFgIyMwAXAjI0ABgCMjUAGQIyNgAaAjI3ABsCMjgAHAIyOQAdAjMwAB4CMzEAHwIzMgAgAjMzACECMzQAIgIzNQAjAjM2ACQCMzcAJQgkaW1wb3J0cwEACv0DJhkAIAAgASACIAMgBCAFIAYgByAIQQARAAALCwAgACABQQERAQALCwAgACABQQIRAQALCwAgACABQQMRAQALCwAgACABQQQRAQALCwAgACABQQURAQALCwAgACABQQYRAQALCwAgACABQQcRAQALCwAgACABQQgRAQALGQAgACABIAIgAyAEIAUgBiAHIAhBCRECAAsPACAAIAEgAiADQQoRAwALCwAgACABQQsRAQALDQAgACABIAJBDBEEAAsNACAAIAEgAkENEQUACw8AIAAgASACIANBDhEDAAsNACAAIAEgAkEPEQUACwsAIAAgAUEQEQEACw8AIAAgASACIANBEREDAAsLACAAIAFBEhEBAAsLACAAIAFBExEGAAsJACAAQRQRBwALDQAgACABIAJBFREEAAsNACAAIAEgAkEWEQUACw0AIAAgASACQRcRBQALCwAgACABQRgRAQALCwAgACABQRkRAQALCwAgACABQRoRAQALFQAgACABIAIgAyAEIAUgBkEbEQgACwsAIAAgAUEcEQEACwkAIABBHREHAAsJACAAQR4RBwALCQAgAEEfEQcACwkAIABBIBEHAAsJACAAQSERBwALCQAgAEEiEQcACwsAIAAgAUEjEQkACw8AIAAgASACIANBJBEDAAsLACAAIAFBJREJAAsALwlwcm9kdWNlcnMBDHByb2Nlc3NlZC1ieQENd2l0LWNvbXBvbmVudAcwLjI1Ny4x");
 		Promise.resolve(module2).catch(() => {});
-		let module3 = base64Compile(_jcoBase64CompileContext, "AGFzbQEAAAABQQpgCX9/f39+f39/fwBgAn9/AGAEf39/fwBgA39/fwBgA39+fwBgAn9/AX9gAX8AYAd/f39/f39/AGACfn8AYAAAAtkDJwZhY3R1YWwBMAAABmFjdHVhbAExAAEGYWN0dWFsATIAAQZhY3R1YWwBMwABBmFjdHVhbAE0AAIGYWN0dWFsATUAAQZhY3R1YWwBNgABBmFjdHVhbAE3AAEGYWN0dWFsATgAAQZhY3R1YWwBOQABBmFjdHVhbAIxMAABBmFjdHVhbAIxMQADBmFjdHVhbAIxMgAEBmFjdHVhbAIxMwACBmFjdHVhbAIxNAAEBmFjdHVhbAIxNQABBmFjdHVhbAIxNgACBmFjdHVhbAIxNwABBmFjdHVhbAIxOAAFBmFjdHVhbAIxOQAGBmFjdHVhbAIyMAADBmFjdHVhbAIyMQAEBmFjdHVhbAIyMgAEBmFjdHVhbAIyMwABBmFjdHVhbAIyNAABBmFjdHVhbAIyNQABBmFjdHVhbAIyNgAHBmFjdHVhbAIyNwABBmFjdHVhbAIyOAAGBmFjdHVhbAIyOQAGBmFjdHVhbAIzMAAGBmFjdHVhbAIzMQAGBmFjdHVhbAIzMgAGBmFjdHVhbAIzMwAGBmFjdHVhbAIzNAAIBmFjdHVhbAIzNQACBmFjdHVhbAIzNgAIBG1haW4LX2luaXRpYWxpemUACQRzaGltCCRpbXBvcnRzAXABJSUIASUJKwEAQQALJQABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQALwlwcm9kdWNlcnMBDHByb2Nlc3NlZC1ieQENd2l0LWNvbXBvbmVudAcwLjI1Ny4x");
+		let module3 = base64Compile(_jcoBase64CompileContext, "AGFzbQEAAAABTQtgCX9/f39/f39/fwBgAn9/AGAJf39/f35/f39/AGAEf39/fwBgA39/fwBgA39+fwBgAn9/AX9gAX8AYAd/f39/f39/AGACfn8AYAAAAuUDKAZhY3R1YWwBMAAABmFjdHVhbAExAAEGYWN0dWFsATIAAQZhY3R1YWwBMwABBmFjdHVhbAE0AAEGYWN0dWFsATUAAQZhY3R1YWwBNgABBmFjdHVhbAE3AAEGYWN0dWFsATgAAQZhY3R1YWwBOQACBmFjdHVhbAIxMAADBmFjdHVhbAIxMQABBmFjdHVhbAIxMgAEBmFjdHVhbAIxMwAFBmFjdHVhbAIxNAADBmFjdHVhbAIxNQAFBmFjdHVhbAIxNgABBmFjdHVhbAIxNwADBmFjdHVhbAIxOAABBmFjdHVhbAIxOQAGBmFjdHVhbAIyMAAHBmFjdHVhbAIyMQAEBmFjdHVhbAIyMgAFBmFjdHVhbAIyMwAFBmFjdHVhbAIyNAABBmFjdHVhbAIyNQABBmFjdHVhbAIyNgABBmFjdHVhbAIyNwAIBmFjdHVhbAIyOAABBmFjdHVhbAIyOQAHBmFjdHVhbAIzMAAHBmFjdHVhbAIzMQAHBmFjdHVhbAIzMgAHBmFjdHVhbAIzMwAHBmFjdHVhbAIzNAAHBmFjdHVhbAIzNQAJBmFjdHVhbAIzNgADBmFjdHVhbAIzNwAJBG1haW4LX2luaXRpYWxpemUACgRzaGltCCRpbXBvcnRzAXABJiYIASYJLAEAQQALJgABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlAC8JcHJvZHVjZXJzAQxwcm9jZXNzZWQtYnkBDXdpdC1jb21wb25lbnQHMC4yNTcuMQ");
 		Promise.resolve(module3).catch(() => {});
 		let instanceFlags0 = new WebAssembly.Global({
 			value: "i32",
@@ -17652,7 +18005,8 @@ await (() => {
 			}
 			({exports: exports0} = yield instantiateCore(WebAssembly, yield module2));
 			({exports: exports1} = yield instantiateCore(WebAssembly, yield module0, {
-				"wasi:cli/environment@0.2.12": { "get-environment": Object.assign(exports0[28], { _jcoMaySuspend: !1 }) },
+				"aws-emulator:callback/dispatch@0.1.0": { dispatch: Object.assign(exports0[0], { _jcoMaySuspend: !1 }) },
+				"wasi:cli/environment@0.2.12": { "get-environment": Object.assign(exports0[29], { _jcoMaySuspend: !1 }) },
 				"wasi:cli/exit@0.2.12": {
 					exit: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline17, !1), { _jcoMaySuspend: !1 }),
 					"exit-with-code": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline18, !1), { _jcoMaySuspend: !1 })
@@ -17662,82 +18016,82 @@ await (() => {
 				"wasi:cli/stdout@0.2.12": { "get-stdout": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline23, !1), { _jcoMaySuspend: !1 }) },
 				"wasi:cli/terminal-input@0.2.12": { "[resource-drop]terminal-input": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline14), !0), { _jcoMaySuspend: !1 }) },
 				"wasi:cli/terminal-output@0.2.12": { "[resource-drop]terminal-output": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline15), !0), { _jcoMaySuspend: !1 }) },
-				"wasi:cli/terminal-stderr@0.2.12": { "get-terminal-stderr": Object.assign(exports0[31], { _jcoMaySuspend: !1 }) },
-				"wasi:cli/terminal-stdin@0.2.12": { "get-terminal-stdin": Object.assign(exports0[29], { _jcoMaySuspend: !1 }) },
-				"wasi:cli/terminal-stdout@0.2.12": { "get-terminal-stdout": Object.assign(exports0[30], { _jcoMaySuspend: !1 }) },
+				"wasi:cli/terminal-stderr@0.2.12": { "get-terminal-stderr": Object.assign(exports0[32], { _jcoMaySuspend: !1 }) },
+				"wasi:cli/terminal-stdin@0.2.12": { "get-terminal-stdin": Object.assign(exports0[30], { _jcoMaySuspend: !1 }) },
+				"wasi:cli/terminal-stdout@0.2.12": { "get-terminal-stdout": Object.assign(exports0[31], { _jcoMaySuspend: !1 }) },
 				"wasi:clocks/monotonic-clock@0.2.12": {
 					now: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline25, !1), { _jcoMaySuspend: !1 }),
 					"subscribe-duration": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline27, !1), { _jcoMaySuspend: !1 }),
 					"subscribe-instant": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline26, !1), { _jcoMaySuspend: !1 })
 				},
-				"wasi:clocks/wall-clock@0.2.12": { now: Object.assign(exports0[32], { _jcoMaySuspend: !1 }) },
-				"wasi:filesystem/preopens@0.2.12": { "get-directories": Object.assign(exports0[33], { _jcoMaySuspend: !1 }) },
+				"wasi:clocks/wall-clock@0.2.12": { now: Object.assign(exports0[33], { _jcoMaySuspend: !1 }) },
+				"wasi:filesystem/preopens@0.2.12": { "get-directories": Object.assign(exports0[34], { _jcoMaySuspend: !1 }) },
 				"wasi:filesystem/types@0.2.12": {
-					"[method]descriptor.append-via-stream": Object.assign(exports0[23], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.get-flags": Object.assign(exports0[24], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.metadata-hash": Object.assign(exports0[27], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.open-at": Object.assign(exports0[26], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.read-via-stream": Object.assign(exports0[21], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.stat": Object.assign(exports0[25], { _jcoMaySuspend: !1 }),
-					"[method]descriptor.write-via-stream": Object.assign(exports0[22], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.append-via-stream": Object.assign(exports0[24], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.get-flags": Object.assign(exports0[25], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.metadata-hash": Object.assign(exports0[28], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.open-at": Object.assign(exports0[27], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.read-via-stream": Object.assign(exports0[22], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.stat": Object.assign(exports0[26], { _jcoMaySuspend: !1 }),
+					"[method]descriptor.write-via-stream": Object.assign(exports0[23], { _jcoMaySuspend: !1 }),
 					"[resource-drop]descriptor": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline16), !0), { _jcoMaySuspend: !1 })
 				},
 				"wasi:http/types@0.2.12": {
-					"[constructor]outgoing-response": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline2, !1), { _jcoMaySuspend: !1 }),
-					"[method]fields.entries": Object.assign(exports0[5], { _jcoMaySuspend: !1 }),
-					"[method]incoming-body.stream": Object.assign(exports0[1], { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.authority": Object.assign(exports0[9], { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.consume": Object.assign(exports0[10], { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.headers": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline6, !1), { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.method": Object.assign(exports0[6], { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.path-with-query": Object.assign(exports0[7], { _jcoMaySuspend: !1 }),
-					"[method]incoming-request.scheme": Object.assign(exports0[8], { _jcoMaySuspend: !1 }),
-					"[method]outgoing-body.write": Object.assign(exports0[3], { _jcoMaySuspend: !1 }),
-					"[method]outgoing-response.body": Object.assign(exports0[2], { _jcoMaySuspend: !1 }),
-					"[method]outgoing-response.set-status-code": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline4, !1), { _jcoMaySuspend: !1 }),
-					"[resource-drop]fields": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline3), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]incoming-body": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline10), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]incoming-request": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline11), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]outgoing-body": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline5), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]outgoing-response": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline0), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]response-outparam": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline1), !0), { _jcoMaySuspend: !1 }),
-					"[static]fields.from-list": Object.assign(exports0[11], { _jcoMaySuspend: !1 }),
-					"[static]outgoing-body.finish": Object.assign(exports0[4], { _jcoMaySuspend: !1 }),
-					"[static]response-outparam.set": Object.assign(exports0[0], { _jcoMaySuspend: !1 })
+					"[constructor]outgoing-response": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline9, !1), { _jcoMaySuspend: !1 }),
+					"[method]fields.entries": Object.assign(exports0[11], { _jcoMaySuspend: !1 }),
+					"[method]incoming-body.stream": Object.assign(exports0[6], { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.authority": Object.assign(exports0[3], { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.consume": Object.assign(exports0[5], { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.headers": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline5, !1), { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.method": Object.assign(exports0[1], { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.path-with-query": Object.assign(exports0[2], { _jcoMaySuspend: !1 }),
+					"[method]incoming-request.scheme": Object.assign(exports0[4], { _jcoMaySuspend: !1 }),
+					"[method]outgoing-body.write": Object.assign(exports0[8], { _jcoMaySuspend: !1 }),
+					"[method]outgoing-response.body": Object.assign(exports0[7], { _jcoMaySuspend: !1 }),
+					"[method]outgoing-response.set-status-code": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline10, !1), { _jcoMaySuspend: !1 }),
+					"[resource-drop]fields": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline4), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]incoming-body": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline7), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]incoming-request": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline8), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]outgoing-body": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline1), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]outgoing-response": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline2), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]response-outparam": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline3), !0), { _jcoMaySuspend: !1 }),
+					"[static]fields.from-list": Object.assign(exports0[12], { _jcoMaySuspend: !1 }),
+					"[static]outgoing-body.finish": Object.assign(exports0[10], { _jcoMaySuspend: !1 }),
+					"[static]response-outparam.set": Object.assign(exports0[9], { _jcoMaySuspend: !1 })
 				},
-				"wasi:io/error@0.2.12": { "[resource-drop]error": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline7), !0), { _jcoMaySuspend: !1 }) },
+				"wasi:io/error@0.2.12": { "[resource-drop]error": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline0), !0), { _jcoMaySuspend: !1 }) },
 				"wasi:io/poll@0.2.12": {
 					"[method]pollable.block": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline19, !1), { _jcoMaySuspend: !1 }),
 					"[resource-drop]pollable": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline13), !0), { _jcoMaySuspend: !1 }),
-					poll: Object.assign(exports0[20], { _jcoMaySuspend: !1 })
+					poll: Object.assign(exports0[21], { _jcoMaySuspend: !1 })
 				},
 				"wasi:io/streams@0.2.12": {
-					"[method]input-stream.blocking-read": Object.assign(exports0[12], { _jcoMaySuspend: !1 }),
-					"[method]input-stream.read": Object.assign(exports0[14], { _jcoMaySuspend: !1 }),
+					"[method]input-stream.blocking-read": Object.assign(exports0[13], { _jcoMaySuspend: !1 }),
+					"[method]input-stream.read": Object.assign(exports0[15], { _jcoMaySuspend: !1 }),
 					"[method]input-stream.subscribe": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline20, !1), { _jcoMaySuspend: !1 }),
-					"[method]output-stream.blocking-flush": Object.assign(exports0[17], { _jcoMaySuspend: !1 }),
-					"[method]output-stream.blocking-write-and-flush": Object.assign(exports0[13], { _jcoMaySuspend: !1 }),
-					"[method]output-stream.check-write": Object.assign(exports0[15], { _jcoMaySuspend: !1 }),
+					"[method]output-stream.blocking-flush": Object.assign(exports0[18], { _jcoMaySuspend: !1 }),
+					"[method]output-stream.blocking-write-and-flush": Object.assign(exports0[14], { _jcoMaySuspend: !1 }),
+					"[method]output-stream.check-write": Object.assign(exports0[16], { _jcoMaySuspend: !1 }),
 					"[method]output-stream.subscribe": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline21, !1), { _jcoMaySuspend: !1 }),
-					"[method]output-stream.write": Object.assign(exports0[16], { _jcoMaySuspend: !1 }),
-					"[resource-drop]input-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline8), !0), { _jcoMaySuspend: !1 }),
-					"[resource-drop]output-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline9), !0), { _jcoMaySuspend: !1 })
+					"[method]output-stream.write": Object.assign(exports0[17], { _jcoMaySuspend: !1 }),
+					"[resource-drop]input-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline6), !0), { _jcoMaySuspend: !1 }),
+					"[resource-drop]output-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline11), !0), { _jcoMaySuspend: !1 })
 				},
-				"wasi:random/insecure-seed@0.2.12": { "insecure-seed": Object.assign(exports0[19], { _jcoMaySuspend: !1 }) },
+				"wasi:random/insecure-seed@0.2.12": { "insecure-seed": Object.assign(exports0[20], { _jcoMaySuspend: !1 }) },
 				"wasi:random/random@0.2.0": { "get-random-u64": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline12, !1), { _jcoMaySuspend: !1 }) },
-				"wasi:random/random@0.2.12": { "get-random-bytes": Object.assign(exports0[34], { _jcoMaySuspend: !1 }) },
-				wasi_snapshot_preview1: { random_get: Object.assign(exports0[18], { _jcoMaySuspend: !1 }) }
+				"wasi:random/random@0.2.12": { "get-random-bytes": Object.assign(exports0[35], { _jcoMaySuspend: !1 }) },
+				wasi_snapshot_preview1: { random_get: Object.assign(exports0[19], { _jcoMaySuspend: !1 }) }
 			}));
 			({exports: exports2} = yield instantiateCore(WebAssembly, yield module1, {
 				__main_module__: { cabi_realloc: Object.assign(exports1.cabi_realloc, { _jcoMaySuspend: !1 }) },
 				env: { memory: exports1.memory },
 				"wasi:cli/stderr@0.2.12": { "get-stderr": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline24, !1), { _jcoMaySuspend: !1 }) },
-				"wasi:io/error@0.2.12": { "[resource-drop]error": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline7), !0), { _jcoMaySuspend: !1 }) },
+				"wasi:io/error@0.2.12": { "[resource-drop]error": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline0), !0), { _jcoMaySuspend: !1 }) },
 				"wasi:io/streams@0.2.12": {
-					"[method]output-stream.blocking-write-and-flush": Object.assign(exports0[35], { _jcoMaySuspend: !1 }),
-					"[resource-drop]output-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline9), !0), { _jcoMaySuspend: !1 })
+					"[method]output-stream.blocking-write-and-flush": Object.assign(exports0[36], { _jcoMaySuspend: !1 }),
+					"[resource-drop]output-stream": Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, _guardMayLeave(_jcoComponentMayLeaveContext, 0, trampoline11), !0), { _jcoMaySuspend: !1 })
 				},
-				"wasi:random/random@0.2.12": { "get-random-bytes": Object.assign(exports0[36], { _jcoMaySuspend: !1 }) }
+				"wasi:random/random@0.2.12": { "get-random-bytes": Object.assign(exports0[37], { _jcoMaySuspend: !1 }) }
 			}));
 			memory0 = exports1.memory;
 			realloc0 = (oldPtr, oldSize, align, newSize) => exports1.cabi_realloc(oldPtr, oldSize, align, newSize) >>> 0;
@@ -17764,8 +18118,8 @@ await (() => {
 					15: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline43, !1), { _jcoMaySuspend: !1 }),
 					16: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline44, !1), { _jcoMaySuspend: !1 }),
 					17: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline45, !1), { _jcoMaySuspend: !1 }),
-					18: Object.assign(exports2.random_get, { _jcoMaySuspend: !1 }),
-					19: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline46, !1), { _jcoMaySuspend: !1 }),
+					18: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline46, !1), { _jcoMaySuspend: !1 }),
+					19: Object.assign(exports2.random_get, { _jcoMaySuspend: !1 }),
 					2: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline30, !1), { _jcoMaySuspend: !1 }),
 					20: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline47, !1), { _jcoMaySuspend: !1 }),
 					21: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline48, !1), { _jcoMaySuspend: !1 }),
@@ -17783,8 +18137,9 @@ await (() => {
 					32: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline59, !1), { _jcoMaySuspend: !1 }),
 					33: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline60, !1), { _jcoMaySuspend: !1 }),
 					34: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline61, !1), { _jcoMaySuspend: !1 }),
-					35: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline41, !1), { _jcoMaySuspend: !1 }),
-					36: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline62, !1), { _jcoMaySuspend: !1 }),
+					35: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline62, !1), { _jcoMaySuspend: !1 }),
+					36: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline42, !1), { _jcoMaySuspend: !1 }),
+					37: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline63, !1), { _jcoMaySuspend: !1 }),
 					4: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline32, !1), { _jcoMaySuspend: !1 }),
 					5: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline33, !1), { _jcoMaySuspend: !1 }),
 					6: Object.assign(_guardTrap(_jcoComponentRecordTrapContext, 0, trampoline34, !1), { _jcoMaySuspend: !1 }),

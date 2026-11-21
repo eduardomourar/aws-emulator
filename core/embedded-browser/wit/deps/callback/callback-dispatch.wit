@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: CC0-1.0
+
+package aws-emulator:callback@0.1.0;
+
+/// A non-streaming, buffered HTTP call from one emulator component to another, for a
+/// request this component's own `MultiServiceRouter` has no service registered to claim —
+/// e.g. Secrets Manager, in the component importing this, calling KMS, in the component
+/// exporting it.
+interface dispatch {
+  record http-header {
+    name: string,
+    value: string,
+  }
+
+  record http-request {
+    method: string,
+    uri: string,
+    headers: list<http-header>,
+    body: list<u8>,
+  }
+
+  record http-response {
+    status: u16,
+    headers: list<http-header>,
+    body: list<u8>,
+  }
+
+  dispatch: func(request: http-request) -> http-response;
+}

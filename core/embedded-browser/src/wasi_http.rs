@@ -7,7 +7,7 @@ use std::sync::OnceLock;
 
 wit_bindgen::generate!({
     path: "wit",
-    world: "wasi:http/proxy",
+    world: "aws-emulator:embedded-browser/core",
     generate_all,
 });
 
@@ -22,7 +22,57 @@ export!(Component);
 
 fn router() -> &'static smithy_server_runtime::MultiServiceRouter {
     static ROUTER: OnceLock<smithy_server_runtime::MultiServiceRouter> = OnceLock::new();
-    ROUTER.get_or_init(|| crate::build_router(std::sync::Arc::new(crate::InMemoryEngine::new())))
+    ROUTER.get_or_init(|| {
+        let mut router = crate::build_router(std::sync::Arc::new(crate::InMemoryEngine::new()));
+        router.set_external_dispatch(std::sync::Arc::new(KmsCallback));
+        router
+    })
+}
+
+/// Falls back, for any request this component's own router has no service registered
+/// for (in practice: KMS, called by Secrets Manager's envelope crypto), to the
+/// `aws-emulator:callback/dispatch` import — a separately-compiled sibling component.
+struct KmsCallback;
+
+impl smithy_server_runtime::ExternalDispatch for KmsCallback {
+    fn dispatch(
+        &self,
+        request: http::Request<bytes::Bytes>,
+    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = http::Response<bytes::Bytes>> + Send + '_>> {
+        Box::pin(async move {
+            let wit_request = to_wit_request(request);
+            let wit_response = aws_emulator::callback::dispatch::dispatch(&wit_request);
+            from_wit_response(wit_response)
+        })
+    }
+}
+
+fn to_wit_request(request: http::Request<bytes::Bytes>) -> aws_emulator::callback::dispatch::HttpRequest {
+    let (parts, body) = request.into_parts();
+    let headers = parts
+        .headers
+        .iter()
+        .map(|(name, value)| aws_emulator::callback::dispatch::HttpHeader {
+            name: name.to_string(),
+            value: String::from_utf8_lossy(value.as_bytes()).into_owned(),
+        })
+        .collect();
+    aws_emulator::callback::dispatch::HttpRequest {
+        method: parts.method.to_string(),
+        uri: parts.uri.to_string(),
+        headers,
+        body: body.to_vec(),
+    }
+}
+
+fn from_wit_response(response: aws_emulator::callback::dispatch::HttpResponse) -> http::Response<bytes::Bytes> {
+    let mut builder = http::Response::builder().status(response.status);
+    for header in &response.headers {
+        builder = builder.header(&header.name, &header.value);
+    }
+    builder
+        .body(bytes::Bytes::from(response.body))
+        .expect("a WIT dispatch response always builds a valid http::Response")
 }
 
 fn runtime() -> &'static tokio::runtime::Runtime {

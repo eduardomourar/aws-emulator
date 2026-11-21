@@ -42,6 +42,11 @@ pub struct MultiServiceRouter {
     /// The base URL every URL this router hands out names, shared by every clone and every
     /// `UrlSigner` it made: `UNSERVED_URL_BASE` until `serving_at` or `set_url_base`.
     pub(crate) url_base: std::sync::Arc<crate::endpoint::UrlBase>,
+    /// Consulted only when ZERO registered services claim a request (never to break an
+    /// ambiguous match, which stays a 500 regardless). Lets a host split part of its service
+    /// set out of this router — e.g. into a separately-compiled wasm component reached over a
+    /// WIT import — without this router depending on anything about how that split is wired.
+    external_dispatch: Option<std::sync::Arc<dyn ExternalDispatch>>,
 }
 
 impl MultiServiceRouter {
@@ -98,6 +103,15 @@ impl MultiServiceRouter {
     /// [`crate::endpoint`].
     pub fn set_url_base(&mut self, base: crate::EndpointUrl) -> &mut Self {
         self.url_base.set(base);
+        self
+    }
+
+    /// Fall back to `dispatcher` for a request no registered service claims, instead of the
+    /// default `UnknownService` refusal. Ambiguous matches (several services claim one request)
+    /// are unaffected — they are a configuration error in this router, not something an external
+    /// dispatcher could resolve.
+    pub fn set_external_dispatch(&mut self, dispatcher: std::sync::Arc<dyn ExternalDispatch>) -> &mut Self {
+        self.external_dispatch = Some(dispatcher);
         self
     }
 
@@ -160,8 +174,15 @@ impl MultiServiceRouter {
 
         // STEP 1 — exactly one service must claim the request.
         let svc = match self.select_service(&parts, &_body) {
-            Ok(svc) => svc,
-            Err(refused) => return *refused,
+            SelectOutcome::Found(svc) => svc,
+            SelectOutcome::Ambiguous(refused) => return *refused,
+            SelectOutcome::Unknown(refused) => {
+                let Some(dispatcher) = &self.external_dispatch else {
+                    return *refused;
+                };
+                let request = http::Request::from_parts(parts, _body);
+                return dispatcher.dispatch(request).await;
+            }
         };
 
         // Build the runtime-API request (parts + body) ONCE, up front: the
@@ -289,15 +310,35 @@ impl MultiServiceRouter {
     }
 }
 
+/// What [`MultiServiceRouter::select_service`] found for a request: the one claiming
+/// service, or which of the two refusal shapes to send instead.
+enum SelectOutcome<'s> {
+    Found(&'s dyn Service),
+    /// Zero services claim the request — the only outcome [`MultiServiceRouter::external_dispatch`]
+    /// is consulted for.
+    Unknown(Box<http::Response<bytes::Bytes>>),
+    /// Several services claim the request and zero or several name an operation for it — a
+    /// configuration error in this router, not something an external dispatcher could resolve.
+    Ambiguous(Box<http::Response<bytes::Bytes>>),
+}
+
+/// A fallback dispatcher for a request no service registered on a [`MultiServiceRouter`]
+/// claims. A host splits part of its service set out of this router — e.g. into a
+/// separately-compiled wasm component this one reaches over a WIT import — and bridges it in
+/// with an implementation of this trait, set via [`MultiServiceRouter::set_external_dispatch`].
+/// This router never depends on anything about how that split is wired.
+pub trait ExternalDispatch: Send + Sync {
+    fn dispatch(
+        &self,
+        request: http::Request<bytes::Bytes>,
+    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = http::Response<bytes::Bytes>> + Send + '_>>;
+}
+
 impl MultiServiceRouter {
     /// The one service that serves the request, or the refusal to send instead, by
     /// the selection rule on [`MultiServiceRouter`]. A claimant "names an
     /// operation" when [`names_operation`] says so.
-    fn select_service(
-        &self,
-        parts: &http::request::Parts,
-        body: &[u8],
-    ) -> Result<&dyn Service, Box<http::Response<bytes::Bytes>>> {
+    fn select_service(&self, parts: &http::request::Parts, body: &[u8]) -> SelectOutcome<'_> {
         let claimants: Vec<&dyn Service> = self
             .services
             .iter()
@@ -306,10 +347,10 @@ impl MultiServiceRouter {
             .collect();
 
         match claimants.as_slice() {
-            [one] => Ok(*one),
+            [one] => SelectOutcome::Found(*one),
             [] => {
                 let key = emulator_server::resolve_route_key(parts);
-                Err(Box::new(unknown_service_response(key.as_deref())))
+                SelectOutcome::Unknown(Box::new(unknown_service_response(key.as_deref())))
             }
             several => {
                 // Only this branch pays for building the request: the operation
@@ -323,14 +364,14 @@ impl MultiServiceRouter {
                     .filter(|s| names_operation(*s, &probe))
                     .collect();
                 if let [one] = modeling.as_slice() {
-                    return Ok(*one);
+                    return SelectOutcome::Found(*one);
                 }
                 let names: Vec<&str> = several
                     .iter()
                     .map(|s| s.definition().identity().signing_name())
                     .collect();
                 let key = emulator_server::resolve_route_key(parts);
-                Err(Box::new(ambiguous_service_response(key.as_deref(), &names)))
+                SelectOutcome::Ambiguous(Box::new(ambiguous_service_response(key.as_deref(), &names)))
             }
         }
     }

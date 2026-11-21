@@ -16,7 +16,6 @@ emulator-server = { workspace = true }
 service-com-amazonaws-secretsmanager-secretsmanager = { workspace = true }
 service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true }
 service-com-amazonaws-iam-awsidentitymanagementv20100508 = { workspace = true }
-service-com-amazonaws-kms-trentservice = { workspace = true }
 # WASM-EMBEDDED EXPERIMENT: wasm32 targets only build tokio's wasm-safe feature subset
 # (sync, macros, io-util, rt, time); "rt-multi-thread" is a real OS thread pool and isn't
 # wasm-safe. The component's `handle` export runs the router's async dispatch on a

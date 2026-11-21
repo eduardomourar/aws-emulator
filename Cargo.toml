@@ -439,6 +439,7 @@ members = [
     "core/router",
     "core/embedded",
     "core/embedded-browser",
+    "core/embedded-browser-kms",
 ]
 exclude = [
     "vendor/smithy-macros",

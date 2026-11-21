@@ -46,7 +46,7 @@ pub use service::{
 };
 // The multi-service router: the emulator core that mounts N services and
 // dispatches each request to the one service that claims it.
-pub use multi_service_router::MultiServiceRouter;
+pub use multi_service_router::{ExternalDispatch, MultiServiceRouter};
 // The TLS root a host trusts this process's listeners by, and the URLs a handler hands out that
 // address this emulator. wasm32 has no real listener/TLS CA (see emulator-server's listeners
 // module docs); EmbeddedEmulator::certificate_authority() is gated out alongside this import.

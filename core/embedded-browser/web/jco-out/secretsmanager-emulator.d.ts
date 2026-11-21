@@ -1,4 +1,5 @@
 // world root:component/root
+export type * as AwsEmulatorCallbackDispatch010 from './interfaces/aws-emulator-callback-dispatch.js'; // import aws-emulator:callback/dispatch@0.1.0
 export type * as WasiCliEnvironment0212 from './interfaces/wasi-cli-environment.js'; // import wasi:cli/environment@0.2.12
 export type * as WasiCliExit0212 from './interfaces/wasi-cli-exit.js'; // import wasi:cli/exit@0.2.12
 export type * as WasiCliStderr0212 from './interfaces/wasi-cli-stderr.js'; // import wasi:cli/stderr@0.2.12

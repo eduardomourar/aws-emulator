@@ -1,4 +1,51 @@
 /** @module Interface wasi:http/types@0.2.12 **/
+export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
+export interface MethodGet {
+  tag: 'get',
+}
+export interface MethodHead {
+  tag: 'head',
+}
+export interface MethodPost {
+  tag: 'post',
+}
+export interface MethodPut {
+  tag: 'put',
+}
+export interface MethodDelete {
+  tag: 'delete',
+}
+export interface MethodConnect {
+  tag: 'connect',
+}
+export interface MethodOptions {
+  tag: 'options',
+}
+export interface MethodTrace {
+  tag: 'trace',
+}
+export interface MethodPatch {
+  tag: 'patch',
+}
+export interface MethodOther {
+  tag: 'other',
+  val: string,
+}
+export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
+export interface SchemeHttp {
+  tag: 'HTTP',
+}
+export interface SchemeHttps {
+  tag: 'HTTPS',
+}
+export interface SchemeOther {
+  tag: 'other',
+  val: string,
+}
+export type Headers = Fields;
+export type InputStream = import('./wasi-io-streams.js').InputStream;
+export type StatusCode = number;
+export type OutputStream = import('./wasi-io-streams.js').OutputStream;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -144,57 +191,10 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type InputStream = import('./wasi-io-streams.js').InputStream;
-export type Headers = Fields;
-export type StatusCode = number;
-export type OutputStream = import('./wasi-io-streams.js').OutputStream;
 export type Trailers = Fields;
 export type FieldKey = string;
 export type FieldName = FieldKey;
 export type FieldValue = Uint8Array;
-export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
-export interface MethodGet {
-  tag: 'get',
-}
-export interface MethodHead {
-  tag: 'head',
-}
-export interface MethodPost {
-  tag: 'post',
-}
-export interface MethodPut {
-  tag: 'put',
-}
-export interface MethodDelete {
-  tag: 'delete',
-}
-export interface MethodConnect {
-  tag: 'connect',
-}
-export interface MethodOptions {
-  tag: 'options',
-}
-export interface MethodTrace {
-  tag: 'trace',
-}
-export interface MethodPatch {
-  tag: 'patch',
-}
-export interface MethodOther {
-  tag: 'other',
-  val: string,
-}
-export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
-export interface SchemeHttp {
-  tag: 'HTTP',
-}
-export interface SchemeHttps {
-  tag: 'HTTPS',
-}
-export interface SchemeOther {
-  tag: 'other',
-  val: string,
-}
 export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable;
 export interface HeaderErrorInvalidSyntax {
   tag: 'invalid-syntax',
