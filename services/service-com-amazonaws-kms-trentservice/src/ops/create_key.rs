@@ -568,7 +568,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         let material = if origin == crate::state::ORIGIN_EXTERNAL {
             crate::state::KeyMaterial::AwaitingImport
         } else {
-            match ::tokio::task::spawn_blocking(move || crate::state::mint_material(profile)).await
+            match crate::state::spawn_blocking_compat(move || crate::state::mint_material(profile)).await
             {
                 Ok(Some(material)) => material,
                 // No entropy, no key: nothing is persisted and the caller sees a

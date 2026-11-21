@@ -419,7 +419,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         // other request waits on the store while it runs.
         let key_pair_spec = input.key_pair_spec.clone();
         let generated =
-            ::tokio::task::spawn_blocking(move || crate::state::generate_key_pair(&key_pair_spec))
+            crate::state::spawn_blocking_compat(move || crate::state::generate_key_pair(&key_pair_spec))
                 .await;
         let pair = match generated {
             Ok(Some(pair)) => pair,

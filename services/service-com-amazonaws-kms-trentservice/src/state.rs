@@ -41,6 +41,32 @@ use crate::ops::types::{
     XksProxyConfigurationType, CUSTOMER_MASTER_KEY_SPEC_VALUES, DATA_KEY_SPEC_VALUES,
 };
 
+/// Runs CPU-bound key material generation off the async task, where that is
+/// possible.
+///
+/// Natively this is tokio's bounded blocking pool, so one key pair's generation
+/// cannot starve the runtime that has to keep serving health checks and every
+/// other request. Under `wasm32-wasip2` there is no thread pool to offload to —
+/// the component is single-threaded — so the closure just runs inline; nothing
+/// else is waiting on the executor's one thread regardless.
+#[cfg(not(target_family = "wasm"))]
+pub(crate) async fn spawn_blocking_compat<F, T>(f: F) -> Result<T, ::tokio::task::JoinError>
+where
+    F: FnOnce() -> T + Send + 'static,
+    T: Send + 'static,
+{
+    ::tokio::task::spawn_blocking(f).await
+}
+
+#[cfg(target_family = "wasm")]
+pub(crate) async fn spawn_blocking_compat<F, T>(f: F) -> Result<T, ::tokio::task::JoinError>
+where
+    F: FnOnce() -> T + Send + 'static,
+    T: Send + 'static,
+{
+    Ok(f())
+}
+
 /// Who a request speaks for, and whether the key policy, the caller's identity policies
 /// and the grants in force let it do what it asks — the one authorization decision this
 /// service's operations consult.

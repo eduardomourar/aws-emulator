@@ -63,6 +63,14 @@ cron = "0.15"
 # UTC time zone"), which is also the clock type the cron evaluator reads.
 chrono = { version = "0.4", default-features = false, features = ["std"] }
 
+# WASM-EMBEDDED EXPERIMENT: on wasm32, this crate's own engine carries no STS/IAM store
+# (they're split into sibling `embedded-sts`/`embedded-iam` components) — see
+# `state::authorization`'s `caller()` for the remote fallback this calls into, over the
+# same `wasi:http/outgoing-handler` boundary KMS already crosses. Unused, and so a no-op,
+# for every native build.
+[target.'cfg(target_family = "wasm")'.dependencies]
+embedded-console = { path = "../../core/embedded-console", package = "aws-emulator-embedded-console" }
+
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { workspace = true }
 aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }

@@ -1,0 +1,26 @@
+[package]
+name = "aws-emulator-embedded-console"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+# A plain `rlib`: ONLY a library, no `cdylib`. Every `embedded-*` crate's own
+# `#[wstd::http_server]`-attributed `main` generates one `wasi:http/incoming-handler`
+# export symbol for ITS component; if this crate also carried a `cdylib` output with
+# its OWN such export (as it briefly did), that export would be pulled into — and
+# collide with — every dependent's final linked wasm binary. This crate's own
+# standalone component lives in the separate `embedded-console-service` crate instead.
+crate-type = ["rlib"]
+
+[dependencies]
+http = { workspace = true }
+bytes = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: see core/embedded-secretsmanager/Cargo.toml for why these
+# two dependencies are split by target.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
+wstd = { version = "0.6", default-features = false }
+wit-bindgen = { version = "0.63", default-features = false, features = ["macros", "realloc", "std", "bitflags"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread"] }

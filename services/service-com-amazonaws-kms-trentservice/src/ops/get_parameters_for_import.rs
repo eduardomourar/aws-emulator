@@ -336,7 +336,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         // key generation does not starve the runtime that has to stay able to time out
         // and shut down, and holds no lock while it runs.
         let wrapping_key_spec = input.wrapping_key_spec.clone();
-        let generated = ::tokio::task::spawn_blocking(move || {
+        let generated = crate::state::spawn_blocking_compat(move || {
             crate::state::mint_wrapping_key(&wrapping_key_spec)
         })
         .await;

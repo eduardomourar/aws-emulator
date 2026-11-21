@@ -221,7 +221,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         // produce — is a failure of this process rather than of the request, and enables
         // nothing: an issuer that cannot sign the algorithms its model documents is not one
         // this account is given.
-        let keys = ::tokio::task::spawn_blocking(crate::state::IssuerSigningKeys::generate)
+        let keys = crate::state::spawn_blocking_compat(crate::state::IssuerSigningKeys::generate)
             .await
             .ok()
             .flatten();

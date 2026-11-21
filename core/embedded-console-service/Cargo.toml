@@ -1,0 +1,20 @@
+[package]
+name = "aws-emulator-embedded-console-service"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+http = { workspace = true }
+bytes = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: see core/embedded-secretsmanager/Cargo.toml for why these
+# two dependencies are split by target.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
+wstd = { version = "0.6", default-features = false }
+embedded-console = { path = "../embedded-console", package = "aws-emulator-embedded-console" }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread"] }

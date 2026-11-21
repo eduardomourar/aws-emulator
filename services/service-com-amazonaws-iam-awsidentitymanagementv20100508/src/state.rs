@@ -20,6 +20,32 @@ use crate::ops::types::{
     UpdateAccountPasswordPolicyInput, User,
 };
 
+/// Runs CPU-bound key material generation off the async task, where that is
+/// possible.
+///
+/// Natively this is tokio's bounded blocking pool, so generation cannot starve
+/// the runtime that has to keep serving other requests. Under `wasm32-wasip2`
+/// there is no thread pool to offload to — the component is single-threaded —
+/// so the closure just runs inline; nothing else is waiting on the executor's
+/// one thread regardless.
+#[cfg(not(target_family = "wasm"))]
+pub(crate) async fn spawn_blocking_compat<F, T>(f: F) -> Result<T, ::tokio::task::JoinError>
+where
+    F: FnOnce() -> T + Send + 'static,
+    T: Send + 'static,
+{
+    ::tokio::task::spawn_blocking(f).await
+}
+
+#[cfg(target_family = "wasm")]
+pub(crate) async fn spawn_blocking_compat<F, T>(f: F) -> Result<T, ::tokio::task::JoinError>
+where
+    F: FnOnce() -> T + Send + 'static,
+    T: Send + 'static,
+{
+    Ok(f())
+}
+
 pub mod account;
 pub mod account_summary;
 pub mod action_resource_types;
