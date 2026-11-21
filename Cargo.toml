@@ -438,6 +438,7 @@ members = [
     "services/service-com-amazonaws-xray-awsxray",
     "core/router",
     "core/embedded",
+    "core/embedded-browser",
 ]
 exclude = [
     "vendor/smithy-macros",
@@ -938,7 +939,10 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["json", "env-filter"] }
 sha2 = "0.10"
 hex = "0.4"
-reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+reqwest = { version = "0.12", default-features = false, features = [
+    "blocking",
+    "rustls-tls",
+] }
 rustls = { version = "0.23", features = ["aws-lc-rs"] }
 rustls-webpki = "0.103"
 aws-sigv4 = { version = "1", features = ["http1"] }

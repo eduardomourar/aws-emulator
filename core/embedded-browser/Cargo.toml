@@ -1,0 +1,28 @@
+[package]
+name = "aws-emulator-embedded-browser"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+http = { workspace = true }
+bytes = { workspace = true }
+engine = { workspace = true }
+smithy-server-runtime = { workspace = true }
+emulator-server = { workspace = true }
+service-com-amazonaws-secretsmanager-secretsmanager = { workspace = true }
+service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true }
+service-com-amazonaws-iam-awsidentitymanagementv20100508 = { workspace = true }
+service-com-amazonaws-kms-trentservice = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: wasm32 targets only build tokio's wasm-safe feature subset
+# (sync, macros, io-util, rt, time); "rt-multi-thread" is a real OS thread pool and isn't
+# wasm-safe. The component's `handle` export runs the router's async dispatch on a
+# current-thread runtime instead, so we never need it.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
+wit-bindgen = { version = "0.63", default-features = false, features = ["macros", "realloc", "std", "bitflags"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread"] }
