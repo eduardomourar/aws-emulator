@@ -1,16 +1,5 @@
 /** @module Interface wasi:http/types@0.3.0 **/
-export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
-export interface SchemeHttp {
-  tag: 'HTTP',
-}
-export interface SchemeHttps {
-  tag: 'HTTPS',
-}
-export interface SchemeOther {
-  tag: 'other',
-  val: string,
-}
-export type Headers = Fields;
+export type Trailers = Fields;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -156,38 +145,16 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type Trailers = Fields;
-export type Duration = import('./wasi-clocks-types.js').Duration;
-export type RequestOptionsError = RequestOptionsErrorNotSupported | RequestOptionsErrorImmutable | RequestOptionsErrorOther;
-export interface RequestOptionsErrorNotSupported {
-  tag: 'not-supported',
+export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
+export interface SchemeHttp {
+  tag: 'HTTP',
 }
-export interface RequestOptionsErrorImmutable {
-  tag: 'immutable',
+export interface SchemeHttps {
+  tag: 'HTTPS',
 }
-export interface RequestOptionsErrorOther {
+export interface SchemeOther {
   tag: 'other',
-  val: string | undefined,
-}
-export type StatusCode = number;
-export type FieldName = string;
-export type FieldValue = Uint8Array;
-export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable | HeaderErrorSizeExceeded | HeaderErrorOther;
-export interface HeaderErrorInvalidSyntax {
-  tag: 'invalid-syntax',
-}
-export interface HeaderErrorForbidden {
-  tag: 'forbidden',
-}
-export interface HeaderErrorImmutable {
-  tag: 'immutable',
-}
-export interface HeaderErrorSizeExceeded {
-  tag: 'size-exceeded',
-}
-export interface HeaderErrorOther {
-  tag: 'other',
-  val: string | undefined,
+  val: string,
 }
 export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
 export interface MethodGet {
@@ -220,6 +187,39 @@ export interface MethodPatch {
 export interface MethodOther {
   tag: 'other',
   val: string,
+}
+export type Headers = Fields;
+export type StatusCode = number;
+export type Duration = import('./wasi-clocks-types.js').Duration;
+export type RequestOptionsError = RequestOptionsErrorNotSupported | RequestOptionsErrorImmutable | RequestOptionsErrorOther;
+export interface RequestOptionsErrorNotSupported {
+  tag: 'not-supported',
+}
+export interface RequestOptionsErrorImmutable {
+  tag: 'immutable',
+}
+export interface RequestOptionsErrorOther {
+  tag: 'other',
+  val: string | undefined,
+}
+export type FieldName = string;
+export type FieldValue = Uint8Array;
+export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable | HeaderErrorSizeExceeded | HeaderErrorOther;
+export interface HeaderErrorInvalidSyntax {
+  tag: 'invalid-syntax',
+}
+export interface HeaderErrorForbidden {
+  tag: 'forbidden',
+}
+export interface HeaderErrorImmutable {
+  tag: 'immutable',
+}
+export interface HeaderErrorSizeExceeded {
+  tag: 'size-exceeded',
+}
+export interface HeaderErrorOther {
+  tag: 'other',
+  val: string | undefined,
 }
 export type Result<T, E> = { tag: 'ok', val: T } | { tag: 'err', val: E };
 

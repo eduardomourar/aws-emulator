@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Route 53 Domains — local emulator</title>
+<link rel="stylesheet" href="style.css" />
+<script>
+  if (window !== window.top) document.documentElement.classList.add("embedded");
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "@bytecodealliance/preview2-shim/cli": "./vendor/preview2-shim/cli.js",
+    "@bytecodealliance/preview2-shim/clocks": "./vendor/preview2-shim/clocks.js",
+    "@bytecodealliance/preview2-shim/filesystem": "./vendor/preview2-shim/filesystem.js",
+    "@bytecodealliance/preview2-shim/http": "./vendor/preview2-shim/http.js",
+    "@bytecodealliance/preview2-shim/io": "./vendor/preview2-shim/io.js",
+    "@bytecodealliance/preview2-shim/random": "./vendor/preview2-shim/random.js",
+    "@bytecodealliance/preview3-shim/cli": "./vendor/preview3-shim/cli.js",
+    "@bytecodealliance/preview3-shim/clocks": "./vendor/preview3-shim/clocks.js",
+    "@bytecodealliance/preview3-shim/filesystem": "./vendor/preview3-shim/filesystem.js",
+    "@bytecodealliance/preview3-shim/http": "./vendor/preview3-shim/http.js",
+    "@bytecodealliance/preview3-shim/random": "./vendor/preview3-shim/random.js"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>AWS Emulator Console</h1>
+  <p class="subtitle">
+    The Route 53 Domains component on its own — same WebAssembly-in-the-browser
+    setup as every other service page, with no other service mounted beside it.
+  </p>
+</header>
+<nav class="service-nav">
+  <a href="secretsmanager.html">Secrets Manager</a>
+  <a href="kms.html">KMS</a>
+  <a href="sts.html">STS</a>
+  <a href="iam.html">IAM</a>
+  <a href="codeguruprofiler.html">CodeGuru Profiler</a>
+  <a href="glacier.html">Glacier</a>
+  <a href="route53domains.html" class="active">Route 53 Domains</a>
+  <a href="dlm.html">DLM</a>
+  <a href="budgets.html">Budgets</a>
+</nav>
+
+<main>
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Domains</h2>
+      <div class="panel-actions">
+        <button id="refresh-btn" type="button">Refresh</button>
+        <button id="new-domain-btn" type="button" class="primary">Register domain</button>
+      </div>
+    </div>
+    <table id="domains-table">
+      <thead>
+        <tr>
+          <th>Domain name</th>
+          <th>Auto-renew</th>
+          <th>Expiry</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="domains-body">
+        <tr class="empty-row"><td colspan="4">Loading…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="status" class="status" hidden></section>
+</main>
+
+<dialog id="create-dialog">
+  <form id="create-form">
+    <h2>Register domain</h2>
+    <label>
+      Domain name
+      <input type="text" id="create-domain-name" autocomplete="off" placeholder="example.com" required />
+    </label>
+    <label>
+      Duration (years)
+      <input type="number" id="create-duration" min="1" max="10" value="1" required />
+    </label>
+    <label>
+      First name
+      <input type="text" id="contact-first-name" autocomplete="off" required />
+    </label>
+    <label>
+      Last name
+      <input type="text" id="contact-last-name" autocomplete="off" required />
+    </label>
+    <label>
+      Email
+      <input type="email" id="contact-email" autocomplete="off" required />
+    </label>
+    <label>
+      Phone number
+      <input type="text" id="contact-phone" autocomplete="off" placeholder="+1.5555550100" required />
+    </label>
+    <label>
+      Address line 1
+      <input type="text" id="contact-address" autocomplete="off" required />
+    </label>
+    <label>
+      City
+      <input type="text" id="contact-city" autocomplete="off" required />
+    </label>
+    <label>
+      State / province
+      <input type="text" id="contact-state" autocomplete="off" required />
+    </label>
+    <label>
+      Country code
+      <input type="text" id="contact-country" autocomplete="off" value="US" maxlength="2" required />
+    </label>
+    <label>
+      ZIP / postal code
+      <input type="text" id="contact-zip" autocomplete="off" required />
+    </label>
+    <div class="dialog-actions">
+      <button type="button" id="create-cancel">Cancel</button>
+      <button type="submit" class="primary">Register</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="describe-dialog">
+  <form id="describe-form" method="dialog">
+    <h2 id="describe-title">Domain details</h2>
+    <pre id="describe-value"></pre>
+    <div class="dialog-actions">
+      <button type="submit">Close</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="route53domains-app.js"></script>
+</body>
+</html>

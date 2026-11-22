@@ -27,3 +27,45 @@ pub use outgoing::call_component;
 mod serving;
 #[cfg(target_family = "wasm")]
 pub use serving::{handle_with, runtime};
+
+/// Defines `build_router` and, for `wasm32-wasip2`, the `wasi:http/proxy`
+/// component export, for an `embedded-*` crate that registers a single
+/// service with no `wasi:http/outgoing-handler` fallback and no extra
+/// internal-only routes.
+///
+/// `embedded-iam`, `embedded-secretsmanager` and `embedded-console-service`
+/// each need one of those extras, so they keep their own hand-written
+/// `build_router`/`wasi_http` instead of using this macro.
+#[macro_export]
+macro_rules! embedded_service {
+    ($service:path) => {
+        pub use engine::InMemoryEngine;
+
+        pub fn build_router(engine: std::sync::Arc<InMemoryEngine>) -> smithy_server_runtime::MultiServiceRouter {
+            use $service as EmbeddedServiceImpl;
+
+            let mut router = smithy_server_runtime::MultiServiceRouter::new();
+            router.register_service(EmbeddedServiceImpl::new(engine));
+            router
+        }
+
+        #[cfg(target_family = "wasm")]
+        mod wasi_http {
+            use std::sync::OnceLock;
+
+            use $crate::{handle_with, runtime};
+            use wstd::http::body::Body;
+            use wstd::http::{Error, Request, Response};
+
+            fn router() -> &'static smithy_server_runtime::MultiServiceRouter {
+                static ROUTER: OnceLock<smithy_server_runtime::MultiServiceRouter> = OnceLock::new();
+                ROUTER.get_or_init(|| super::build_router(std::sync::Arc::new(super::InMemoryEngine::new())))
+            }
+
+            #[wstd::http_server]
+            async fn main(request: Request<Body>) -> Result<Response<Body>, Error> {
+                handle_with(request, |req| async move { runtime().block_on(router().dispatch(req)) }).await
+            }
+        }
+    };
+}

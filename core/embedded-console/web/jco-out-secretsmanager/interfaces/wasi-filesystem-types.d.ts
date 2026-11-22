@@ -183,17 +183,17 @@ export class Descriptor {
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  getFlags(): Promise<DescriptorFlags>;
+  getFlags(): Promise<DescriptorFlags> | DescriptorFlags;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  stat(): Promise<DescriptorStat>;
+  stat(): Promise<DescriptorStat> | DescriptorStat;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  openAt(pathFlags: PathFlags, path: string, openFlags: OpenFlags, flags: DescriptorFlags): Promise<Descriptor>;
+  openAt(pathFlags: PathFlags, path: string, openFlags: OpenFlags, flags: DescriptorFlags): Promise<Descriptor> | Descriptor;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  metadataHash(): Promise<MetadataHashValue>;
+  metadataHash(): Promise<MetadataHashValue> | MetadataHashValue;
 }

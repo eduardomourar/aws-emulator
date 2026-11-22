@@ -25,3 +25,10 @@ tokio = { version = "1", features = ["rt-multi-thread"] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
 wstd = { workspace = true }
+
+[build-dependencies]
+# Transpiles a component straight to JS/TS in-process: the same engine `jco transpile`
+# (its CLI) drives, called directly from Rust so `build.rs` needs no Node/npm — see
+# `build.rs` for why that matters (the bare `jco` package on npm is an unrelated
+# dependency-confusion placeholder; nothing here resolves it by name at all now).
+js-component-bindgen = "2"

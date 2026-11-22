@@ -700,10 +700,17 @@ fn caller<Eng: Send + Sync + 'static>(
     // the user that owns it (`access_keys`, the map IAM's own `GetUser` resolves a caller
     // through), so a request signed with one speaks for THAT user and is judged on the
     // user's policies rather than served as the account. A key the IAM store does not hold
-    // either really is the account's own published credential — UNLESS this is the
-    // wasm32-wasip2 split and the key just isn't in this (possibly empty) LOCAL store because
-    // IAM is a sibling component: ask `embedded-console`'s internal relay before settling for
-    // that reading, the same `wasi:http/outgoing-handler` boundary KMS already crosses.
+    // either really is the account's own published credential.
+    //
+    // On the wasm32 split, where this crate's own engine carries no IAM store (it's a
+    // sibling `embedded-iam` component), that is exactly as far as this reading can go:
+    // asking the sibling over `wasi:http` from within this component's own exported,
+    // JSPI-async `handle()` — both a `wasi:http` SERVER and, for that call, a CLIENT —
+    // hits genuine limits in the current `jco`/`wit-bindgen` JSPI support for that shape
+    // (tried as a `block_on`, and plain-`.await`ed, each broken a different way: the former
+    // hangs forever, the latter panics `assertion failed: task_state::get().is_null()`).
+    // So the account's own ambient identity is this gate's answer here too, same as a
+    // native build with no IAM mounted at all — not a remote lookup that cannot work.
     if caller.account_credential {
         if let Some(user) = store
             .access_keys
@@ -714,11 +721,6 @@ fn caller<Eng: Send + Sync + 'static>(
             caller.arn = user.arn.clone();
             caller.identity_arn = user.arn.clone();
             caller.principals = vec![user.arn.clone()];
-        } else {
-            #[cfg(target_family = "wasm")]
-            {
-                caller = remote_resolve_from_iam(&access_key_id, caller);
-            }
         }
     }
     if let Some(role_name) = ::service_common::iam_role::assumed_role_session_role_name(&caller.arn)
@@ -740,94 +742,6 @@ fn caller<Eng: Send + Sync + 'static>(
         caller.read_policies_of(&store, &user_arn);
     }
     caller
-}
-
-/// The wasm32-wasip2 half of the IAM lookup above: asks `embedded-iam`'s OWN
-/// internal-only endpoint, DIRECTLY (not through `embedded-console-service`'s
-/// relay — see `embedded_console::outgoing`'s module docs for why a nested
-/// outgoing call through a relay is unreliable in this toolchain today), for
-/// exactly what the native path reads directly off `store` — the identity a
-/// LONG-TERM access key resolves to, its policy documents, and its permissions
-/// boundary. `INTERNAL_RESOLVE_ACCESS_KEY_PATH` names no real AWS operation; it
-/// is answered directly by `embedded-iam`'s `wasi_http` module, which reads the
-/// SAME `iam_store` accessors this file reads when IAM is local.
-///
-/// Scoped to a LONG-TERM key resolving to an IAM user, the same scope
-/// `embedded-iam`'s own console page supports today — an assumed-role SESSION
-/// is not resolved remotely yet (see this module's top-of-file docs for the
-/// STS half of this gap, which is a documented limitation, not an oversight).
-/// A caller this can't resolve — not found, or no peer wired up to answer — is
-/// returned unchanged, which is the SAME "no IAM store reachable" fallback this
-/// gate already makes for an engine with no IAM store at all.
-///
-/// Drives [`embedded_console::call_component`]'s now-`async fn` call to
-/// completion with `wit_bindgen::block_on`, keeping `caller()`/`decide()`/
-/// `authorize_*` themselves fully synchronous.
-///
-/// STILL BROKEN under `jco --async-mode jspi --async-wasi-imports` in a real
-/// browser, but DIFFERENTLY broken than before: the old "pollable has been
-/// disposed" symptom (preview2-shim's browser `block()` never truly blocking)
-/// is gone, replaced by `wit-bindgen`'s own
-/// `assertion failed: task_state::get().is_null()`. Isolated this round: it
-/// is NOT specific to `block_on`, or to this IAM call, or to a two-hop relay —
-/// disabling this call site entirely and testing the KMS call ALONE (plain
-/// `.await` on `wstd::http::Client`, no `block_on` involved) hits the
-/// identical panic. The common factor is that this component is both a
-/// `wasi:http` SERVER (its own exported, JSPI-async `handle()`) and a CLIENT
-/// (an outgoing call made from within handling that same request) — exactly
-/// the shape WASI 0.3's `wasi:http/middleware` world names explicitly. Under
-/// `--async-wasi-imports`, the outgoing call's import-side lowering appears to
-/// re-enter the same `task_state` slot the export's `start_task` already
-/// occupies, regardless of which Rust-level mechanism (raw `block_on` or a
-/// bare `.await`) drives it. This looks like a genuine limitation of this
-/// `jco` version's JSPI support for the server-calls-out-while-serving
-/// pattern, not a bug in this file's own code — see this crate and
-/// `aws-emulator-embedded-console`'s `outgoing.rs` for the full history of
-/// what's been tried.
-#[cfg(target_family = "wasm")]
-fn remote_resolve_from_iam(access_key_id: &str, caller: Caller) -> Caller {
-    const INTERNAL_RESOLVE_ACCESS_KEY_PATH: &str = "/__internal/iam/resolve-access-key";
-    const IAM_AUTHORITY: &str = "iam.local.invalid";
-
-    let body = ::serde_json::json!({ "access_key_id": access_key_id }).to_string();
-    let Ok(request) = ::http::Request::post(INTERNAL_RESOLVE_ACCESS_KEY_PATH)
-        .header("content-type", "application/json")
-        .body(::bytes::Bytes::from(body))
-    else {
-        return caller;
-    };
-
-    let response =
-        ::wit_bindgen::block_on(::embedded_console::call_component(IAM_AUTHORITY, request));
-    if !response.status().is_success() {
-        return caller;
-    }
-    let Ok(resolved) = ::serde_json::from_slice::<::serde_json::Value>(response.body()) else {
-        return caller;
-    };
-    if !resolved.get("found").and_then(|value| value.as_bool()).unwrap_or(false) {
-        return caller;
-    }
-    let Some(arn) = resolved.get("arn").and_then(|value| value.as_str()) else {
-        return caller;
-    };
-
-    let documents = resolved
-        .get("documents")
-        .and_then(|value| value.as_array())
-        .map(|docs| docs.iter().filter_map(|doc| doc.as_str().map(str::to_string)).collect())
-        .unwrap_or_default();
-    let boundary = resolved.get("boundary").and_then(|value| value.as_str()).map(str::to_string);
-
-    Caller {
-        account_credential: false,
-        arn: arn.to_string(),
-        identity_arn: arn.to_string(),
-        principals: vec![arn.to_string()],
-        documents,
-        boundary,
-        ..caller
-    }
 }
 
 #[cfg(test)]

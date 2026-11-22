@@ -438,12 +438,17 @@ members = [
     "services/service-com-amazonaws-xray-awsxray",
     "core/router",
     "core/embedded",
-    "core/embedded-secretsmanager",
-    "core/embedded-kms",
-    "core/embedded-sts",
-    "core/embedded-iam",
+    "core/embedded-budgets",
     "core/embedded-console",
     "core/embedded-console-service",
+    "core/embedded-dlm",
+    "core/embedded-glacier",
+    "core/embedded-iam",
+    "core/embedded-kms",
+    "core/embedded-route53domains",
+    "core/embedded-secretsmanager",
+    "core/embedded-sts",
+    "core/embedded-codeguruprofiler",
 ]
 exclude = [
     "vendor/smithy-macros",
@@ -992,4 +997,4 @@ psm = { git = "https://github.com/eduardomourar/stacker", rev = "226ff6263b0d4b2
 # (`not(target_env = "p3")`), so the two sections are mutually exclusive and only one
 # `getrandom` major ever applies per target — confirmed via `Cargo.lock` resolving to
 # `getrandom 0.4.3` alone (not also `0.3.4`) for a `wasm32-wasip3` build.
-tempfile = { git = "https://github.com/eduardomourar/tempfile", rev = "887cfb54bac29b56f475cd5066fa421fe93d3e5f" }
+tempfile = { git = "https://github.com/Stebalien/tempfile", rev = "57a1a347d710c6a36f6abc1f355bdcc86b561e2e" }

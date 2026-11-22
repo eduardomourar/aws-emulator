@@ -16,7 +16,6 @@ export type * as WasiClocksTypes030 from './interfaces/wasi-clocks-types.js'; //
 export type * as WasiHttpClient030 from './interfaces/wasi-http-client.js'; // import wasi:http/client@0.3.0
 export type * as WasiHttpTypes030 from './interfaces/wasi-http-types.js'; // import wasi:http/types@0.3.0
 export type * as WasiRandomInsecureSeed030 from './interfaces/wasi-random-insecure-seed.js'; // import wasi:random/insecure-seed@0.3.0
-export * as handler from './interfaces/wasi-http-handler.js'; // export wasi:http/handler@0.3.0
+export * as handler from './interfaces/exports/wasi-http-handler.js'; // export wasi:http/handler@0.3.0
 /** Permanently stop this instance and dispose guest-owned host resources. */
-export const _util: { stop(): void; whenIdle(): Promise<void>;  /** Test whether a value is a declared WIT result error from this instance. */
-isComponentError(value: unknown): value is Error & { readonly payload: unknown }; };
+export const _util: { stop(): void; whenIdle(): Promise<void>; };
