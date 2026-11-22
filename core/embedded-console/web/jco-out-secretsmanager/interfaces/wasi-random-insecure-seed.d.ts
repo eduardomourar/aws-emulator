@@ -1,2 +1,2 @@
-/** @module Interface wasi:random/insecure-seed@0.2.12 **/
-export function insecureSeed(): [bigint, bigint];
+/** @module Interface wasi:random/insecure-seed@0.3.0 **/
+export function getInsecureSeed(): [bigint, bigint];

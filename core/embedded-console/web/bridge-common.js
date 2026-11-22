@@ -5,7 +5,7 @@
 // the page. One instance per service page, each pointed at that service's own
 // component.
 
-export { InMemoryHttpClient } from "./vendor/preview2-shim/in-memory-http.js";
+export { P3InMemoryHttpClient as InMemoryHttpClient } from "./p3-in-memory-http.js";
 
 export class EmulatorHttpHandler {
   constructor(emulator) {

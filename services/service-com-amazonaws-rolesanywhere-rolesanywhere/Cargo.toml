@@ -31,7 +31,7 @@ hex = { workspace = true }
 x509-cert = { version = "0.2", features = ["pem"] }
 # Verifies the certificate's chain signature and the request's own X.509 signature: the
 # one cryptography library this workspace verifies signatures with.
-ring = "0.17"
+ring = { workspace = true }
 # The sessions this plane vends are minted in — and resolved from — the token service's
 # own session registry, through its own mint, and the role comes from IAM through its
 # reader there, so a vended credential speaks for its role everywhere.

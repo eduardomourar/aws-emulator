@@ -221,7 +221,7 @@ impl InjectedApiFaults {
 /// injection is deterministic.
 #[must_use]
 pub fn call_draw() -> u8 {
-    ::rand::Rng::random_range(&mut ::rand::rng(), 0..EVERY_CALL)
+    ::rand::RngExt::random_range(&mut ::rand::rng(), 0..EVERY_CALL)
 }
 
 #[cfg(test)]

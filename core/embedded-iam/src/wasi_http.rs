@@ -41,7 +41,7 @@ fn router() -> &'static smithy_server_runtime::MultiServiceRouter {
 
 #[wstd::http_server]
 async fn main(request: Request<Body>) -> Result<Response<Body>, Error> {
-    handle_with(request, |req| {
+    handle_with(request, |req| async move {
         if req.uri().path() == INTERNAL_RESOLVE_ACCESS_KEY_PATH {
             resolve_access_key(req)
         } else {

@@ -19,8 +19,9 @@ bytes = { workspace = true }
 # WASM-EMBEDDED EXPERIMENT: see core/embedded-secretsmanager/Cargo.toml for why these
 # two dependencies are split by target.
 tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
-wstd = { version = "0.6", default-features = false }
-wit-bindgen = { version = "0.63", default-features = false, features = ["macros", "realloc", "std", "bitflags"] }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { version = "1", features = ["rt-multi-thread"] }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+wstd = { workspace = true }

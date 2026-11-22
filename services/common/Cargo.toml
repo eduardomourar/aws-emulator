@@ -178,7 +178,7 @@ sha1 = "0.10"
 # ... and `getrandom` draws the per-connection nonce that handshake challenges a client
 # with from the operating system's own entropy, so the proof the client answers with cannot
 # be replayed.
-getrandom = "0.3"
+getrandom = "0.4"
 # `iam_authorization`: the reading of an IP address or a range in CIDR notation that the
 # IAM `IpAddress`/`NotIpAddress` condition operators compare an address against, taken from
 # the maintained crate rather than by splitting the notation by hand.
@@ -201,7 +201,7 @@ serde_json_path = "0.7"
 # arrives with this declaration — and no second implementation of the primitive is written.
 # Not a pure-Rust elliptic-curve stack, whose `crypto-bigint` this repository's dependency
 # audit blocks (RUSTSEC-2026-0387).
-ring = "0.17"
+ring = { workspace = true }
 # `jws_signing`: the SIGNING half of the JOSE primitives above — the RSA and P-384 key
 # pairs an emulated OIDC issuer signs its tokens with, and those signatures. `ring` cannot
 # GENERATE an RSA key pair, so the generation and the signature come from the other
@@ -209,7 +209,7 @@ ring = "0.17"
 # services among its users), which is why no capability class arrives with this
 # declaration. Not the pure-Rust `rsa` crate, whose two timing advisories this
 # repository's dependency audit blocks.
-aws-lc-rs = "1"
+aws-lc-rs = { workspace = true }
 # ... and the PKCS#8 / PKCS#1 structures that library encodes a generated RSA key pair as,
 # which the PUBLIC modulus and exponent a JWK publishes are read out of (RFC 5958 §2),
 # rather than keeping a second copy of them beside the key.
@@ -234,7 +234,7 @@ jsonata-rs = { version = "=0.3.4", default-features = false }
 # `injected_api_faults`: the per-call draw that decides whether a call falls in the share a
 # fault-injection action affects, taken from the maintained generator rather than from a
 # counter kept across calls.
-rand = "0.9"
+rand = "0.10"
 # The arena `jsonata-rs` allocates its parsed expression and its values into: one per
 # evaluation, dropped with it. Pinned EXACTLY for the same reason — the memory ceiling of
 # an evaluation is enforced through this crate's allocation limit.

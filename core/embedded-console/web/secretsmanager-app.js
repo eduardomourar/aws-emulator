@@ -8,7 +8,7 @@ import {
 } from "https://esm.sh/@aws-sdk/client-secrets-manager@3?target=es2022";
 
 import { InMemoryHttpClient, EmulatorHttpHandler } from "./bridge-common.js";
-import { incomingHandler } from "./jco-out-secretsmanager/aws_emulator_embedded_secretsmanager.js";
+import { handler as incomingHandler } from "./jco-out-secretsmanager/aws_emulator_embedded_secretsmanager.js";
 // Side-effect import: patches `globalThis.fetch` so this component's
 // `wasi:http/outgoing-handler`-driven calls (to KMS directly, and to IAM via
 // `embedded-console-service`'s relay) route into those components instead of

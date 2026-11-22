@@ -1,7 +1,6 @@
-/** @module Interface wasi:clocks/monotonic-clock@0.2.12 **/
-export function now(): Instant;
-export function subscribeInstant(when: Instant): Pollable;
-export function subscribeDuration(when: Duration): Pollable;
-export type Duration = bigint;
-export type Pollable = import('./wasi-io-poll.js').Pollable;
-export type Instant = bigint;
+/** @module Interface wasi:clocks/monotonic-clock@0.3.0 **/
+export function now(): Mark;
+export function waitUntil(when: Mark): Promise<void>;
+export function waitFor(howLong: Duration): Promise<void>;
+export type Mark = bigint;
+export type Duration = import('./wasi-clocks-types.js').Duration;

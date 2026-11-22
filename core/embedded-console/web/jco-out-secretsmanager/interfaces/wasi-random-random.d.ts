@@ -1,3 +1,3 @@
-/** @module Interface wasi:random/random@0.2.12 **/
-export function getRandomBytes(len: bigint): Uint8Array;
+/** @module Interface wasi:random/random@0.3.0 **/
+export function getRandomBytes(maxLen: bigint): Uint8Array;
 export function getRandomU64(): bigint;

@@ -1,37 +1,4 @@
-/** @module Interface wasi:http/types@0.2.12 **/
-export type Headers = Fields;
-export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
-export interface MethodGet {
-  tag: 'get',
-}
-export interface MethodHead {
-  tag: 'head',
-}
-export interface MethodPost {
-  tag: 'post',
-}
-export interface MethodPut {
-  tag: 'put',
-}
-export interface MethodDelete {
-  tag: 'delete',
-}
-export interface MethodConnect {
-  tag: 'connect',
-}
-export interface MethodOptions {
-  tag: 'options',
-}
-export interface MethodTrace {
-  tag: 'trace',
-}
-export interface MethodPatch {
-  tag: 'patch',
-}
-export interface MethodOther {
-  tag: 'other',
-  val: string,
-}
+/** @module Interface wasi:http/types@0.3.0 **/
 export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
 export interface SchemeHttp {
   tag: 'HTTP',
@@ -43,11 +10,7 @@ export interface SchemeOther {
   tag: 'other',
   val: string,
 }
-export type OutputStream = import('./wasi-io-streams.js').OutputStream;
-export type Pollable = import('./wasi-io-poll.js').Pollable;
-export type StatusCode = number;
-export type InputStream = import('./wasi-io-streams.js').InputStream;
-export type Trailers = Fields;
+export type Headers = Fields;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -193,10 +156,23 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type FieldKey = string;
-export type FieldName = FieldKey;
+export type Trailers = Fields;
+export type Duration = import('./wasi-clocks-types.js').Duration;
+export type RequestOptionsError = RequestOptionsErrorNotSupported | RequestOptionsErrorImmutable | RequestOptionsErrorOther;
+export interface RequestOptionsErrorNotSupported {
+  tag: 'not-supported',
+}
+export interface RequestOptionsErrorImmutable {
+  tag: 'immutable',
+}
+export interface RequestOptionsErrorOther {
+  tag: 'other',
+  val: string | undefined,
+}
+export type StatusCode = number;
+export type FieldName = string;
 export type FieldValue = Uint8Array;
-export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable;
+export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable | HeaderErrorSizeExceeded | HeaderErrorOther;
 export interface HeaderErrorInvalidSyntax {
   tag: 'invalid-syntax',
 }
@@ -206,142 +182,119 @@ export interface HeaderErrorForbidden {
 export interface HeaderErrorImmutable {
   tag: 'immutable',
 }
+export interface HeaderErrorSizeExceeded {
+  tag: 'size-exceeded',
+}
+export interface HeaderErrorOther {
+  tag: 'other',
+  val: string | undefined,
+}
+export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
+export interface MethodGet {
+  tag: 'get',
+}
+export interface MethodHead {
+  tag: 'head',
+}
+export interface MethodPost {
+  tag: 'post',
+}
+export interface MethodPut {
+  tag: 'put',
+}
+export interface MethodDelete {
+  tag: 'delete',
+}
+export interface MethodConnect {
+  tag: 'connect',
+}
+export interface MethodOptions {
+  tag: 'options',
+}
+export interface MethodTrace {
+  tag: 'trace',
+}
+export interface MethodPatch {
+  tag: 'patch',
+}
+export interface MethodOther {
+  tag: 'other',
+  val: string,
+}
 export type Result<T, E> = { tag: 'ok', val: T } | { tag: 'err', val: E };
 
 export class Fields {
-  constructor()
+  /**
+   * This type does not have a public constructor.
+   */
+  private constructor();
   /**
   * @throws {HeaderError} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   static fromList(entries: Array<[FieldName, FieldValue]>): Fields;
-  /**
-  * @throws {HeaderError} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  append(name: FieldName, value: FieldValue): void;
-  entries(): Array<[FieldName, FieldValue]>;
+  get(name: FieldName): Array<FieldValue>;
+  copyAll(): Array<[FieldName, FieldValue]>;
 }
 
-export class FutureIncomingResponse {
+export class Request {
   /**
    * This type does not have a public constructor.
    */
   private constructor();
-  subscribe(): Pollable;
-  get(): Result<Result<IncomingResponse, ErrorCode>, void> | undefined;
-}
-
-export class FutureTrailers {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  subscribe(): Pollable;
-  get(): Result<Result<Trailers | undefined, ErrorCode>, void> | undefined;
-}
-
-export class IncomingBody {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  stream(): InputStream;
-  static finish(this_: IncomingBody): FutureTrailers;
-}
-
-export class IncomingRequest {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  method(): Method;
-  pathWithQuery(): string | undefined;
-  scheme(): Scheme | undefined;
-  authority(): string | undefined;
-  headers(): Headers;
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  consume(): IncomingBody;
-}
-
-export class IncomingResponse {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  status(): StatusCode;
-  headers(): Headers;
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  consume(): IncomingBody;
-}
-
-export class OutgoingBody {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  write(): OutputStream;
-  /**
-  * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  static finish(this_: OutgoingBody, trailers: Trailers | undefined): void;
-}
-
-export class OutgoingRequest {
-  constructor(headers: Headers)
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  body(): OutgoingBody;
+  static new(headers: Headers, contents: AsyncIterable<number> | undefined, trailers: PromiseLike<Result<Trailers | undefined, ErrorCode>> & { [Symbol.dispose]?(): void }, options: RequestOptions | undefined): [Request, PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void }];
+  getMethod(): Method;
   /**
   * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   setMethod(method: Method): void;
+  getPathWithQuery(): string | undefined;
   /**
   * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   setPathWithQuery(pathWithQuery: string | undefined): void;
+  getScheme(): Scheme | undefined;
   /**
   * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   setScheme(scheme: Scheme | undefined): void;
+  getAuthority(): string | undefined;
   /**
   * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   setAuthority(authority: string | undefined): void;
+  getOptions(): RequestOptions | undefined;
+  getHeaders(): Headers;
+  static consumeBody(this_: Request, res: PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void }): [AsyncIterable<number>, PromiseLike<Result<Trailers | undefined, ErrorCode>> & { [Symbol.dispose]?(): void }];
 }
 
-export class OutgoingResponse {
-  constructor(headers: Headers)
+export class RequestOptions {
+  constructor()
+  /**
+  * @throws {RequestOptionsError} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
+  */
+  setConnectTimeout(duration: Duration | undefined): void;
+  /**
+  * @throws {RequestOptionsError} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
+  */
+  setFirstByteTimeout(duration: Duration | undefined): void;
+  /**
+  * @throws {RequestOptionsError} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
+  */
+  setBetweenBytesTimeout(duration: Duration | undefined): void;
+  clone(): RequestOptions;
+}
+
+export class Response {
+  /**
+   * This type does not have a public constructor.
+   */
+  private constructor();
+  static new(headers: Headers, contents: AsyncIterable<number> | undefined, trailers: PromiseLike<Result<Trailers | undefined, ErrorCode>> & { [Symbol.dispose]?(): void }): [Response, PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void }];
+  getStatusCode(): StatusCode;
   /**
   * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
   setStatusCode(statusCode: StatusCode): void;
-  /**
-  * @throws {undefined} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  body(): OutgoingBody;
-}
-
-export class RequestOptions {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-}
-
-export class ResponseOutparam {
-  /**
-   * This type does not have a public constructor.
-   */
-  private constructor();
-  static set(param: ResponseOutparam, response: Result<OutgoingResponse, ErrorCode>): void;
+  getHeaders(): Headers;
+  static consumeBody(this_: Response, res: PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void }): [AsyncIterable<number>, PromiseLike<Result<Trailers | undefined, ErrorCode>> & { [Symbol.dispose]?(): void }];
 }

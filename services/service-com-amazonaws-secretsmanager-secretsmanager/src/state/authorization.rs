@@ -714,9 +714,12 @@ fn caller<Eng: Send + Sync + 'static>(
             caller.arn = user.arn.clone();
             caller.identity_arn = user.arn.clone();
             caller.principals = vec![user.arn.clone()];
+        } else {
+            #[cfg(target_family = "wasm")]
+            {
+                caller = remote_resolve_from_iam(&access_key_id, caller);
+            }
         }
-        // else: on wasm32-wasip2, [`remote_resolve_from_iam`] is the intended next step
-        // here — see its doc comment for why it isn't called yet.
     }
     if let Some(role_name) = ::service_common::iam_role::assumed_role_session_role_name(&caller.arn)
     {
@@ -757,21 +760,30 @@ fn caller<Eng: Send + Sync + 'static>(
 /// returned unchanged, which is the SAME "no IAM store reachable" fallback this
 /// gate already makes for an engine with no IAM store at all.
 ///
-/// NOT CALLED YET. Wiring this in (uncomment the call site above) makes every
-/// Secrets Manager operation panic the whole component: this specific
-/// `wasi:http/outgoing-handler` call — to `embedded-iam`'s internal endpoint,
-/// whether made directly or via `embedded-console-service`'s relay — fails
-/// with `call_component`'s `.expect("ready after block")` every time, isolated
-/// and confirmed via a DEBUG build (ruling out release-mode panic-location
-/// misattribution) and via disabling just this call site (confirmed the KMS
-/// outgoing call AND the rest of the library-extraction refactor are fine —
-/// `CreateSecret` still correctly reaches KMS when this call is skipped). The
-/// difference between this call and the proven-working KMS one is not yet
-/// understood; both use the exact same `call_component` function. Needs
-/// further investigation (a wasmtime-native repro outside the browser/jco
-/// stack would help separate "this toolchain's JS shim" from "this project's
-/// code" as the source) before this can be wired in safely.
-#[allow(dead_code)]
+/// Drives [`embedded_console::call_component`]'s now-`async fn` call to
+/// completion with `wit_bindgen::block_on`, keeping `caller()`/`decide()`/
+/// `authorize_*` themselves fully synchronous.
+///
+/// STILL BROKEN under `jco --async-mode jspi --async-wasi-imports` in a real
+/// browser, but DIFFERENTLY broken than before: the old "pollable has been
+/// disposed" symptom (preview2-shim's browser `block()` never truly blocking)
+/// is gone, replaced by `wit-bindgen`'s own
+/// `assertion failed: task_state::get().is_null()`. Isolated this round: it
+/// is NOT specific to `block_on`, or to this IAM call, or to a two-hop relay —
+/// disabling this call site entirely and testing the KMS call ALONE (plain
+/// `.await` on `wstd::http::Client`, no `block_on` involved) hits the
+/// identical panic. The common factor is that this component is both a
+/// `wasi:http` SERVER (its own exported, JSPI-async `handle()`) and a CLIENT
+/// (an outgoing call made from within handling that same request) — exactly
+/// the shape WASI 0.3's `wasi:http/middleware` world names explicitly. Under
+/// `--async-wasi-imports`, the outgoing call's import-side lowering appears to
+/// re-enter the same `task_state` slot the export's `start_task` already
+/// occupies, regardless of which Rust-level mechanism (raw `block_on` or a
+/// bare `.await`) drives it. This looks like a genuine limitation of this
+/// `jco` version's JSPI support for the server-calls-out-while-serving
+/// pattern, not a bug in this file's own code — see this crate and
+/// `aws-emulator-embedded-console`'s `outgoing.rs` for the full history of
+/// what's been tried.
 #[cfg(target_family = "wasm")]
 fn remote_resolve_from_iam(access_key_id: &str, caller: Caller) -> Caller {
     const INTERNAL_RESOLVE_ACCESS_KEY_PATH: &str = "/__internal/iam/resolve-access-key";
@@ -785,7 +797,8 @@ fn remote_resolve_from_iam(access_key_id: &str, caller: Caller) -> Caller {
         return caller;
     };
 
-    let response = ::embedded_console::call_component(IAM_AUTHORITY, request);
+    let response =
+        ::wit_bindgen::block_on(::embedded_console::call_component(IAM_AUTHORITY, request));
     if !response.status().is_success() {
         return caller;
     }

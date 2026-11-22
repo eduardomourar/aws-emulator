@@ -33,6 +33,12 @@ emulator-paths = { path = "../emulator-paths", package = "aws-emulator-emulator-
 emulator-telemetry = { path = "../emulator-telemetry", package = "aws-emulator-emulator-telemetry", version = "*" }
 aws-smithy-schema-server = { path = "../smithy-schema-server", package = "aws-emulator-smithy-schema-server", version = "*" }
 
+# WASM-EMBEDDED EXPERIMENT (wasip3): aws-lc-sys ships no pregenerated FFI bindings for
+# wasm32-wasip3, so it must run bindgen itself at build time; wasm32-wasip2 (and every
+# other target) keeps using the prebuilt bindings (default), which already work there.
+[target.'cfg(all(target_os = "wasi", target_env = "p3"))'.dependencies]
+aws-lc-rs = { version = "1", features = ["bindgen"] }
+
 # WASM-EMBEDDED EXPERIMENT: real sockets, TLS listeners and the standalone server binary
 # only exist off wasm32 — `listeners.rs`/`tls_certificate_authority.rs`/`java_truststore.rs`
 # are cfg'd out for wasm32 in src/lib.rs, so these crates are never referenced there either.

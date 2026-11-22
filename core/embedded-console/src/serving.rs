@@ -27,19 +27,25 @@ pub fn runtime() -> &'static tokio::runtime::Runtime {
     })
 }
 
-/// Collects `request`'s body into `bytes::Bytes`, calls `handler` with the
+/// Collects `request`'s body into `bytes::Bytes`, awaits `handler` with the
 /// resulting plain `http::Request`, and converts its `http::Response` back into
 /// the `wstd`-shaped response a `#[wstd::http_server]`-attributed `main`
-/// returns.
-pub async fn handle_with(
+/// returns. `handler` is async because every caller now either drives a
+/// `wstd`/WASI-0.3-native outgoing call (genuinely `async fn` at the WIT
+/// level — there is no synchronous variant) or dispatches through a nested
+/// tokio runtime that itself may make one.
+pub async fn handle_with<F>(
     request: Request<Body>,
-    handler: impl FnOnce(http::Request<bytes::Bytes>) -> http::Response<bytes::Bytes>,
-) -> Result<Response<Body>, Error> {
+    handler: impl FnOnce(http::Request<bytes::Bytes>) -> F,
+) -> Result<Response<Body>, Error>
+where
+    F: std::future::Future<Output = http::Response<bytes::Bytes>>,
+{
     let (parts, body) = request.into_parts();
     let body_bytes = body.into_boxed_body().collect().await?.to_bytes();
     let request = http::Request::from_parts(parts, body_bytes);
 
-    let response = handler(request);
+    let response = handler(request).await;
 
     let (parts, body) = response.into_parts();
     Ok(http::Response::from_parts(parts, Body::from(body)))

@@ -39,7 +39,7 @@ fn router() -> &'static smithy_server_runtime::MultiServiceRouter {
 async fn main(
     request: wstd::http::Request<wstd::http::body::Body>,
 ) -> Result<wstd::http::Response<wstd::http::body::Body>, wstd::http::Error> {
-    handle_with(request, |req| runtime().block_on(router().dispatch(req))).await
+    handle_with(request, |req| async move { runtime().block_on(router().dispatch(req)) }).await
 }
 
 /// Falls back, for any request this component's own router has no service
@@ -53,6 +53,6 @@ impl smithy_server_runtime::ExternalDispatch for KmsCallback {
         &self,
         request: http::Request<bytes::Bytes>,
     ) -> std::pin::Pin<Box<dyn std::future::Future<Output = http::Response<bytes::Bytes>> + Send + '_>> {
-        Box::pin(async move { call_component(KMS_AUTHORITY, request) })
+        Box::pin(async move { call_component(KMS_AUTHORITY, request).await })
     }
 }

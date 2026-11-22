@@ -9,7 +9,7 @@ import {
 } from "https://esm.sh/@aws-sdk/client-kms@3?target=es2022";
 
 import { InMemoryHttpClient, EmulatorHttpHandler } from "./bridge-common.js";
-import { incomingHandler } from "./jco-out-kms/aws_emulator_embedded_kms.js";
+import { handler as incomingHandler } from "./jco-out-kms/aws_emulator_embedded_kms.js";
 
 // Bridges the AWS SDK's HTTP layer straight into the KMS component's own
 // `incoming-handler` export — the same component the Secrets Manager page reaches

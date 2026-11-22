@@ -59,7 +59,7 @@ roxmltree = "0.20"
 # through the ONE cryptography library this workspace verifies signatures with (the same one
 # `service-common`'s JOSE reading uses). An in-process COMPUTATION over data: it opens no
 # listener and reads nothing off the host.
-ring = "0.17"
+ring = { workspace = true }
 # ... and the X.509 certificate a provider's metadata publishes its verification key as,
 # decoded by the maintained certificate crate rather than by walking DER here.
 x509-cert = "0.2"
@@ -80,7 +80,7 @@ hex = { workspace = true }
 rcgen = "0.13"
 # ... and the signature over the `SignedInfo` those responses carry is made with the same
 # library the service verifies it with, so the test signs rather than replays a signature.
-ring = "0.17"
+ring = { workspace = true }
 # The MFA suite computes the one-time pass code a provisioned virtual MFA device emits — the
 # HMAC-SHA-1 of its time step over its base32 seed (RFC 6238) — itself, so what a mint's
 # challenge is decided against is the arithmetic the holder of the device does rather than the

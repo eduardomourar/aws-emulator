@@ -32,7 +32,7 @@ aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-v
 # AES-256-GCM (and the OS CSPRNG for its nonce) for the envelope a secret value is
 # sealed in under the data key KMS wrapped, and the SHA-256 an idempotent replay
 # compares a value by; already in this workspace's lock file.
-ring = "0.17"
+ring = { workspace = true }
 # Secret version ids are UUIDs (SecretVersionIdType, len 32..64), and the six
 # random characters that end a secret's ARN are drawn from a random UUID too.
 uuid = { version = "1", features = ["v4"] }
@@ -70,6 +70,14 @@ chrono = { version = "0.4", default-features = false, features = ["std"] }
 # for every native build.
 [target.'cfg(target_family = "wasm")'.dependencies]
 embedded-console = { path = "../../core/embedded-console", package = "aws-emulator-embedded-console" }
+# `wit_bindgen::block_on` drives the async `embedded_console::call_component` call to
+# completion from `remote_resolve_from_iam`'s otherwise-synchronous caller, without
+# threading `async`/`.await` through the whole (synchronous, native-shared) authorization
+# decision chain (`caller`/`decide`/`authorize_*`, called from every operation file).
+# Unlike nesting another `tokio` runtime, it doesn't touch the shared `task_state` slot
+# the component's own exported `handle()` task already occupies — it drives its own local
+# `TaskState` directly, so it doesn't conflict with an already-active export task.
+wit-bindgen = { version = "0.63", default-features = false, features = ["async"] }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { workspace = true }

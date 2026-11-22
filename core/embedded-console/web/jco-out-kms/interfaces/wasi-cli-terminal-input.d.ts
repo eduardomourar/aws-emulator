@@ -1,4 +1,4 @@
-/** @module Interface wasi:cli/terminal-input@0.2.12 **/
+/** @module Interface wasi:cli/terminal-input@0.3.0 **/
 
 export class TerminalInput {
   /**

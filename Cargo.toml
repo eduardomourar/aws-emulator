@@ -950,7 +950,46 @@ reqwest = { version = "0.12", default-features = false, features = [
 ] }
 rustls = { version = "0.23", features = ["aws-lc-rs"] }
 rustls-webpki = "0.103"
+# Pinned to `ring`'s unreleased git `main` (not the published 0.17 release, which links a
+# prebuilt wasm32 object that wasm32-wasip3's `--cooperative-threading` linker rejects
+# outright). `main` compiles its core from source for wasm32 instead and is confirmed to
+# link clean for wasip3, with no API change for the surface this workspace uses
+# (`SystemRandom`/`SecureRandom`, `hmac`, `aead`, `hkdf`). One workspace-wide pin so every
+# crate resolves to the SAME `ring` instance rather than drifting per-crate.
+ring = { git = "https://github.com/briansmith/ring.git", rev = "b287c58" }
+# `wstd`'s published 0.6.8 only speaks WASI 0.2; its unreleased git `main` adds real WASI 0.3
+# (`wasip3::http`), which is the whole point of this migration. `wstd` is WASI-only by
+# design — it was never meant to compile for a native target at all — and every consumer in
+# this workspace already gates it behind a wasm-only
+# `[target.'cfg(target_family = "wasm")'.dependencies]` section, so a native build never
+# attempts to compile it in the first place. Plain upstream `main`, unpatched.
+wstd = { git = "https://github.com/bytecodealliance/wstd", rev = "217def773b3b2d8a870b743d595ba3ed7d2d04fe", default-features = false }
+# `aws-lc-sys` ships no pregenerated FFI bindings for wasm32-wasip3, so it must run
+# `bindgen` itself at build time there; every other target (including wasm32-wasip2) keeps
+# the default prebuilt bindings, which already work. One workspace-wide pin so every crate
+# resolves to the SAME `aws-lc-rs` instance rather than drifting per-crate.
+aws-lc-rs = "1"
 aws-sigv4 = { version = "1", features = ["http1"] }
 aws-credential-types = "1"
 nix = { version = "0.31", features = ["signal"] }
 automod = "1.0.17"
+
+# `psm` (via `stacker`, pulled transitively through `insta`/`pest_stack_guard`) ships a
+# precompiled wasm32 assembly object unconditionally, which wasm32-wasip3's
+# `--cooperative-threading` linker rejects the same way it rejected `ring`'s. Patched to a
+# fork's branch that teaches `psm`'s build.rs to skip that object for `wasm32-wasip3`
+# specifically (`stacker` becomes a documented no-op there, same as every other unsupported
+# platform it already no-ops on) rather than disabling real stack-overflow guarding anywhere
+# else.
+[patch.crates-io]
+stacker = { git = "https://github.com/eduardomourar/stacker", rev = "226ff6263b0d4b2a7cdcf2420d3e47aa0b065127" }
+psm = { git = "https://github.com/eduardomourar/stacker", rev = "226ff6263b0d4b2a7cdcf2420d3e47aa0b065127" }
+# `tempfile` (via `insta`, pulled the same way as `stacker`/`psm` above) pins the published
+# 3.27.0's `getrandom` requirement to the exact `^0.3` range, which can't resolve to the
+# `getrandom 0.4` already in this lockfile (needed for wasip3 support). The fork's
+# `wasip3-support` branch narrows `getrandom` to `"0.4"` for `cfg(all(target_os = "wasi",
+# target_env = "p3"))`, with its other section now excluding `p3` explicitly
+# (`not(target_env = "p3")`), so the two sections are mutually exclusive and only one
+# `getrandom` major ever applies per target — confirmed via `Cargo.lock` resolving to
+# `getrandom 0.4.3` alone (not also `0.3.4`) for a `wasm32-wasip3` build.
+tempfile = { git = "https://github.com/eduardomourar/tempfile", rev = "887cfb54bac29b56f475cd5066fa421fe93d3e5f" }

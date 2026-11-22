@@ -36,7 +36,7 @@ service-common = { path = "../common" }
 # and checks its tokens with (`service-common`'s JOSE reading and the user-pool service),
 # so it is already in this workspace's build and lockfile and no capability class arrives
 # with this declaration — and no second implementation of the primitive is written.
-ring = "0.17"
+ring = { workspace = true }
 # PEM decoding of the `publicKeyMaterial` an `ImportPublicKey` call carries.
 pem = "3"
 # SubjectPublicKeyInfo parsing, so an import is refused unless the material really is a

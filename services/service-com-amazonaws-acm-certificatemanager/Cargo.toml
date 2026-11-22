@@ -73,7 +73,7 @@ hex = { workspace = true }
 # and the external-account-binding MAC an ACME client sends, with the same maintained
 # cryptography library the service verifies them through — never with the code under test.
 # TEST-ONLY.
-ring = "0.17"
+ring = { workspace = true }
 # RSA key GENERATION, which `ring` does not do, so one row of the account-key table can be
 # an RSA key. TEST-ONLY.
 aws-lc-rs = "1"

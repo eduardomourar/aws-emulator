@@ -7,7 +7,7 @@ import {
 } from "https://esm.sh/@aws-sdk/client-iam@3?target=es2022";
 
 import { InMemoryHttpClient, EmulatorHttpHandler } from "./bridge-common.js";
-import { incomingHandler } from "./jco-out-iam/aws_emulator_embedded_iam.js";
+import { handler as incomingHandler } from "./jco-out-iam/aws_emulator_embedded_iam.js";
 
 const emulator = new InMemoryHttpClient(incomingHandler);
 

@@ -39,7 +39,7 @@ uuid = { version = "1", features = ["v5"] }
 html-escape = "0.2"
 # AES-256-GCM, SHA-256 and the system randomness behind the sealed pagination cursor every
 # `@paginated` read of this service hands out (`state::page_cursor`).
-ring = "0.17"
+ring = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

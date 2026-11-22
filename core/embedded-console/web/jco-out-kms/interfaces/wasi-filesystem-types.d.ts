@@ -1,85 +1,118 @@
-/** @module Interface wasi:filesystem/types@0.2.12 **/
+/** @module Interface wasi:filesystem/types@0.3.0 **/
+export type ErrorCode = ErrorCodeAccess | ErrorCodeAlready | ErrorCodeBadDescriptor | ErrorCodeBusy | ErrorCodeDeadlock | ErrorCodeQuota | ErrorCodeExist | ErrorCodeFileTooLarge | ErrorCodeIllegalByteSequence | ErrorCodeInProgress | ErrorCodeInterrupted | ErrorCodeInvalid | ErrorCodeIo | ErrorCodeIsDirectory | ErrorCodeLoop | ErrorCodeTooManyLinks | ErrorCodeMessageSize | ErrorCodeNameTooLong | ErrorCodeNoDevice | ErrorCodeNoEntry | ErrorCodeNoLock | ErrorCodeInsufficientMemory | ErrorCodeInsufficientSpace | ErrorCodeNotDirectory | ErrorCodeNotEmpty | ErrorCodeNotRecoverable | ErrorCodeUnsupported | ErrorCodeNoTty | ErrorCodeNoSuchDevice | ErrorCodeOverflow | ErrorCodeNotPermitted | ErrorCodePipe | ErrorCodeReadOnly | ErrorCodeInvalidSeek | ErrorCodeTextFileBusy | ErrorCodeCrossDevice | ErrorCodeOther;
+export interface ErrorCodeAccess {
+  tag: 'access',
+}
+export interface ErrorCodeAlready {
+  tag: 'already',
+}
+export interface ErrorCodeBadDescriptor {
+  tag: 'bad-descriptor',
+}
+export interface ErrorCodeBusy {
+  tag: 'busy',
+}
+export interface ErrorCodeDeadlock {
+  tag: 'deadlock',
+}
+export interface ErrorCodeQuota {
+  tag: 'quota',
+}
+export interface ErrorCodeExist {
+  tag: 'exist',
+}
+export interface ErrorCodeFileTooLarge {
+  tag: 'file-too-large',
+}
+export interface ErrorCodeIllegalByteSequence {
+  tag: 'illegal-byte-sequence',
+}
+export interface ErrorCodeInProgress {
+  tag: 'in-progress',
+}
+export interface ErrorCodeInterrupted {
+  tag: 'interrupted',
+}
+export interface ErrorCodeInvalid {
+  tag: 'invalid',
+}
+export interface ErrorCodeIo {
+  tag: 'io',
+}
+export interface ErrorCodeIsDirectory {
+  tag: 'is-directory',
+}
+export interface ErrorCodeLoop {
+  tag: 'loop',
+}
+export interface ErrorCodeTooManyLinks {
+  tag: 'too-many-links',
+}
+export interface ErrorCodeMessageSize {
+  tag: 'message-size',
+}
+export interface ErrorCodeNameTooLong {
+  tag: 'name-too-long',
+}
+export interface ErrorCodeNoDevice {
+  tag: 'no-device',
+}
+export interface ErrorCodeNoEntry {
+  tag: 'no-entry',
+}
+export interface ErrorCodeNoLock {
+  tag: 'no-lock',
+}
+export interface ErrorCodeInsufficientMemory {
+  tag: 'insufficient-memory',
+}
+export interface ErrorCodeInsufficientSpace {
+  tag: 'insufficient-space',
+}
+export interface ErrorCodeNotDirectory {
+  tag: 'not-directory',
+}
+export interface ErrorCodeNotEmpty {
+  tag: 'not-empty',
+}
+export interface ErrorCodeNotRecoverable {
+  tag: 'not-recoverable',
+}
+export interface ErrorCodeUnsupported {
+  tag: 'unsupported',
+}
+export interface ErrorCodeNoTty {
+  tag: 'no-tty',
+}
+export interface ErrorCodeNoSuchDevice {
+  tag: 'no-such-device',
+}
+export interface ErrorCodeOverflow {
+  tag: 'overflow',
+}
+export interface ErrorCodeNotPermitted {
+  tag: 'not-permitted',
+}
+export interface ErrorCodePipe {
+  tag: 'pipe',
+}
+export interface ErrorCodeReadOnly {
+  tag: 'read-only',
+}
+export interface ErrorCodeInvalidSeek {
+  tag: 'invalid-seek',
+}
+export interface ErrorCodeTextFileBusy {
+  tag: 'text-file-busy',
+}
+export interface ErrorCodeCrossDevice {
+  tag: 'cross-device',
+}
+export interface ErrorCodeOther {
+  tag: 'other',
+  val: string | undefined,
+}
 export type Filesize = bigint;
-export type InputStream = import('./wasi-io-streams.js').InputStream;
-/**
- * # Variants
- * 
- * ## `"access"`
- * 
- * ## `"would-block"`
- * 
- * ## `"already"`
- * 
- * ## `"bad-descriptor"`
- * 
- * ## `"busy"`
- * 
- * ## `"deadlock"`
- * 
- * ## `"quota"`
- * 
- * ## `"exist"`
- * 
- * ## `"file-too-large"`
- * 
- * ## `"illegal-byte-sequence"`
- * 
- * ## `"in-progress"`
- * 
- * ## `"interrupted"`
- * 
- * ## `"invalid"`
- * 
- * ## `"io"`
- * 
- * ## `"is-directory"`
- * 
- * ## `"loop"`
- * 
- * ## `"too-many-links"`
- * 
- * ## `"message-size"`
- * 
- * ## `"name-too-long"`
- * 
- * ## `"no-device"`
- * 
- * ## `"no-entry"`
- * 
- * ## `"no-lock"`
- * 
- * ## `"insufficient-memory"`
- * 
- * ## `"insufficient-space"`
- * 
- * ## `"not-directory"`
- * 
- * ## `"not-empty"`
- * 
- * ## `"not-recoverable"`
- * 
- * ## `"unsupported"`
- * 
- * ## `"no-tty"`
- * 
- * ## `"no-such-device"`
- * 
- * ## `"overflow"`
- * 
- * ## `"not-permitted"`
- * 
- * ## `"pipe"`
- * 
- * ## `"read-only"`
- * 
- * ## `"invalid-seek"`
- * 
- * ## `"text-file-busy"`
- * 
- * ## `"cross-device"`
- */
-export type ErrorCode = "access" | "would-block" | "already" | "bad-descriptor" | "busy" | "deadlock" | "quota" | "exist" | "file-too-large" | "illegal-byte-sequence" | "in-progress" | "interrupted" | "invalid" | "io" | "is-directory" | "loop" | "too-many-links" | "message-size" | "name-too-long" | "no-device" | "no-entry" | "no-lock" | "insufficient-memory" | "insufficient-space" | "not-directory" | "not-empty" | "not-recoverable" | "unsupported" | "no-tty" | "no-such-device" | "overflow" | "not-permitted" | "pipe" | "read-only" | "invalid-seek" | "text-file-busy" | "cross-device";
-export type OutputStream = import('./wasi-io-streams.js').OutputStream;
 export interface DescriptorFlags {
   read?: boolean,
   write?: boolean,
@@ -88,35 +121,41 @@ export interface DescriptorFlags {
   requestedWriteSync?: boolean,
   mutateDirectory?: boolean,
 }
-/**
- * # Variants
- * 
- * ## `"unknown"`
- * 
- * ## `"block-device"`
- * 
- * ## `"character-device"`
- * 
- * ## `"directory"`
- * 
- * ## `"fifo"`
- * 
- * ## `"symbolic-link"`
- * 
- * ## `"regular-file"`
- * 
- * ## `"socket"`
- */
-export type DescriptorType = "unknown" | "block-device" | "character-device" | "directory" | "fifo" | "symbolic-link" | "regular-file" | "socket";
+export type DescriptorType = DescriptorTypeBlockDevice | DescriptorTypeCharacterDevice | DescriptorTypeDirectory | DescriptorTypeFifo | DescriptorTypeSymbolicLink | DescriptorTypeRegularFile | DescriptorTypeSocket | DescriptorTypeOther;
+export interface DescriptorTypeBlockDevice {
+  tag: 'block-device',
+}
+export interface DescriptorTypeCharacterDevice {
+  tag: 'character-device',
+}
+export interface DescriptorTypeDirectory {
+  tag: 'directory',
+}
+export interface DescriptorTypeFifo {
+  tag: 'fifo',
+}
+export interface DescriptorTypeSymbolicLink {
+  tag: 'symbolic-link',
+}
+export interface DescriptorTypeRegularFile {
+  tag: 'regular-file',
+}
+export interface DescriptorTypeSocket {
+  tag: 'socket',
+}
+export interface DescriptorTypeOther {
+  tag: 'other',
+  val: string | undefined,
+}
 export type LinkCount = bigint;
-export type Datetime = import('./wasi-clocks-wall-clock.js').Datetime;
+export type Instant = import('./wasi-clocks-system-clock.js').Instant;
 export interface DescriptorStat {
   type: DescriptorType,
   linkCount: LinkCount,
   size: Filesize,
-  dataAccessTimestamp?: Datetime,
-  dataModificationTimestamp?: Datetime,
-  statusChangeTimestamp?: Datetime,
+  dataAccessTimestamp?: Instant,
+  dataModificationTimestamp?: Instant,
+  statusChangeTimestamp?: Instant,
 }
 export interface PathFlags {
   symlinkFollow?: boolean,
@@ -131,38 +170,30 @@ export interface MetadataHashValue {
   lower: bigint,
   upper: bigint,
 }
+export type Result<T, E> = { tag: 'ok', val: T } | { tag: 'err', val: E };
 
 export class Descriptor {
   /**
    * This type does not have a public constructor.
    */
   private constructor();
+  readViaStream(offset: Filesize): [AsyncIterable<number>, PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void }];
+  writeViaStream(data: AsyncIterable<number>, offset: Filesize): PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void };
+  appendViaStream(data: AsyncIterable<number>): PromiseLike<Result<void, ErrorCode>> & { [Symbol.dispose]?(): void };
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  readViaStream(offset: Filesize): InputStream;
+  getFlags(): Promise<DescriptorFlags>;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  writeViaStream(offset: Filesize): OutputStream;
+  stat(): Promise<DescriptorStat>;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  appendViaStream(): OutputStream;
+  openAt(pathFlags: PathFlags, path: string, openFlags: OpenFlags, flags: DescriptorFlags): Promise<Descriptor>;
   /**
   * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
   */
-  getFlags(): DescriptorFlags;
-  /**
-  * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  stat(): DescriptorStat;
-  /**
-  * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  openAt(pathFlags: PathFlags, path: string, openFlags: OpenFlags, flags: DescriptorFlags): Descriptor;
-  /**
-  * @throws {ErrorCode} To return the error of the result, throw it, or an `Error` that has it as its `payload`.
-  */
-  metadataHash(): MetadataHashValue;
+  metadataHash(): Promise<MetadataHashValue>;
 }

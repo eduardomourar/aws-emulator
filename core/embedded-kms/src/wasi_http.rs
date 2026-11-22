@@ -22,5 +22,5 @@ fn router() -> &'static smithy_server_runtime::MultiServiceRouter {
 
 #[wstd::http_server]
 async fn main(request: Request<Body>) -> Result<Response<Body>, Error> {
-    handle_with(request, |req| runtime().block_on(router().dispatch(req))).await
+    handle_with(request, |req| async move { runtime().block_on(router().dispatch(req)) }).await
 }

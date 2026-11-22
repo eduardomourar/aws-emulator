@@ -70,7 +70,7 @@ tracing = { workspace = true }
 aws-lc-rs = "1"
 # HMAC-SHA256 for the app client `SecretHash` verification
 # (`src/state/pool_resources.rs`).
-ring = "0.17"
+ring = { workspace = true }
 # A custom sender trigger's event carries the encrypted code as text, so the message is
 # base64-encoded into it (`src/state/lambda_triggers/custom_email.rs`).
 base64 = "0.22"
@@ -83,8 +83,10 @@ subtle = "2.6"
 # 2.0 authentication requests for your user pool", so this service issues a REAL
 # self-signed X.509 certificate over the pool's own RSA signing key for every pool it
 # creates (`src/state/saml_signing_certificate.rs`). rcgen is the generator this tree
-# already uses for certificate material.
-rcgen = "0.13"
+# already uses for certificate material. Backend is per-target below: `ring` (rcgen's
+# default) links a prebuilt wasm32 object wasm32-wasip3's linker rejects; `aws-lc-rs` (also
+# already proven to compile for wasip3 elsewhere in this tree) is the alternative backend
+# rcgen itself offers via a Cargo feature, so wasm builds use that instead.
 # Spells the private key of a user's software token in base32, the encoding an
 # authenticator app provisioned with a shared secret reads a key in
 # (`src/state/software_tokens.rs`).
@@ -113,6 +115,10 @@ time = { version = "0.3.55", default-features = false, features = ["std"] }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { workspace = true, features = ["time"] }
+rcgen = "0.13"
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+rcgen = { version = "0.13", default-features = false, features = ["aws_lc_rs"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }
