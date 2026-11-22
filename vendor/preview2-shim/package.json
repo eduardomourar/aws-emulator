@@ -1,0 +1,1 @@
+{"name":"@bytecodealliance/preview2-shim","type":"module","exports":{"./cli":"./cli.js","./clocks":"./clocks.js","./filesystem":"./filesystem.js","./http":"./http.js","./io":"./io.js","./random":"./random.js","./sockets":"./sockets.js","./in-memory-http":"./in-memory-http.js"}}

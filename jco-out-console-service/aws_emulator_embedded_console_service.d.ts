@@ -1,0 +1,21 @@
+// world root:component/root
+export type * as WasiCliEnvironment030 from './interfaces/wasi-cli-environment.js'; // import wasi:cli/environment@0.3.0
+export type * as WasiCliExit030 from './interfaces/wasi-cli-exit.js'; // import wasi:cli/exit@0.3.0
+export type * as WasiCliStderr030 from './interfaces/wasi-cli-stderr.js'; // import wasi:cli/stderr@0.3.0
+export type * as WasiCliStdin030 from './interfaces/wasi-cli-stdin.js'; // import wasi:cli/stdin@0.3.0
+export type * as WasiCliStdout030 from './interfaces/wasi-cli-stdout.js'; // import wasi:cli/stdout@0.3.0
+export type * as WasiCliTerminalInput030 from './interfaces/wasi-cli-terminal-input.js'; // import wasi:cli/terminal-input@0.3.0
+export type * as WasiCliTerminalOutput030 from './interfaces/wasi-cli-terminal-output.js'; // import wasi:cli/terminal-output@0.3.0
+export type * as WasiCliTerminalStderr030 from './interfaces/wasi-cli-terminal-stderr.js'; // import wasi:cli/terminal-stderr@0.3.0
+export type * as WasiCliTerminalStdin030 from './interfaces/wasi-cli-terminal-stdin.js'; // import wasi:cli/terminal-stdin@0.3.0
+export type * as WasiCliTerminalStdout030 from './interfaces/wasi-cli-terminal-stdout.js'; // import wasi:cli/terminal-stdout@0.3.0
+export type * as WasiCliTypes030 from './interfaces/wasi-cli-types.js'; // import wasi:cli/types@0.3.0
+export type * as WasiClocksMonotonicClock030 from './interfaces/wasi-clocks-monotonic-clock.js'; // import wasi:clocks/monotonic-clock@0.3.0
+export type * as WasiClocksSystemClock030 from './interfaces/wasi-clocks-system-clock.js'; // import wasi:clocks/system-clock@0.3.0
+export type * as WasiClocksTypes030 from './interfaces/wasi-clocks-types.js'; // import wasi:clocks/types@0.3.0
+export type * as WasiHttpClient030 from './interfaces/wasi-http-client.js'; // import wasi:http/client@0.3.0
+export type * as WasiHttpTypes030 from './interfaces/wasi-http-types.js'; // import wasi:http/types@0.3.0
+export type * as WasiRandomInsecureSeed030 from './interfaces/wasi-random-insecure-seed.js'; // import wasi:random/insecure-seed@0.3.0
+export * as handler from './interfaces/exports/wasi-http-handler.js'; // export wasi:http/handler@0.3.0
+/** Permanently stop this instance and dispose guest-owned host resources. */
+export const _util: { stop(): void; whenIdle(): Promise<void>; };
