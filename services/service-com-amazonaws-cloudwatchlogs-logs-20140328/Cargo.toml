@@ -19,7 +19,12 @@ aws-smithy-types = { workspace = true }
 # `time` beyond the workspace default: the subscription fan-out suite awaits the
 # clock-owed CREATING -> ACTIVE span of the Kinesis stream it delivers to with
 # `tokio::time::sleep`.
-tokio = { workspace = true, features = ["time"] }
+#
+# WASM-EMBEDDED EXPERIMENT: `{ workspace = true, features = [...] }` ADDS these
+# features to the workspace's own set rather than replacing it, so the workspace's
+# "rt-multi-thread" (unsupported on wasm32) was still in the mix; the full set is
+# restored natively below instead.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `preserve_order`: a record an HTTP ingestion endpoint takes in is stored as the document
@@ -84,25 +89,36 @@ aws-sdk-lambda = { version = "1", default-features = false }
 # `CreateExportTask` resolves the S3 bucket its `destination` names against the object
 # store, over the same in-process callback, with the `HeadBucket` this client generates, and
 # the task's worker writes the exported log data there with `PutObject`.
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+#
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped from all four
+# clients below and added back only for native under the target table at the bottom.
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # A log group's `kmsKeyId` may only be associated when the KEY's own policy lets CloudWatch
 # Logs use it for that group, which is read from KMS with the `GetKeyPolicy` this client
 # generates, over the same in-process callback.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `PutDeliverySource` resolves the resource its `resourceArn` names where the owning service
 # holds it; for a CloudFront distribution that is the `GetDistribution` this client generates,
 # driven over the same in-process callback.
-aws-sdk-cloudfront = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudfront = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `CreateImportTask` imports from a CloudTrail Lake event data store, so it resolves the
 # source its `importSourceArn` names where CloudTrail holds it, with the `GetEventDataStore`
 # this client generates, over the same in-process callback.
-aws-sdk-cloudtrail = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudtrail = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # A syslog configuration ingests through a VPC endpoint, and VPC endpoints are Amazon EC2's
 # records: the `vpcEndpointId` a `PutSyslogConfiguration` carries is resolved against that
 # service over the same in-process callback, with the `DescribeVpcEndpoints` this client
 # generates, so this service keeps no second reading of which endpoints the account has
 # (`state::syslog_vpc_endpoint`).
 aws-sdk-ec2 = { version = "1", default-features = false }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudfront = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudtrail = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

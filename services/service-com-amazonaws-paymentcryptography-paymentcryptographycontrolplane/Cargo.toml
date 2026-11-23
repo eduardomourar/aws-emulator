@@ -26,7 +26,9 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -61,6 +63,9 @@ aws-lc-rs = "1"
 # crate rather than by anything hand-rolled here; the `pem` feature is its own PEM
 # framing for them.
 x509-cert = { version = "0.2", features = ["pem"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -19,7 +19,12 @@ aws-smithy-types = { workspace = true }
 # `time` is needed for ReceiveMessage long polling (WaitTimeSeconds), and `rt` for the one
 # bounded in-process task that keeps publishing a queue's backlog while it has one
 # (`state::queue_depth_metrics`).
-tokio = { workspace = true, features = ["time", "rt"] }
+#
+# WASM-EMBEDDED EXPERIMENT: `{ workspace = true, features = [...] }` ADDS these
+# features to the workspace's own set rather than replacing it, so the workspace's
+# "rt-multi-thread" (unsupported on wasm32) was still in the mix; the full set is
+# restored natively below instead.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -52,6 +57,9 @@ service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true 
 # `GetMetricStatistics`, `ListMetrics` and the alarm evaluation read — rather than to a second
 # copy of them (`state::queue_depth_metrics`).
 service-com-amazonaws-cloudwatch-graniteserviceversion20100801 = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time", "rt"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

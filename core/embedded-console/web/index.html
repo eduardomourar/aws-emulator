@@ -24,6 +24,33 @@
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Absolute paths (leading "/"), not relative ones: a relative import-map
+      value resolves against `document.baseURI`, which Floci's client-side
+      router changes via `history.pushState` (e.g. to
+      `/cloud-explorer/aws/streams`) without a real navigation. A relative
+      "./vendor/..." entry would then resolve under that deep path instead of
+      site root, 404ing every lazy-loaded wasm component's shim imports on
+      any page reached by a deep link or a client-side route change.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@bytecodealliance/preview3-shim/cli": "/vendor/preview3-shim/cli.js",
+          "@bytecodealliance/preview3-shim/clocks": "/vendor/preview3-shim/clocks.js",
+          "@bytecodealliance/preview3-shim/filesystem": "/vendor/preview3-shim/filesystem.js",
+          "@bytecodealliance/preview3-shim/http": "/vendor/preview3-shim/http.js",
+          "@bytecodealliance/preview3-shim/random": "/vendor/preview3-shim/random.js",
+          "@bytecodealliance/preview2-shim/cli": "/vendor/preview2-shim/cli.js",
+          "@bytecodealliance/preview2-shim/clocks": "/vendor/preview2-shim/clocks.js",
+          "@bytecodealliance/preview2-shim/filesystem": "/vendor/preview2-shim/filesystem.js",
+          "@bytecodealliance/preview2-shim/http": "/vendor/preview2-shim/http.js",
+          "@bytecodealliance/preview2-shim/io": "/vendor/preview2-shim/io.js",
+          "@bytecodealliance/preview2-shim/random": "/vendor/preview2-shim/random.js",
+          "@bytecodealliance/preview2-shim/sockets": "/vendor/preview2-shim/sockets.js"
+        }
+      }
+    </script>
     <script type="module" src="/external-dispatch-bridge.js"></script>
     <script type="module" crossorigin src="/assets/index-C3enzEpp.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-WkwZ5CU-.js">

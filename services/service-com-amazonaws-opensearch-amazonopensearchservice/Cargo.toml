@@ -16,7 +16,9 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -153,6 +155,9 @@ service-com-amazonaws-cloudwatch-graniteserviceversion20100801 = { workspace = t
 # a write of that configuration in (`state::audit`): the patch document a client sends is
 # applied by the maintained implementation rather than by a walk written here.
 json-patch = { version = "4.2", default-features = false }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

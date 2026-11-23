@@ -7129,7 +7129,9 @@ function gm(e) {
 		})), e.json({ ok: !0 });
 	}), n;
 }
-var _m = gm(), vm = new Zf({
+gm();
+// browser-bundle/secretsmanager-entry.ts
+var _m = new Zf({
 	region: "us-east-1",
 	credentials: {
 		accessKeyId: "test",
@@ -7137,7 +7139,7 @@ var _m = gm(), vm = new Zf({
 	},
 	endpoint: "https://emulator.local.invalid"
 });
-async function ym(e) {
-	return _m(vm).fetch(e);
+async function vm(e) {
+	return gm(_m).fetch(e);
 }
-export { ym as handleSecretsManagerRequest };
+export { vm as handleSecretsManagerRequest };

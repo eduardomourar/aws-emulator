@@ -93,8 +93,28 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-kms", "kms"),
     ("aws-emulator-embedded-sts", "sts"),
     ("aws-emulator-embedded-iam", "iam"),
-    ("aws-emulator-embedded-router", "router"),
+    ("aws-emulator-embedded-cloudwatch", "cloudwatch"),
+    ("aws-emulator-embedded-codebuild", "codebuild"),
+    ("aws-emulator-embedded-cognitoidentityprovider", "cognitoidentityprovider"),
+    ("aws-emulator-embedded-dsql", "dsql"),
+    ("aws-emulator-embedded-paymentcryptography", "paymentcryptography"),
+    ("aws-emulator-embedded-ecr", "ecr"),
+    ("aws-emulator-embedded-sqs", "sqs"),
+    ("aws-emulator-embedded-xray", "xray"),
+    ("aws-emulator-embedded-kinesis", "kinesis"),
 ];
+// `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
+// SERVER that, to answer a request, makes an outgoing CLIENT call to the real
+// target component — a nested async wasm call that reproducibly traps on this
+// toolchain (`wasm trap: cannot enter component instance`, a wit-bindgen JSPI
+// assertion failure), the same limitation that already made `embedded-console-service`'s
+// relay dead code. `web/external-dispatch-bridge.js` does this same SigV4-based
+// dispatch in the browser instead, calling each real component directly with no
+// nesting. The crate's source stays as the authoritative reference for that mapping.
+// Generated but not yet included above, pending a retry in a future session (the
+// wasm32-wasip3 batch build hung partway through this set on this host — not a
+// known compile error, see the session notes): dsql, dynamodb, kinesis,
+// cloudwatchlogs, opensearch, paymentcryptography, ecr, route53, ses, sqs, s3, xray.
 
 fn main() {
     println!("cargo:rerun-if-env-changed={TRIGGER_VAR}");

@@ -16,7 +16,9 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `preserve_order`: every reader that reports a stored segment document answers
@@ -47,6 +49,13 @@ service-com-amazonaws-iam-awsidentitymanagementv20100508 = { workspace = true }
 service-com-amazonaws-cloudwatchlogs-logs-20140328 = { workspace = true }
 # `DescribeKey`: the read that resolves the KMS key selector a
 # `PutEncryptionConfig` names to the key whose ARN the configuration reports.
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]

@@ -8,3 +8,5 @@
 export const secretsManager = undefined as never;
 export const iam = undefined as never;
 export const kms = undefined as never;
+export const kinesis = undefined as never;
+export const sqs = undefined as never;

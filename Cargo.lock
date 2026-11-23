@@ -441,12 +441,87 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-cloudwatch"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-cloudwatch-graniteserviceversion20100801",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-codebuild"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-codebuild-codebuild-20161006",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-cognitoidentityprovider"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-cognitoidentityprovider-awscognitoidentityproviderservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-console"
 version = "0.1.0"
 dependencies = [
  "bytes",
  "http",
  "js-component-bindgen",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-dsql"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-dsql-dsql",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-ecr"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-ecr-amazonec2containerregistry-v20150921",
  "tokio",
  "wstd",
 ]
@@ -469,6 +544,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-kinesis"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-kinesis-kinesis-20131202",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-kms"
 version = "0.1.0"
 dependencies = [
@@ -484,12 +574,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "aws-emulator-embedded-router"
+name = "aws-emulator-embedded-paymentcryptography"
 version = "0.1.0"
 dependencies = [
  "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
  "bytes",
  "http",
+ "service-com-amazonaws-paymentcryptography-paymentcryptographycontrolplane",
+ "tokio",
  "wstd",
 ]
 
@@ -509,6 +604,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-sqs"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-sqs-amazonsqs",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-sts"
 version = "0.1.0"
 dependencies = [
@@ -519,6 +629,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-sts-awssecuritytokenservicev20110615",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-xray"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-xray-awsxray",
  "tokio",
  "wstd",
 ]
@@ -20432,7 +20557,6 @@ dependencies = [
  "sha2 0.10.9",
  "tokio",
  "tracing",
- "tracing-subscriber",
  "uuid",
  "zip",
 ]

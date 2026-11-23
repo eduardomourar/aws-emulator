@@ -17,6 +17,9 @@ const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
     ("kms", "kms.local.invalid"),
     ("sts", "sts.local.invalid"),
     ("iam", "iam.local.invalid"),
+    ("monitoring", "cloudwatch.local.invalid"),
+    ("codebuild", "codebuild.local.invalid"),
+    ("cognito-idp", "cognitoidentityprovider.local.invalid"),
 ];
 
 #[wstd::http_server]

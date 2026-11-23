@@ -3730,7 +3730,7 @@ var us = class e {
 		return parseFloat(e.toFixed(8));
 	}
 }, P = class e {
-	static v2026 = typeof process < "u" && process.env?.SMITHY_NEW_RETRIES_2026 === "true";
+	static v2026 = typeof process < "u" && {}.SMITHY_NEW_RETRIES_2026 === "true";
 	static delay() {
 		return e.v2026 ? 50 : 100;
 	}
@@ -3887,7 +3887,7 @@ var vs = (e, t) => {
 	});
 }, ys = ls(i);
 // ../../node_modules/.pnpm/@aws-sdk+core@3.979.1/node_modules/@aws-sdk/core/dist-es/submodules/client/setFeature.js
-P.v2026 ||= typeof process == "object" && process.env?.AWS_NEW_RETRIES_2026 === "true";
+P.v2026 ||= typeof process == "object" && {}.AWS_NEW_RETRIES_2026 === "true";
 function bs(e, t, n) {
 	e.__aws_sdk_context ? e.__aws_sdk_context.features || (e.__aws_sdk_context.features = {}) : e.__aws_sdk_context = { features: {} }, e.__aws_sdk_context.features[t] = n;
 }
@@ -8714,7 +8714,7 @@ var y_ = {
 	gcp: "gcp",
 	oci: "oci"
 }, b_ = !1;
-function x_(e = process.env) {
+function x_(e = {}) {
 	let t = e.FLOCI_CLOUD?.trim().toLowerCase();
 	if (!t) return null;
 	let n = S_(t);

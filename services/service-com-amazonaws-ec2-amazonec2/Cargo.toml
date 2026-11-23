@@ -19,7 +19,10 @@ aws-smithy-types = { workspace = true }
 # `state::volume_notifications` publishes a volume's create outcome when that outcome falls
 # due, from a bounded task that resumes then, so this service's tokio needs the timer driver and
 # the semaphore that caps those tasks on top of the workspace's features.
-tokio = { workspace = true, features = ["sync", "time"] }
+#
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -129,6 +132,9 @@ aws-sdk-resourcegroups = { version = "1", default-features = false }
 # delivery service needs to write a flow log's records are Amazon S3's own resource. No network
 # client feature is enabled: the transport is the emulator's own.
 aws-sdk-s3 = { version = "1", default-features = false }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["sync", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

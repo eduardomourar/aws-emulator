@@ -16,7 +16,9 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -61,13 +63,20 @@ aws-sdk-eventbridge = { version = "1", default-features = false }
 # (`state::key_grant`), through the tree's one construction of that client
 # (`service_common::kms_key::kms_client`). Only the generated client is needed — the
 # emulator supplies the transport.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # Computes the query-string SigV4 signature a published layer download URL carries, and
 # the one the download plane verifies before serving a byte
 # (`state::presigned_layer_download_url`).
 aws-sigv4 = { version = "1", features = ["http1"] }
 # The signing identity `aws-sigv4` takes: this registry's own ephemeral download-plane key.
 aws-credential-types = "1"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
 import { SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
-import createSecretsManagerRouter from "../src/routes/secretsmanager";
+import { createSecretsManagerRouter } from "../src/routes/secretsmanager";
 
 const client = new SecretsManagerClient({
   region: "us-east-1",

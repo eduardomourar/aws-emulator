@@ -16,7 +16,9 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: the workspace tokio feature set includes "rt-multi-thread",
+# unsupported on wasm32; split the wasm-safe subset out here, full set added back natively.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -38,12 +40,15 @@ md-5 = "0.10"
 sha2 = { workspace = true }
 # Resolves the `KeyId` a `StartStreamEncryption` request names against KMS, over the
 # emulator's own in-process transport, before the stream is reported as encrypted under it.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for Amazon S3, driven over the same in-process callback: a channel with a
 # general purpose bucket destination writes the objects it delivers through Amazon S3's own
 # data plane, which is the one object store in this emulator
 # (`crate::state::channel_delivery`).
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The UTC calendar fields the key of a delivered object carries, read from a maintained date
 # library rather than computed here.
 chrono = { version = "0.4", default-features = false, features = ["std"] }
@@ -68,6 +73,11 @@ service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true 
 # What that principal may do: the identity-based policy documents and the permissions
 # boundary IAM holds for it, read through IAM's own accessors.
 service-com-amazonaws-iam-awsidentitymanagementv20100508 = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }
