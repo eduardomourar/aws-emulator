@@ -2,22 +2,22 @@
 
 `secretsmanager.js`, `kms.js`, `iam.js`, `codebuild.js`, `cloudwatch.js`,
 `cognitoidentityprovider.js`, `kinesis.js`, `paymentcryptography.js`,
-`sqs.js`, `xray.js`, and `ecr.js` are what replace Floci UI's own Node/Bun
-backend (`@floci/api`) for this embedded build: each is a browser bundle of
-that backend's *real* route/adapter source for one AWS service —
+`sqs.js`, `xray.js`, `ecr.js`, and `sns.js` are what replace Floci UI's own
+Node/Bun backend (`@floci/api`) for this embedded build: each is a browser
+bundle of that backend's *real* route/adapter source for one AWS service —
 `routes/secretsmanager.ts` for Secrets Manager, `routes/clouds.ts` +
 `AwsKmsAdapter`/`AwsIamAdapter`/`AwsCodeBuildAdapter`/`AwsCloudWatchAdapter`/
 `AwsCognitoAdapter`/`AwsKinesisAdapter`/`AwsPaymentCryptographyAdapter`/
-`AwsSqsAdapter`/`AwsXrayAdapter`/`AwsRegistryAdapter` for the rest — with
-only the client construction swapped to point at this emulator's single
-synthetic authority (`emulator.local.invalid`) instead of a real network
-endpoint. Each one answers requests to its service's own Floci catalog key,
-which is not the same string as its AWS SigV4 signing name
-(`../external-dispatch-bridge.js` matches on the latter): `identity` for
-IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
+`AwsSqsAdapter`/`AwsXrayAdapter`/`AwsRegistryAdapter`/`AwsSnsAdapter` for the
+rest — with only the client construction swapped to point at this
+emulator's single synthetic authority (`emulator.local.invalid`) instead of
+a real network endpoint. Each one answers requests to its service's own
+Floci catalog key, which is not the same string as its AWS SigV4 signing
+name (`../external-dispatch-bridge.js` matches on the latter): `identity`
+for IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
 Cognito, `streams` for Kinesis, `messaging` for SQS, `registry` for ECR —
-`paymentcryptography` and `xray` happen to match their own signing names —
-see `router.js`'s own prefix constants.
+`paymentcryptography`, `xray` and `sns` happen to match their own signing
+names — see `router.js`'s own prefix constants.
 
 Aurora DSQL also has a Floci adapter (`AwsDsqlAdapter`), but it opens a real
 Postgres connection over `node:net`/`node:dns` to run the cluster's SQL data
@@ -31,7 +31,7 @@ own source.
 `catalog.js` is the one exception to "separate bundles, not one" below: it
 registers every adapter this build supports (KMS, IAM, CodeBuild,
 CloudWatch, Cognito, Secrets Manager, Kinesis, Payment Cryptography, SQS,
-X-Ray, ECR), because the registry-dependent generic routes it answers —
+X-Ray, ECR, SNS), because the registry-dependent generic routes it answers —
 `GET /api/clouds`, `GET /api/clouds/aws/status`, `GET /api/clouds/aws/services`
 — need to see all of them to report the catalog and connection status
 correctly. It never answers a `/services/:service/resources` call itself;
@@ -117,12 +117,13 @@ Floci UI's upstream route/adapter source changes, don't hand-edit them.
    vite build --config browser-bundle/vite.sqs.config.ts
    vite build --config browser-bundle/vite.xray.config.ts
    vite build --config browser-bundle/vite.ecr.config.ts
+   vite build --config browser-bundle/vite.sns.config.ts
    vite build --config browser-bundle/vite.catalog.config.ts
    ```
    `vite` isn't resolvable from `packages/api` on its own (see below) — if
    the build fails with `Cannot find package 'vite'`, symlink it in first:
    `ln -s ../../frontend/node_modules/vite packages/api/node_modules/vite`.
-4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,catalog}.js`
+4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,catalog}.js`
    back into this directory, overwriting the committed copies.
 
 `vite` itself isn't a declared dependency of `packages/api` — it's only ever

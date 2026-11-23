@@ -76,6 +76,7 @@ const AUTHORITY_BY_SERVICE = {
   sqs: "sqs.local.invalid",
   xray: "xray.local.invalid",
   ecr: "ecr.local.invalid",
+  sns: "sns.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -93,6 +94,7 @@ const AUTHORITY_MODULES = {
   "sqs.local.invalid": () => import("./jco-out-sqs/aws_emulator_embedded_sqs.js"),
   "xray.local.invalid": () => import("./jco-out-xray/aws_emulator_embedded_xray.js"),
   "ecr.local.invalid": () => import("./jco-out-ecr/aws_emulator_embedded_ecr.js"),
+  "sns.local.invalid": () => import("./jco-out-sns/aws_emulator_embedded_sns.js"),
 };
 
 const clientsByAuthority = new Map();

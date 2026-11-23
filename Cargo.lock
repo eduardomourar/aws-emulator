@@ -604,6 +604,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-sns"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-sns-amazonsimplenotificationservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-sqs"
 version = "0.1.0"
 dependencies = [

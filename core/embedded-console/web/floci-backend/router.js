@@ -46,6 +46,7 @@ const PAYMENTCRYPTOGRAPHY_PREFIX = "/api/clouds/aws/services/paymentcryptography
 const SQS_PREFIX = "/api/clouds/aws/services/messaging";
 const XRAY_PREFIX = "/api/clouds/aws/services/xray";
 const ECR_PREFIX = "/api/clouds/aws/services/registry";
+const SNS_PREFIX = "/api/clouds/aws/services/sns";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -98,6 +99,10 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(ECR_PREFIX)) {
     const { handleEcrRequest } = await import("./ecr.js");
     return handleEcrRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(SNS_PREFIX)) {
+    const { handleSnsRequest } = await import("./sns.js");
+    return handleSnsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

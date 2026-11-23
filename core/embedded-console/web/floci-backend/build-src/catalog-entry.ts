@@ -19,6 +19,7 @@ import { PaymentCryptographyClient } from "@aws-sdk/client-payment-cryptography"
 import { SQSClient } from "@aws-sdk/client-sqs";
 import { XRayClient } from "@aws-sdk/client-xray";
 import { ECRClient } from "@aws-sdk/client-ecr";
+import { SNSClient } from "@aws-sdk/client-sns";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -32,6 +33,7 @@ import { AwsPaymentCryptographyAdapter } from "../src/adapter-aws/AwsPaymentCryp
 import { AwsSqsAdapter } from "../src/adapter-aws/AwsSqsAdapter";
 import { AwsXrayAdapter } from "../src/adapter-aws/AwsXrayAdapter";
 import { AwsRegistryAdapter } from "../src/adapter-aws/AwsRegistryAdapter";
+import { AwsSnsAdapter } from "../src/adapter-aws/AwsSnsAdapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -62,6 +64,7 @@ const registry = new CloudAdapterRegistry([
   new AwsSqsAdapter(new SQSClient(clientConfig)),
   new AwsXrayAdapter(new XRayClient(clientConfig), clientConfig.region),
   new AwsRegistryAdapter(new ECRClient(clientConfig)),
+  new AwsSnsAdapter(new SNSClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

@@ -19,20 +19,32 @@
 /// `core/embedded-console/web/floci-backend/README.md`) that compiles clean
 /// for `wasm32-wasip3` with no workaround beyond what `build.rs` already does
 /// uniformly for every component. Deferred, pending their own investigation:
-/// `lambda` (fails natively — `nix::sys::resource::UsageWho::RUSAGE_THREAD`
-/// is Linux-only), `eventbridge`/`ssm`/`sfn`/`scheduler`/`appconfig`/`ecs`
-/// (transitively depend on `lambda` through `glue`), `athena`/
-/// `cloudformation`/`sagemaker` (transitively depend on `lambda` through
-/// `glue`'s own `[build-dependencies]`), `sns` (fails natively —
-/// `serde_json::value::RawValue` not found, a feature-flag gap unrelated to
-/// wasm), and `acm`/`apigateway`/`cloudfront`/`eks`/`elasticloadbalancingv2`
-/// (each depends on `hyper`'s `server` feature unconditionally, for a real
-/// HTTP listener some part of their emulation runs natively — a webhook,
-/// ingress, or ACME challenge responder — not gated behind
-/// `cfg(not(target_family = "wasm"))` the way other native-only deps are)
-/// and `rds`/`elasticache` (unconditional `rustls`/`tokio-rustls`, likely for
-/// a similar real-connection reason, not yet root-caused). `ec2` is deferred
-/// too: it depends directly on both `acm` and `eventbridge`.
+/// `lambda` (fails NATIVELY on this host — `nix::sys::resource::UsageWho::
+/// RUSAGE_THREAD` is Linux-only — a pre-existing platform issue, not caused
+/// by and out of scope for this wasm effort), `eventbridge`/`ssm`/`sfn`/
+/// `scheduler`/`appconfig`/`ecs` (transitively depend on `lambda` through
+/// `glue`), `athena`/`cloudformation`/`sagemaker` (transitively depend on
+/// `lambda` through `glue`'s own `[build-dependencies]`), and
+/// `acm`/`apigateway`/`cloudfront`/`eks`/`elasticloadbalancingv2` (each
+/// depends on `hyper`'s `server` feature unconditionally — confirmed, by
+/// reading each crate's own source, to back a REAL HTTP listener each of
+/// them runs natively: an ACME challenge responder, an EKS webhook, an ALB
+/// listener, a CloudFront edge-function endpoint, an API Gateway custom
+/// domain socket. Fixing this for wasm would mean gating `hyper`'s `server`
+/// feature to native-only in `Cargo.toml` AND wrapping the listener-starting
+/// code itself in each service's Rust source behind
+/// `cfg(not(target_family = "wasm"))`, so the service still compiles and
+/// serves its CRUD operations on wasm, just without the real socket
+/// listener — a bigger, riskier change than a `Cargo.toml` feature split,
+/// not yet attempted). `rds` and `elasticache` are deferred for the same
+/// reason as `dsql`, confirmed by reading their source: each runs a REAL
+/// wire-protocol TCP server as its data plane (`rds`'s
+/// `src/state/data_plane/{pg,mysql}_server.rs`, `elasticache`'s
+/// `src/state/cache_data_plane/resp_wire.rs`) that a real database/cache
+/// client connects to — not something a browser can do at all, regardless
+/// of what's injected into it, since there is no raw TCP socket API in one.
+/// `ec2` is deferred too: it depends directly on both `acm` and
+/// `eventbridge`.
 ///
 /// `dsql`, `kinesis`, `paymentcryptography`, `ecr`, `route53`, `ses`, `sqs`,
 /// `s3` and `xray` all carry the same wasm-safe `tokio` split every other
@@ -58,6 +70,17 @@
 /// `tokio = { workspace = true, features = ["time"] }` had the same
 /// ADDS-not-replaces bug (see that crate's `Cargo.toml` and `sqs`'s own, now
 /// fixed the same way) — not an axum/vendor issue after all.
+///
+/// `sns` is also confirmed building and transpiling for `wasm32-wasip3` and
+/// is in `build.rs`'s `COMPONENTS`. It needed its own `tokio` split (same
+/// ADDS-not-replaces fix) plus one more: its own `aws-sdk-cloudwatchlogs`
+/// dependency carried the unconditional `"rt-tokio"` feature, which sets
+/// `tokio?/fs` (not wasm-safe) via `aws-smithy-types`'s own feature
+/// definition — same fix as `ecr`/`kinesis`/`xray`'s `aws-sdk-kms`/`-s3`.
+/// `sns` separately failed to even build NATIVELY until its own
+/// `serde_json` dependency gained the `"raw_value"` feature its own code
+/// (`state/filter_policy.rs`) uses but never declared — unrelated to wasm,
+/// fixed the same way.
 #[allow(dead_code)]
 const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("kms", "service-com-amazonaws-kms-trentservice"),
@@ -77,4 +100,5 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("sqs", "service-com-amazonaws-sqs-amazonsqs"),
     ("s3", "service-com-amazonaws-s3-amazons3"),
     ("xray", "service-com-amazonaws-xray-awsxray"),
+    ("sns", "service-com-amazonaws-sns-amazonsimplenotificationservice"),
 ];

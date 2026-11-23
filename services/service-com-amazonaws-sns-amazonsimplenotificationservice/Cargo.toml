@@ -19,10 +19,15 @@ aws-smithy-types = { workspace = true }
 # `time`: a delivery the subscribed endpoint could not take YET is retried along the phases
 # SNS's own delivery policy publishes, which wait between attempts
 # (`ops::publish::Endpoints::deliver`).
-tokio = { workspace = true, features = ["time"] }
+#
+# WASM-EMBEDDED EXPERIMENT: `{ workspace = true, features = [...] }` ADDS these
+# features to the workspace's own set rather than replacing it, so the workspace's
+# "rt-multi-thread" (unsupported on wasm32) was still in the mix; the full set is
+# restored natively below instead.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
-serde_json = { workspace = true }
+serde_json = { workspace = true, features = ["raw_value"] }
 # The policy and delivery-policy documents SNS answers with are serialized from typed
 # structs, so their members keep SNS's own order rather than being sorted by key.
 serde = { workspace = true }
@@ -72,7 +77,10 @@ aws-sdk-firehose = { version = "=1.126.0", default-features = false }
 # The AWS SDK for CloudWatch Logs, over the same callback: a topic carrying
 # `<Protocol>{Success,Failure}FeedbackRoleArn` writes one delivery-status record per
 # delivery into `sns/<region>/<account-id>/<topic-name>` (`state::delivery_status`).
-aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `aws-types`: the request id an endpoint's own service answered with, which a
 # delivery-status record reports as that provider's answer (`ops::publish`).
 aws-types = { version = "1", default-features = false }
@@ -96,6 +104,10 @@ pkcs1 = "0.7"
 pkcs8 = "0.10"
 # The validity window rcgen stamps on that certificate, converted from `SystemTime`.
 time = { version = "0.3", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
+aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

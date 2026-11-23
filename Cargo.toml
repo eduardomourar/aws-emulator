@@ -449,6 +449,7 @@ members = [
     "core/embedded-kms",
     "core/embedded-paymentcryptography",
     "core/embedded-secretsmanager",
+    "core/embedded-sns",
     "core/embedded-sqs",
     "core/embedded-sts",
     "core/embedded-xray",
