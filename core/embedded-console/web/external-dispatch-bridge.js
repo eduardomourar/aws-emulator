@@ -80,6 +80,7 @@ const AUTHORITY_BY_SERVICE = {
   acm: "acm.local.invalid",
   route53: "route53.local.invalid",
   cloudfront: "cloudfront.local.invalid",
+  s3: "s3.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -101,6 +102,7 @@ const AUTHORITY_MODULES = {
   "acm.local.invalid": () => import("./jco-out-acm/aws_emulator_embedded_acm.js"),
   "route53.local.invalid": () => import("./jco-out-route53/aws_emulator_embedded_route53.js"),
   "cloudfront.local.invalid": () => import("./jco-out-cloudfront/aws_emulator_embedded_cloudfront.js"),
+  "s3.local.invalid": () => import("./jco-out-s3/aws_emulator_embedded_s3.js"),
 };
 
 const clientsByAuthority = new Map();

@@ -634,6 +634,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-s3"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-s3-amazons3",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-secretsmanager"
 version = "0.1.0"
 dependencies = [
@@ -644,6 +659,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-secretsmanager-secretsmanager",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-ses"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-ses-simpleemailservice",
  "tokio",
  "wstd",
 ]
