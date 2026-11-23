@@ -46,11 +46,23 @@
 /// to `None` (its one caller, `ops/create_acme_endpoint.rs`, already
 /// discards the return value entirely), so `acm` needed ZERO Rust source
 /// changes — only the same `Cargo.toml` `tokio`-feature-gating fixes used
-/// throughout this list. The remaining four are NOT yet re-tested under
-/// this corrected understanding; whether each turns out this easy or
-/// genuinely needs source-level `cfg(not(target_family = "wasm"))` gating
-/// (if, unlike `acm`, something in its code path assumes a listener
-/// succeeded) is still to be determined per service, by testing first.
+/// throughout this list. `cloudfront` is ALSO confirmed fixed the same way
+/// (see below — its real blocker turned out to be unrelated to `hyper`
+/// entirely). `apigatewayv2`/`apigateway-backplanecontrolservice` are
+/// confirmed GENUINELY blocked, but for a reason that has nothing to do
+/// with `hyper` either: both depend on `boon` (JSON Schema validation, for
+/// request validators), which depends on `ahash` with ahash's OWN default
+/// features (`boon`'s `Cargo.toml` declares plain `ahash = "0.8.3"`, no
+/// `default-features = false`) — and ahash's default `runtime-rng` feature
+/// needs `getrandom`, which resolves to `getrandom 0.3.4` here, a version
+/// with no `wasm32-wasip3` support (confirmed: no relevant feature flag in
+/// its own `Cargo.toml`; `wasm_js` is for `wasm32-unknown-unknown`, not
+/// WASI). Cargo's feature unification is additive-only, so nothing in
+/// *our* `Cargo.toml` can strip `ahash`'s default features back off once
+/// `boon` has asked for them; fixing this would mean forking `boon` or
+/// `[patch]`-ing `ahash` workspace-wide, neither attempted. `eks` and
+/// `elasticloadbalancingv2` are NOT yet re-tested under the corrected
+/// `hyper`/listener understanding.
 ///
 /// `rds` and `elasticache` are deferred for the same reason as `dsql`,
 /// confirmed by reading their source: each runs a REAL wire-protocol TCP
@@ -62,23 +74,56 @@
 /// above does not save them. Opening a raw TCP socket is not something a
 /// browser can do at all, regardless of what's injected into it.
 ///
-/// `dsql`, `kinesis`, `paymentcryptography`, `ecr`, `route53`, `acm`, `ses`,
-/// `sqs`, `s3` and `xray` all carry the same wasm-safe `tokio` split every
-/// other entry here does. Of those, `dsql`, `kinesis`, `paymentcryptography`,
-/// `ecr`, `sqs`, `xray`, `route53` and `acm` are confirmed building and
-/// transpiling for `wasm32-wasip3` and are in `build.rs`'s `COMPONENTS`.
-/// `ses`, `s3`, `dynamodb` and `opensearch` are listed here but NOT yet in
-/// `COMPONENTS`: each transitively depends (checked via `cargo tree
-/// --target wasm32-wasip3 -e normal,build`, restricted to real dependency
-/// edges — see the `route53` note below for why that restriction matters)
-/// on `dynamodb`, which needs `rquickjs-sys` (a C JS engine, for PartiQL
-/// expression evaluation) that doesn't ship or build wasm32-wasip3
-/// bindings, and/or on `cloudfront`, which pulls in `rquickjs` of its own
-/// (likely for CloudFront Functions) and is not yet re-tested under the
-/// corrected `hyper`/listener understanding above.
-/// `cloudwatchlogs` has the same `tokio` split as the others here but is
-/// ALSO excluded from `COMPONENTS` for the same `dynamodb`/`cloudfront`
-/// entanglement — ALSO not yet re-tested.
+/// `dsql`, `kinesis`, `paymentcryptography`, `ecr`, `route53`, `acm`,
+/// `cloudfront`, `ses`, `sqs`, `s3` and `xray` all carry the same wasm-safe
+/// `tokio` split every other entry here does. Of those, `dsql`, `kinesis`,
+/// `paymentcryptography`, `ecr`, `sqs`, `xray`, `route53`, `acm` and
+/// `cloudfront` are confirmed building and transpiling for `wasm32-wasip3`
+/// and are in `build.rs`'s `COMPONENTS`.
+///
+/// `cloudfront` was ONCE assumed permanently blocked: it has a REAL direct
+/// dependency on `rquickjs` (likely for CloudFront Functions JS execution),
+/// and `rquickjs-sys` was assumed to lack `wasm32-wasip3` support entirely.
+/// Testing it directly (rather than trusting that assumption, the same
+/// mistake made about `hyper` above) found TWO narrower, fixable causes
+/// instead: (1) `rquickjs-sys`'s own `build.rs` reads an env var named
+/// `WASI_SDK` (not `WASI_SDK_DIR`, which every other wasm32 C dependency in
+/// this workspace keys off and which `build.rs` here already sets) and,
+/// finding it unset, auto-downloads its OWN WASI SDK release (v24.0) whose
+/// `wasm32-wasip3` sysroot is incomplete (`fatal error: 'stdlib.h' file not
+/// found` compiling quickjs's own C sources) — `build.rs`'s
+/// `build_component` now also sets `WASI_SDK` to the same SDK directory.
+/// (2) with that fixed, the C half compiles, but `rquickjs-sys` ships no
+/// PRE-GENERATED Rust bindings file for `wasm32-wasip3` (only
+/// `wasm32-wasip1`) and refuses to build rather than guess — its own
+/// warning names the fix: `rquickjs`'s `"bindgen"` feature (which forwards
+/// to `rquickjs-sys/bindgen`) generates bindings at build time instead of
+/// `include!`-ing a missing prebuilt file. `cloudfront`'s own
+/// `Cargo.toml` now declares `rquickjs = { version = "0.14", features =
+/// ["bindgen"] }` for this. Once both were fixed, cloudfront's only
+/// remaining blocker was the familiar `tokio` feature-gating pattern,
+/// in itself and in `service-com-amazonaws-servicequotas-servicequotasv20190624`
+/// (reached transitively), both fixed the same way as everywhere else.
+///
+/// Because `dynamodb`, `s3`, `ses`, `opensearch` and `cloudwatchlogs` all
+/// reach `rquickjs` ONLY via a real dependency on `cloudfront` (`dynamodb`
+/// -> `s3` -> `cloudfront` -> `rquickjs`, confirmed via `cargo tree -e
+/// normal,build -i rquickjs-sys`), `cloudfront` being fixed reopens the
+/// question for all of them — each still needs its own independent
+/// `wasm32-wasip3` test and fix pass, not assumed clean just because
+/// `cloudfront` now is. `dynamodb` specifically also has its OWN, separate,
+/// GENUINE blocker, distinct from `rquickjs`: its direct `rand = "0.9"`
+/// dependency resolves `rand_core 0.9.5`, which pulls `getrandom 0.3.4` —
+/// the exact same no-`wasm32-wasip3`-support version `apigateway`'s `boon`
+/// chain hits above. Bumping to `rand = "0.10"` (whose `rand_core` pulls
+/// the newer, `wasm32-wasip3`-compatible `getrandom 0.4.x` instead) resolves
+/// the dependency version but breaks `dynamodb`'s own code NATIVELY too:
+/// `rand::rngs::ThreadRng` lost the `random_range` method between those
+/// two major versions (a real API migration, not a wasm-specific issue) —
+/// not yet attempted; `dynamodb` stays on `rand = "0.9"` and deferred until
+/// that call site is ported to whatever 0.10's replacement API is.
+/// `s3`, `ses`, `opensearch` and `cloudwatchlogs` have not yet been tested
+/// under the corrected `rquickjs` understanding at all.
 ///
 /// `route53` was ONCE mistakenly deferred too, for an entanglement with
 /// `cloudfront` that turned out to be a FALSE POSITIVE: an earlier `cargo
@@ -129,6 +174,7 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("ecr", "service-com-amazonaws-ecr-amazonec2containerregistry-v20150921"),
     ("route53", "service-com-amazonaws-route53-awsdnsv20130401"),
     ("acm", "service-com-amazonaws-acm-certificatemanager"),
+    ("cloudfront", "service-com-amazonaws-cloudfront-cloudfront2020-05-31"),
     ("ses", "service-com-amazonaws-ses-simpleemailservice"),
     ("sqs", "service-com-amazonaws-sqs-amazonsqs"),
     ("s3", "service-com-amazonaws-s3-amazons3"),

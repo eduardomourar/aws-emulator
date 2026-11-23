@@ -105,6 +105,7 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-sns", "sns"),
     ("aws-emulator-embedded-acm", "acm"),
     ("aws-emulator-embedded-route53", "route53"),
+    ("aws-emulator-embedded-cloudfront", "cloudfront"),
 ];
 // `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
 // SERVER that, to answer a request, makes an outgoing CLIENT call to the real
@@ -183,6 +184,11 @@ fn build_component(workspace_root: &Path, component_target_dir: &Path, wasi_sdk:
     // toolchain (e.g. Homebrew's) puts on the dynamic linker's search path, which
     // carries no wasm32 sysroot of its own and fails parsing aws-lc-sys's headers.
     set_if_unset(&mut cmd, "LIBCLANG_PATH", wasi_sdk_bin.parent().expect("bin has a parent").join("lib"));
+    // `rquickjs-sys`'s own build script reads `WASI_SDK` specifically (not
+    // `WASI_SDK_DIR`), and auto-downloads its own WASI SDK release when unset —
+    // one with an incomplete wasm32-wasip3 sysroot (missing `stdlib.h`). Pointing
+    // it at the same SDK as everything else above fixes that.
+    set_if_unset(&mut cmd, "WASI_SDK", wasi_sdk);
 
     let status = cmd.status().unwrap_or_else(|err| panic!("`cargo build -p {package}` did not run: {err}"));
     if !status.success() {

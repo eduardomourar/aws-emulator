@@ -16,7 +16,11 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["sync", "time"] }
+# WASM-EMBEDDED EXPERIMENT: `{ workspace = true, features = [...] }` ADDS these
+# features to the workspace's own set rather than replacing it, so the workspace's
+# "rt-multi-thread" (unsupported on wasm32) was still in the mix; the full set is
+# restored natively below instead.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # Speaks HTTP/1.1 on the raw connection the core hands a distribution's EDGE listener, which
@@ -100,7 +104,11 @@ percent-encoding = "2"
 # this build, so nothing is fetched or started outside this process, and the C it compiles is
 # the engine's own. 0.14 is the version this workspace's other services already run it at, and
 # it carries no advisory.
-rquickjs = "0.14"
+# WASM-EMBEDDED EXPERIMENT: rquickjs-sys only ships pre-generated Rust bindings for a
+# fixed set of target triples, and wasm32-wasip3 isn't one of them ("rquickjs probably
+# doesn't ship bindings for platform `wasm32-wasip3`"); "bindgen" generates them instead
+# of relying on the missing prebuilt file, for every target uniformly.
+rquickjs = { version = "0.14", features = ["bindgen"] }
 # The account's S3 OBJECT a trust store's CA certificates bundle is: `CreateTrustStore`
 # reads the bundle in the one object store this emulator holds, over the in-process
 # callback, so the certificate count it reports comes from those bytes
@@ -146,6 +154,9 @@ ipnet = "2"
 # geographic restriction may name is the standard's rather than a list restated in this crate
 # (`state::config_members`).
 rust_iso3166 = "0.2"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["sync", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

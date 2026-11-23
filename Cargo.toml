@@ -440,6 +440,7 @@ members = [
     "core/embedded",
     "core/embedded-acm",
     "core/embedded-console",
+    "core/embedded-cloudfront",
     "core/embedded-cloudwatch",
     "core/embedded-codebuild",
     "core/embedded-cognitoidentityprovider",

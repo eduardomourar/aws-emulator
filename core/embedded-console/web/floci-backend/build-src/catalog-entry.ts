@@ -22,6 +22,7 @@ import { ECRClient } from "@aws-sdk/client-ecr";
 import { SNSClient } from "@aws-sdk/client-sns";
 import { ACMClient } from "@aws-sdk/client-acm";
 import { Route53Client } from "@aws-sdk/client-route-53";
+import { CloudFrontClient } from "@aws-sdk/client-cloudfront";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -38,6 +39,7 @@ import { AwsRegistryAdapter } from "../src/adapter-aws/AwsRegistryAdapter";
 import { AwsSnsAdapter } from "../src/adapter-aws/AwsSnsAdapter";
 import { AwsAcmAdapter } from "../src/adapter-aws/AwsAcmAdapter";
 import { AwsRoute53Adapter } from "../src/adapter-aws/AwsRoute53Adapter";
+import { AwsCloudFrontAdapter } from "../src/adapter-aws/AwsCloudFrontAdapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -71,6 +73,7 @@ const registry = new CloudAdapterRegistry([
   new AwsSnsAdapter(new SNSClient(clientConfig)),
   new AwsAcmAdapter(new ACMClient(clientConfig)),
   new AwsRoute53Adapter(new Route53Client(clientConfig)),
+  new AwsCloudFrontAdapter(new CloudFrontClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,
