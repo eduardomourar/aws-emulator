@@ -1,40 +1,46 @@
 // SPDX-License-Identifier: CC0-1.0
 
-// Secrets Manager's component reaches KMS, and (via `embedded-console-service`'s
-// internal relay) IAM, over the standard `wasi:http/outgoing-handler` import —
-// still `wasi:http/outgoing-handler@0.2.12` on the CALLING side even after the
-// wasip3 migration (`embedded-console`'s outgoing-call code stayed on raw
-// `wit-bindgen`, deliberately, per the preview2-shim reactor-nesting deadlock
-// documented in that crate), so `preview2-shim`'s default implementation of
-// that import is still what ends in a genuine `globalThis.fetch(...)` call. The
-// SERVERS on the other end of that call (`embedded-kms`/`embedded-iam`/
-// `embedded-console-service`) now export `wasi:http/handler@0.3.0`, so the
-// client side of this bridge is `P3InMemoryHttpClient`, not the old preview2
-// `InMemoryHttpClient`. A host decides where the intercepted `fetch` call
-// actually goes; here, since nothing else on this page ever calls `fetch`,
-// intercepting it for the placeholder authorities the Rust side sends requests
-// to is enough to route each one into the right separately-compiled component
-// instead of the network — no WIT-level plumbing to hand-write, no composition
-// tool.
+// Secrets Manager, KMS, STS and IAM are each their own compiled wasm
+// component again (`core/embedded-{secretsmanager,kms,sts,iam}`), the same
+// split as before, for the size reasons `.agents/05-...md` describes. What's
+// new is `core/embedded-router`: a fifth component that registers no service
+// of its own and answers the ONE synthetic authority
+// (`emulator.local.invalid`) every console bundle's AWS SDK client is
+// actually pointed at, forwarding each request on to whichever of the other
+// four answers it — the single front door `.agents/13-...md` asked for,
+// decided by the SigV4 credential scope in the request's own `Authorization`
+// header (see `core/embedded-router/src/wasi_http.rs`).
 //
-// Three authorities, one shared `fetch` patch (the console-service component's
-// OWN outgoing call to IAM flows back through this SAME patch, since `fetch` is
-// patched exactly once for the whole page, however many components end up
-// nested in the call):
+// None of this is a real network peer: every one of these five components
+// still only exports `wasi:http/handler@0.3.0`, so `globalThis.fetch` is
+// patched exactly once for the whole page to route a call to any of their
+// synthetic authorities into a `P3InMemoryHttpClient` instead of the
+// network — including the ROUTER's own outgoing calls to its siblings, which
+// cross this same boundary.
 //
-// - `kms.local.invalid` — Secrets Manager's envelope crypto calling KMS directly.
-// - `console.local.invalid` — Secrets Manager's authorization fallback calling
-//   `embedded-console-service`'s internal relay.
-// - `iam.local.invalid` — that same relay's own call onward to IAM.
+// The same patch also answers the Floci UI frontend's own same-origin
+// `/api/*` calls: those never reach any of these synthetic authorities at
+// all (Floci's frontend calls `/api/secretsmanager/...` etc. directly,
+// same-origin), so they're matched on path instead of hostname and handed to
+// `floci-backend/router.js` (a browser-side dispatcher of a different kind —
+// across Floci's own per-service backend bundles, not wasm components),
+// which dispatches each one to whichever per-service bundle answers it. That
+// bundle's own AWS SDK client then signs a request to `emulator.local.invalid`,
+// landing back on the wasm router above.
 
 import { P3InMemoryHttpClient as InMemoryHttpClient } from "./p3-in-memory-http.js";
+import { handler as routerIncomingHandler } from "./jco-out-router/aws_emulator_embedded_router.js";
+import { handler as secretsmanagerIncomingHandler } from "./jco-out-secretsmanager/aws_emulator_embedded_secretsmanager.js";
 import { handler as kmsIncomingHandler } from "./jco-out-kms/aws_emulator_embedded_kms.js";
-import { handler as consoleIncomingHandler } from "./jco-out-console-service/aws_emulator_embedded_console_service.js";
+import { handler as stsIncomingHandler } from "./jco-out-sts/aws_emulator_embedded_sts.js";
 import { handler as iamIncomingHandler } from "./jco-out-iam/aws_emulator_embedded_iam.js";
+import { handleApiRequest } from "./floci-backend/router.js";
 
 const clientsByAuthority = {
+  "emulator.local.invalid": new InMemoryHttpClient(routerIncomingHandler),
+  "secretsmanager.local.invalid": new InMemoryHttpClient(secretsmanagerIncomingHandler),
   "kms.local.invalid": new InMemoryHttpClient(kmsIncomingHandler),
-  "console.local.invalid": new InMemoryHttpClient(consoleIncomingHandler),
+  "sts.local.invalid": new InMemoryHttpClient(stsIncomingHandler),
   "iam.local.invalid": new InMemoryHttpClient(iamIncomingHandler),
 };
 
@@ -43,6 +49,9 @@ const realFetch = globalThis.fetch.bind(globalThis);
 globalThis.fetch = (input, init) => {
   const request = input instanceof Request ? input : new Request(input, init);
   const url = new URL(request.url);
+  if (url.pathname.startsWith("/api/")) {
+    return handleApiRequest(request);
+  }
   const client = clientsByAuthority[url.hostname];
   if (client) {
     return client.fetch(request);

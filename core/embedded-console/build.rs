@@ -93,12 +93,7 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-kms", "kms"),
     ("aws-emulator-embedded-sts", "sts"),
     ("aws-emulator-embedded-iam", "iam"),
-    ("aws-emulator-embedded-console-service", "console-service"),
-    ("aws-emulator-embedded-codeguruprofiler", "codeguruprofiler"),
-    ("aws-emulator-embedded-glacier", "glacier"),
-    ("aws-emulator-embedded-route53domains", "route53domains"),
-    ("aws-emulator-embedded-dlm", "dlm"),
-    ("aws-emulator-embedded-budgets", "budgets"),
+    ("aws-emulator-embedded-router", "router"),
 ];
 
 fn main() {

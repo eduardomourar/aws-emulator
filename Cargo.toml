@@ -438,17 +438,12 @@ members = [
     "services/service-com-amazonaws-xray-awsxray",
     "core/router",
     "core/embedded",
-    "core/embedded-budgets",
     "core/embedded-console",
-    "core/embedded-console-service",
-    "core/embedded-dlm",
-    "core/embedded-glacier",
     "core/embedded-iam",
     "core/embedded-kms",
-    "core/embedded-route53domains",
+    "core/embedded-router",
     "core/embedded-secretsmanager",
     "core/embedded-sts",
-    "core/embedded-codeguruprofiler",
 ]
 exclude = [
     "vendor/smithy-macros",

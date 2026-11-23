@@ -441,83 +441,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "aws-emulator-embedded-budgets"
-version = "0.1.0"
-dependencies = [
- "aws-emulator-embedded-console",
- "aws-emulator-engine",
- "aws-emulator-server",
- "aws-emulator-smithy-server-runtime",
- "bytes",
- "http",
- "service-com-amazonaws-budgets-awsbudgetservicegateway",
- "tokio",
- "wstd",
-]
-
-[[package]]
-name = "aws-emulator-embedded-codeguruprofiler"
-version = "0.1.0"
-dependencies = [
- "aws-emulator-embedded-console",
- "aws-emulator-engine",
- "aws-emulator-server",
- "aws-emulator-smithy-server-runtime",
- "bytes",
- "http",
- "service-com-amazonaws-codeguruprofiler-codeguruprofiler",
- "tokio",
- "wstd",
-]
-
-[[package]]
 name = "aws-emulator-embedded-console"
 version = "0.1.0"
 dependencies = [
  "bytes",
  "http",
  "js-component-bindgen",
- "tokio",
- "wstd",
-]
-
-[[package]]
-name = "aws-emulator-embedded-console-service"
-version = "0.1.0"
-dependencies = [
- "aws-emulator-embedded-console",
- "bytes",
- "http",
- "tokio",
- "wstd",
-]
-
-[[package]]
-name = "aws-emulator-embedded-dlm"
-version = "0.1.0"
-dependencies = [
- "aws-emulator-embedded-console",
- "aws-emulator-engine",
- "aws-emulator-server",
- "aws-emulator-smithy-server-runtime",
- "bytes",
- "http",
- "service-com-amazonaws-dlm-dlm-20180112",
- "tokio",
- "wstd",
-]
-
-[[package]]
-name = "aws-emulator-embedded-glacier"
-version = "0.1.0"
-dependencies = [
- "aws-emulator-embedded-console",
- "aws-emulator-engine",
- "aws-emulator-server",
- "aws-emulator-smithy-server-runtime",
- "bytes",
- "http",
- "service-com-amazonaws-glacier-glacier",
  "tokio",
  "wstd",
 ]
@@ -555,17 +484,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "aws-emulator-embedded-route53domains"
+name = "aws-emulator-embedded-router"
 version = "0.1.0"
 dependencies = [
  "aws-emulator-embedded-console",
- "aws-emulator-engine",
- "aws-emulator-server",
- "aws-emulator-smithy-server-runtime",
  "bytes",
  "http",
- "service-com-amazonaws-route53domains-route53domains-v20140515",
- "tokio",
  "wstd",
 ]
 
@@ -20508,6 +20432,7 @@ dependencies = [
  "sha2 0.10.9",
  "tokio",
  "tracing",
+ "tracing-subscriber",
  "uuid",
  "zip",
 ]

@@ -9,8 +9,7 @@ license.workspace = true
 # `#[wstd::http_server]`-attributed `main` generates one `wasi:http/incoming-handler`
 # export symbol for ITS component; if this crate also carried a `cdylib` output with
 # its OWN such export (as it briefly did), that export would be pulled into — and
-# collide with — every dependent's final linked wasm binary. This crate's own
-# standalone component lives in the separate `embedded-console-service` crate instead.
+# collide with — every dependent's final linked wasm binary.
 crate-type = ["rlib"]
 
 [dependencies]

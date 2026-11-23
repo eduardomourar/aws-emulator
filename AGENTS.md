@@ -95,6 +95,45 @@ cargo build                        # whole workspace
 cargo build -p service-<name>      # ONE service (this is the fast path)
 ```
 
+### Build the browser-embedded web console
+
+`core/embedded-console/build.rs` compiles the `embedded-*` crates to
+`wasm32-wasip3` components and transpiles each one (via
+`js-component-bindgen`, in-process — no Node/npm needed) into the JS glue
+under `core/embedded-console/web/jco-out-<name>/`. It's a no-op unless
+`EMULATOR_BUILD_WEB_COMPONENTS=1` is set, since every `embedded-*` crate
+depends on this one even under a native build.
+
+```bash
+export WASI_SDK_DIR=/path/to/wasi-sdk        # e.g. /opt/wasi-sdk
+EMULATOR_BUILD_WEB_COMPONENTS=1 cargo build -p aws-emulator-embedded-console
+```
+
+`WASI_SDK_DIR` must point at a [WASI SDK release](https://github.com/WebAssembly/wasi-sdk/releases),
+not the host's own `cc`/`clang`: `aws-lc-sys` (pulled in transitively by
+`vendor/server`'s HTTPS listener in every `embedded-*` crate) needs the
+`wasm32-unknown-wasip{1,2,3}` compiler-rt builtins and sysroot headers that
+only a real WASI SDK carries — the host's own toolchain fails with
+`fatal error: 'stdlib.h' file not found` or similar missing-header errors
+on `wasm32-wasip3`, even for a crate that otherwise builds cleanly on every
+other target. `build.rs` panics with a clear message if `WASI_SDK_DIR` is
+unset while the trigger variable is `1`; it does not need the variable
+otherwise.
+
+Confirmed working setup: WASI SDK's `bin/clang`, pointed at by
+`CC_wasm32_wasip3`/`CXX_wasm32_wasip3`/`AR_wasm32_wasip3` and
+`BINDGEN_EXTRA_CLANG_ARGS=--sysroot=<sdk>/share/wasi-sysroot --target=wasm32-wasip3`,
+plus `LIBCLANG_PATH=<sdk>/lib` so `bindgen` loads a libclang that actually
+carries a wasm32 sysroot instead of whatever the host's own toolchain (e.g.
+Homebrew's) puts on the dynamic linker's search path — `build.rs` sets all
+of these itself (via `set_if_unset`, so an existing value in your
+environment always wins) for the nested `cargo build --target wasm32-wasip3`
+it shells out to. The first run compiles the whole dependency graph for that
+target from scratch and takes several minutes; `build.rs`'s own
+`cargo:rerun-if-changed`/`cargo:rerun-if-env-changed` lines mean subsequent
+runs only redo work when `EMULATOR_BUILD_WEB_COMPONENTS` or an `embedded-*`
+crate's own source actually changed.
+
 ### Run the emulator
 
 ```bash
