@@ -441,6 +441,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-acm"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-acm-certificatemanager",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-cloudwatch"
 version = "0.1.0"
 dependencies = [
@@ -584,6 +599,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-paymentcryptography-paymentcryptographycontrolplane",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-route53"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-route53-awsdnsv20130401",
  "tokio",
  "wstd",
 ]

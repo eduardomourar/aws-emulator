@@ -16,6 +16,10 @@ export default defineConfig({
       { find: "../aws", replacement: path.resolve(__dirname, "aws-stub.ts") },
       { find: "../cloudProxy", replacement: path.resolve(__dirname, "cloudproxy-stub.ts") },
       { find: "./runtimeProbe", replacement: path.resolve(__dirname, "runtimeprobe-stub.ts") },
+      // `AwsRoute53Adapter.create` calls `node:crypto`'s `randomUUID` for a hosted
+      // zone's `CallerReference`: no such module in a browser, but the same function
+      // under the Web Crypto API, which every target this build runs in already has.
+      { find: "node:crypto", replacement: path.resolve(__dirname, "node-crypto-stub.ts") },
     ],
   },
   build: {

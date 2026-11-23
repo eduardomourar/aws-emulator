@@ -47,6 +47,8 @@ const SQS_PREFIX = "/api/clouds/aws/services/messaging";
 const XRAY_PREFIX = "/api/clouds/aws/services/xray";
 const ECR_PREFIX = "/api/clouds/aws/services/registry";
 const SNS_PREFIX = "/api/clouds/aws/services/sns";
+const ACM_PREFIX = "/api/clouds/aws/services/certificates";
+const ROUTE53_PREFIX = "/api/clouds/aws/services/dns";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -103,6 +105,14 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(SNS_PREFIX)) {
     const { handleSnsRequest } = await import("./sns.js");
     return handleSnsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(ACM_PREFIX)) {
+    const { handleAcmRequest } = await import("./acm.js");
+    return handleAcmRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(ROUTE53_PREFIX)) {
+    const { handleRoute53Request } = await import("./route53.js");
+    return handleRoute53Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

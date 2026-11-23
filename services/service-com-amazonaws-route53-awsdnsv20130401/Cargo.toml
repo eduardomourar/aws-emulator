@@ -20,7 +20,12 @@ aws-smithy-types = { workspace = true }
 # instant a health check's next probe becomes due, so this crate needs tokio's timer as well
 # as its runtime and macros: the feature is declared here rather than relied on from another
 # crate's resolution.
-tokio = { workspace = true, features = ["time"] }
+#
+# WASM-EMBEDDED EXPERIMENT: `{ workspace = true, features = [...] }` ADDS these
+# features to the workspace's own set rather than replacing it, so the workspace's
+# "rt-multi-thread" (unsupported on wasm32) was still in the mix; the full set is
+# restored natively below instead.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -69,6 +74,9 @@ service-com-amazonaws-kms-trentservice = { workspace = true }
 # resolved there through the shared engine, which needs the owning service's state TYPE
 # (`state::query_logging`).
 service-com-amazonaws-cloudwatchlogs-logs-20140328 = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

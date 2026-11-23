@@ -104,12 +104,15 @@ service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true 
 # A certificate is ACM's resource: `CreateClientVpnEndpoint` resolves the server and client
 # root certificates it is given against that service's own `DescribeCertificate`, over the
 # emulator's in-process callback, rather than keeping a second copy of them.
-aws-sdk-acm = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-acm = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `state::volume_encryption`: the AWS KMS client an encrypted EBS volume's data key is asked
 # for, over the in-process callback into this same emulator — the key's state and the
 # permissions on it are KMS's own to judge, so a volume under a key that will not produce a
 # data key is withdrawn rather than created.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `state::volume_notifications`: the EventBridge client an EBS volume's create outcome is
 # published through, over the in-process callback into this same emulator — the bus the event
 # reaches a client's rules on is that service's own. No network client feature is enabled: the
@@ -135,6 +138,8 @@ aws-sdk-s3 = { version = "1", default-features = false }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 tokio = { workspace = true, features = ["sync", "time"] }
+aws-sdk-acm = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

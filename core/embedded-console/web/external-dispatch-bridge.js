@@ -77,6 +77,8 @@ const AUTHORITY_BY_SERVICE = {
   xray: "xray.local.invalid",
   ecr: "ecr.local.invalid",
   sns: "sns.local.invalid",
+  acm: "acm.local.invalid",
+  route53: "route53.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -95,6 +97,8 @@ const AUTHORITY_MODULES = {
   "xray.local.invalid": () => import("./jco-out-xray/aws_emulator_embedded_xray.js"),
   "ecr.local.invalid": () => import("./jco-out-ecr/aws_emulator_embedded_ecr.js"),
   "sns.local.invalid": () => import("./jco-out-sns/aws_emulator_embedded_sns.js"),
+  "acm.local.invalid": () => import("./jco-out-acm/aws_emulator_embedded_acm.js"),
+  "route53.local.invalid": () => import("./jco-out-route53/aws_emulator_embedded_route53.js"),
 };
 
 const clientsByAuthority = new Map();
