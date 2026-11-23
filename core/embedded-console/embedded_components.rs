@@ -77,9 +77,17 @@
 /// `dsql`, `kinesis`, `paymentcryptography`, `ecr`, `route53`, `acm`,
 /// `cloudfront`, `ses`, `sqs`, `s3` and `xray` all carry the same wasm-safe
 /// `tokio` split every other entry here does. Of those, `dsql`, `kinesis`,
-/// `paymentcryptography`, `ecr`, `sqs`, `xray`, `route53`, `acm` and
-/// `cloudfront` are confirmed building and transpiling for `wasm32-wasip3`
-/// and are in `build.rs`'s `COMPONENTS`.
+/// `paymentcryptography`, `ecr`, `sqs`, `xray`, `route53`, `acm`,
+/// `cloudfront`, `s3` and `ses` are confirmed building and transpiling for
+/// `wasm32-wasip3` and are in `build.rs`'s `COMPONENTS`. `ses` has NO Floci
+/// UI wiring despite building clean: Floci's only `ses`-related adapter,
+/// `AwsSesAdapter` for the catalog key `email` (displayed as "SES Mailbox"),
+/// does not take an AWS SDK SES client at all — its constructor is
+/// `(endpoint = cloudEndpoint('aws'), fetcher = globalThis.fetch)` and its
+/// `list()` calls `fetchInbox()` then parses with `postal-mime`, a
+/// completely different feature (polling and parsing raw email messages)
+/// from the standard SigV4-signed SES API this crate implements. There is
+/// no sensible adapter to wire this component's `wasi:http` handler into.
 ///
 /// `cloudfront` was ONCE assumed permanently blocked: it has a REAL direct
 /// dependency on `rquickjs` (likely for CloudFront Functions JS execution),
@@ -108,22 +116,28 @@
 /// Because `dynamodb`, `s3`, `ses`, `opensearch` and `cloudwatchlogs` all
 /// reach `rquickjs` ONLY via a real dependency on `cloudfront` (`dynamodb`
 /// -> `s3` -> `cloudfront` -> `rquickjs`, confirmed via `cargo tree -e
-/// normal,build -i rquickjs-sys`), `cloudfront` being fixed reopens the
-/// question for all of them — each still needs its own independent
-/// `wasm32-wasip3` test and fix pass, not assumed clean just because
-/// `cloudfront` now is. `dynamodb` specifically also has its OWN, separate,
-/// GENUINE blocker, distinct from `rquickjs`: its direct `rand = "0.9"`
-/// dependency resolves `rand_core 0.9.5`, which pulls `getrandom 0.3.4` —
-/// the exact same no-`wasm32-wasip3`-support version `apigateway`'s `boon`
-/// chain hits above. Bumping to `rand = "0.10"` (whose `rand_core` pulls
-/// the newer, `wasm32-wasip3`-compatible `getrandom 0.4.x` instead) resolves
-/// the dependency version but breaks `dynamodb`'s own code NATIVELY too:
-/// `rand::rngs::ThreadRng` lost the `random_range` method between those
-/// two major versions (a real API migration, not a wasm-specific issue) —
-/// not yet attempted; `dynamodb` stays on `rand = "0.9"` and deferred until
-/// that call site is ported to whatever 0.10's replacement API is.
-/// `s3`, `ses`, `opensearch` and `cloudwatchlogs` have not yet been tested
-/// under the corrected `rquickjs` understanding at all.
+/// normal,build -i rquickjs-sys`), `cloudfront` being fixed reopened the
+/// question for all of them. `s3` is confirmed fixed, needing only its own
+/// ADDS-not-replaces `tokio` bug fixed. `ses` is also confirmed fixed —
+/// needed the same `tokio` split in itself AND in two crates reached
+/// through its own dependency on WorkMail
+/// (`service-com-amazonaws-workmail-workmailservice` and
+/// `-workmailmessageflow-giraffemessageintransitservice`, both completely
+/// unsplit `tokio = { workspace = true }`), plus its own
+/// `aws-sdk-s3`/`-kms`/`-lambda`/`-sns` clients' unconditional `"rt-tokio"`
+/// feature (same fix as `ecr`/`kinesis`/`xray`). `dynamodb` specifically
+/// also has its OWN, separate, GENUINE blocker, distinct from `rquickjs`:
+/// its direct `rand = "0.9"` dependency resolves `rand_core 0.9.5`, which
+/// pulls `getrandom 0.3.4` — the exact same no-`wasm32-wasip3`-support
+/// version `apigateway`'s `boon` chain hits above. Bumping to `rand =
+/// "0.10"` (whose `rand_core` pulls the newer, `wasm32-wasip3`-compatible
+/// `getrandom 0.4.x` instead) resolves the dependency version but breaks
+/// `dynamodb`'s own code NATIVELY too: `rand::rngs::ThreadRng` lost the
+/// `random_range` method between those two major versions (a real API
+/// migration, not a wasm-specific issue) — not yet attempted; `dynamodb`
+/// stays on `rand = "0.9"` and deferred until that call site is ported to
+/// whatever 0.10's replacement API is. `opensearch` and `cloudwatchlogs`
+/// have not yet been tested under the corrected `rquickjs` understanding.
 ///
 /// `route53` was ONCE mistakenly deferred too, for an entanglement with
 /// `cloudfront` that turned out to be a FALSE POSITIVE: an earlier `cargo
