@@ -21,19 +21,19 @@
 //! synchronous signature without reintroducing a blocking shim — which is
 //! exactly the `wit_bindgen`-task-state conflict this rewrite is for.
 
-/// Sends `request` to `authority` over `wasi:http/outgoing-handler`. `authority`
-/// names no real host: nothing resolves it over a network. It exists only so the
-/// outgoing request is well-formed; the host (a browser's JS glue, in this demo)
-/// decides which component actually answers a call to a given authority, the
-/// same way a real reverse proxy decides where a request with that authority
-/// routes.
+/// Sends `request` to `authority` over `wasi:http/outgoing-handler`, plain HTTP
+/// (no TLS termination to forward through). Under a browser host, `authority`
+/// names no real host and the host's own JS glue decides which component
+/// answers it; under a native host (`wasmtime serve`), `authority` is a real
+/// loopback `host:port` and this is a genuine network call to the sibling
+/// component listening there.
 pub async fn call_component(
     authority: &str,
     request: http::Request<bytes::Bytes>,
 ) -> http::Response<bytes::Bytes> {
     let (mut parts, body) = request.into_parts();
     parts.uri = {
-        let mut builder = http::Uri::builder().scheme("https").authority(authority);
+        let mut builder = http::Uri::builder().scheme("http").authority(authority);
         if let Some(path_and_query) = parts.uri.path_and_query() {
             builder = builder.path_and_query(path_and_query.clone());
         }

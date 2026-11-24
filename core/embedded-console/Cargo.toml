@@ -25,6 +25,54 @@ tokio = { version = "1", features = ["rt-multi-thread"] }
 [target.'cfg(target_family = "wasm")'.dependencies]
 wstd = { workspace = true }
 
+[features]
+# Serves the already-built wasm32-wasip3 components natively with the `wasmtime`
+# embedding API (no browser, no `wasmtime` CLI subprocess) -- see src/bin/serve_native.rs.
+native-serve = [
+    "dep:wasmtime",
+    "dep:wasmtime-wasi",
+    "dep:wasmtime-wasi-http",
+    "dep:hyper",
+    "dep:hyper-util",
+    "dep:http-body-util",
+    "dep:futures",
+]
+
+[dependencies.wasmtime]
+version = "51"
+optional = true
+
+[dependencies.wasmtime-wasi]
+version = "51"
+optional = true
+
+[dependencies.wasmtime-wasi-http]
+version = "51"
+optional = true
+
+[dependencies.hyper]
+version = "1"
+features = ["http1", "server"]
+optional = true
+
+[dependencies.hyper-util]
+version = "0.1"
+features = ["tokio"]
+optional = true
+
+[dependencies.http-body-util]
+version = "0.1"
+optional = true
+
+[dependencies.futures]
+version = "0.3"
+optional = true
+
+[[bin]]
+name = "serve_native"
+path = "src/bin/serve_native.rs"
+required-features = ["native-serve"]
+
 [build-dependencies]
 # Transpiles a component straight to JS/TS in-process: the same engine `jco transpile`
 # (its CLI) drives, called directly from Rust so `build.rs` needs no Node/npm — see

@@ -7,19 +7,38 @@
 
 use embedded_console::{call_component, handle_with};
 
-/// (SigV4 signing name, synthetic authority of the component that answers
-/// it). The signing name is a fixed property of each service's AWS SDK
-/// client (its default `signingName`), not something a caller configures, so
-/// this table only needs to grow when a new service's `embedded-*` component
-/// is added behind this front door.
+/// (SigV4 signing name, loopback authority of the component that answers it).
+/// The signing name is a fixed property of each service's AWS SDK client (its
+/// default `signingName`), not something a caller configures, so this table
+/// only needs to grow when a new service's `embedded-*` component is added
+/// behind this front door. Each port matches the one the sibling component is
+/// told to listen on in `core/embedded-console/src/bin/serve_native.rs`.
 const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
-    ("secretsmanager", "secretsmanager.local.invalid"),
-    ("kms", "kms.local.invalid"),
-    ("sts", "sts.local.invalid"),
-    ("iam", "iam.local.invalid"),
-    ("monitoring", "cloudwatch.local.invalid"),
-    ("codebuild", "codebuild.local.invalid"),
-    ("cognito-idp", "cognitoidentityprovider.local.invalid"),
+    ("secretsmanager", "127.0.0.1:9401"),
+    ("kms", "127.0.0.1:9402"),
+    ("sts", "127.0.0.1:9403"),
+    ("iam", "127.0.0.1:9404"),
+    ("monitoring", "127.0.0.1:9405"),
+    ("codebuild", "127.0.0.1:9406"),
+    ("cognito-idp", "127.0.0.1:9407"),
+    ("dsql", "127.0.0.1:9408"),
+    ("payment-cryptography", "127.0.0.1:9409"),
+    ("ecr", "127.0.0.1:9410"),
+    ("sqs", "127.0.0.1:9411"),
+    ("xray", "127.0.0.1:9412"),
+    ("kinesis", "127.0.0.1:9413"),
+    ("sns", "127.0.0.1:9414"),
+    ("acm", "127.0.0.1:9415"),
+    ("route53", "127.0.0.1:9416"),
+    ("cloudfront", "127.0.0.1:9417"),
+    ("s3", "127.0.0.1:9418"),
+    ("ses", "127.0.0.1:9419"),
+    ("logs", "127.0.0.1:9420"),
+    ("es", "127.0.0.1:9421"),
+    ("eks", "127.0.0.1:9422"),
+    ("elasticloadbalancing", "127.0.0.1:9423"),
+    ("dynamodb", "127.0.0.1:9424"),
+    ("apigateway", "127.0.0.1:9425"),
 ];
 
 #[wstd::http_server]

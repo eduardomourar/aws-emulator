@@ -457,6 +457,7 @@ members = [
     "core/embedded-opensearch",
     "core/embedded-paymentcryptography",
     "core/embedded-route53",
+    "core/embedded-router",
     "core/embedded-s3",
     "core/embedded-secretsmanager",
     "core/embedded-ses",

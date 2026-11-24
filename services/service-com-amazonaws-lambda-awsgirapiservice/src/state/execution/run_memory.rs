@@ -17,9 +17,15 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 
 /// The size of a page of this process's memory, which the faulted-page count is scaled by.
+#[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "openbsd"))]
 const PAGE_BYTES: u64 = 4_096;
 
 /// How many bytes of memory THIS thread has faulted in, as the host reports it.
+///
+/// `nix`'s `UsageWho::RUSAGE_THREAD` only exists on Linux/FreeBSD/OpenBSD; on every other
+/// platform (macOS, WASI) a run's memory bound falls back to 0, the same conservative value
+/// already used when the real call errors.
+#[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "openbsd"))]
 pub(super) fn faulted_bytes() -> u64 {
     match ::nix::sys::resource::getrusage(::nix::sys::resource::UsageWho::RUSAGE_THREAD) {
         Ok(usage) => {
@@ -28,6 +34,11 @@ pub(super) fn faulted_bytes() -> u64 {
         }
         Err(_) => 0,
     }
+}
+
+#[cfg(not(any(target_os = "linux", target_os = "freebsd", target_os = "openbsd")))]
+pub(super) fn faulted_bytes() -> u64 {
+    0
 }
 
 /// What ONE run holds of the host: the baseline the host took for it, and the greatest
