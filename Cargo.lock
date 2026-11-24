@@ -60,14 +60,15 @@ dependencies = [
 
 [[package]]
 name = "ahash"
-version = "0.8.12"
+version = "0.8.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a15f179cd60c4584b8a8c596927aadc462e27f2ca70c04e0071964a73ba7a75"
+checksum = "0fca89247609239eeb6915e6991111866b92d7b31025e69302bbf430cc4d2c38"
 dependencies = [
  "cfg-if",
  "const-random",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "once_cell",
+ "serde",
  "version_check",
  "zerocopy",
 ]
@@ -456,6 +457,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-apigateway"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-apigateway-backplanecontrolservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-cloudfront"
 version = "0.1.0"
 dependencies = [
@@ -557,6 +573,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-dynamodb"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-dynamodb-dynamodb-20120810",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-ecr"
 version = "0.1.0"
 dependencies = [
@@ -567,6 +598,36 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-ecr-amazonec2containerregistry-v20150921",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-eks"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-eks-awswesleyfrontend",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-elasticloadbalancingv2"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-elasticloadbalancing-elasticloadbalancing-v7",
  "tokio",
  "wstd",
 ]
@@ -10163,7 +10224,7 @@ dependencies = [
  "mime",
  "percent-encoding",
  "quick-xml",
- "rand 0.9.5",
+ "rand 0.10.4",
  "rcgen",
  "regex",
  "rustls",
@@ -13976,7 +14037,7 @@ dependencies = [
  "http",
  "memchr",
  "percent-encoding",
- "rand 0.9.5",
+ "rand 0.10.4",
  "ruzstd",
  "serde",
  "serde_json",
@@ -14452,7 +14513,7 @@ dependencies = [
  "http-body-util",
  "hyper",
  "hyper-util",
- "rand 0.9.5",
+ "rand 0.10.4",
  "serde_json",
  "service-com-amazonaws-ec2-amazonec2",
  "service-com-amazonaws-elasticloadbalancingv2-elasticloadbalancing-v10",
@@ -14493,7 +14554,7 @@ dependencies = [
  "hyper-util",
  "ipnet",
  "percent-encoding",
- "rand 0.9.5",
+ "rand 0.10.4",
  "rcgen",
  "rustls",
  "rustls-pemfile",

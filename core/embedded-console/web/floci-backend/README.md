@@ -3,7 +3,8 @@
 `secretsmanager.js`, `kms.js`, `iam.js`, `codebuild.js`, `cloudwatch.js`,
 `cognitoidentityprovider.js`, `kinesis.js`, `paymentcryptography.js`,
 `sqs.js`, `xray.js`, `ecr.js`, `sns.js`, `acm.js`, `route53.js`,
-`cloudfront.js`, `s3.js`, `cloudwatchlogs.js`, and `opensearch.js` are what
+`cloudfront.js`, `s3.js`, `cloudwatchlogs.js`, `opensearch.js`, `eks.js`,
+`elasticloadbalancingv2.js`, `dynamodb.js`, and `apigateway.js` are what
 replace Floci UI's own Node/Bun backend (`@floci/api`) for this embedded
 build: each is a browser bundle of that backend's *real* route/adapter
 source for one AWS service — `routes/secretsmanager.ts` for Secrets
@@ -12,19 +13,29 @@ Manager, `routes/clouds.ts` +
 `AwsCognitoAdapter`/`AwsKinesisAdapter`/`AwsPaymentCryptographyAdapter`/
 `AwsSqsAdapter`/`AwsXrayAdapter`/`AwsRegistryAdapter`/`AwsSnsAdapter`/
 `AwsAcmAdapter`/`AwsRoute53Adapter`/`AwsCloudFrontAdapter`/`AwsStorageAdapter`/
-`AwsLogsAdapter`/`AwsOpenSearchAdapter` for the rest — with only the client
-construction swapped to point at this emulator's single synthetic authority
-(`emulator.local.invalid`) instead of a real network endpoint. Each one
-answers requests to its service's own Floci catalog key, which is not the
-same string as its AWS SigV4 signing name
+`AwsLogsAdapter`/`AwsOpenSearchAdapter`/`AwsEksAdapter`/
+`AwsLoadBalancingAdapter`/`AwsDynamoDbAdapter`/`AwsApiGatewayAdapter` for the
+rest — with only the client construction swapped to point at this emulator's
+single synthetic authority (`emulator.local.invalid`) instead of a real
+network endpoint. Each one answers requests to its service's own Floci
+catalog key, which is not the same string as its AWS SigV4 signing name
 (`../external-dispatch-bridge.js` matches on the latter): `identity` for
 IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
 Cognito, `streams` for Kinesis, `messaging` for SQS, `registry` for ECR,
 `certificates` for ACM, `dns` for Route 53, `cdn` for CloudFront, `storage`
 for S3, `logs` for CloudWatch Logs, `search` for OpenSearch (whose own
-signing name is the legacy `es`, not `opensearch`) —
-`paymentcryptography`, `xray`, `sns` and `s3` happen to match their own
-signing names — see `router.js`'s own prefix constants.
+signing name is the legacy `es`, not `opensearch`), `k8s` for EKS (own
+signing name `eks`), `loadbalancing` for Elastic Load Balancing (own
+signing name `elasticloadbalancing`), `nosql` for DynamoDB (own signing
+name `dynamodb`) —
+`paymentcryptography`, `xray`, `sns`, `s3` and `apigateway` happen to match
+their own signing names — see `router.js`'s own prefix constants.
+`apigateway.js` answers REST API (v1) operations only
+(`AwsApiGatewayAdapter`, `@aws-sdk/client-api-gateway`), backed by
+`service-com-amazonaws-apigateway-backplanecontrolservice`; HTTP APIs (v2,
+`service-com-amazonaws-apigatewayv2-apigatewayv2`) share the same `apigateway`
+signing name but have no Floci adapter, so there is no `apigatewayv2.js`
+bundle here.
 `AwsCloudFrontAdapter` and `AwsRoute53Adapter` both call `node:crypto`'s
 `randomUUID`, aliased to the Web Crypto API the same way as for route53
 (`node-crypto-stub.ts`).
@@ -51,7 +62,8 @@ in Floci's own source.
 registers every adapter this build supports (KMS, IAM, CodeBuild,
 CloudWatch, Cognito, Secrets Manager, Kinesis, Payment Cryptography, SQS,
 X-Ray, ECR, SNS, ACM, Route 53, CloudFront, S3, CloudWatch Logs,
-OpenSearch), because the registry-dependent generic routes it answers —
+OpenSearch, EKS, Elastic Load Balancing, DynamoDB, API Gateway), because
+the registry-dependent generic routes it answers —
 `GET /api/clouds`, `GET /api/clouds/aws/status`, `GET /api/clouds/aws/services`
 — need to see all of them to report the catalog and connection status
 correctly. It never answers a `/services/:service/resources` call itself;
@@ -144,12 +156,16 @@ Floci UI's upstream route/adapter source changes, don't hand-edit them.
    vite build --config browser-bundle/vite.s3.config.ts
    vite build --config browser-bundle/vite.cloudwatchlogs.config.ts
    vite build --config browser-bundle/vite.opensearch.config.ts
+   vite build --config browser-bundle/vite.eks.config.ts
+   vite build --config browser-bundle/vite.elasticloadbalancingv2.config.ts
+   vite build --config browser-bundle/vite.dynamodb.config.ts
+   vite build --config browser-bundle/vite.apigateway.config.ts
    vite build --config browser-bundle/vite.catalog.config.ts
    ```
    `vite` isn't resolvable from `packages/api` on its own (see below) — if
    the build fails with `Cannot find package 'vite'`, symlink it in first:
    `ln -s ../../frontend/node_modules/vite packages/api/node_modules/vite`.
-4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,acm,route53,cloudfront,s3,cloudwatchlogs,opensearch,catalog}.js`
+4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,acm,route53,cloudfront,s3,cloudwatchlogs,opensearch,eks,elasticloadbalancingv2,dynamodb,apigateway,catalog}.js`
    back into this directory, overwriting the committed copies.
 
 `vite` itself isn't a declared dependency of `packages/api` — it's only ever

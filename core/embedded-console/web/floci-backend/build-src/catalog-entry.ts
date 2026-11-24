@@ -26,6 +26,10 @@ import { CloudFrontClient } from "@aws-sdk/client-cloudfront";
 import { S3Client } from "@aws-sdk/client-s3";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { OpenSearchClient } from "@aws-sdk/client-opensearch";
+import { EKSClient } from "@aws-sdk/client-eks";
+import { ElasticLoadBalancingV2Client } from "@aws-sdk/client-elastic-load-balancing-v2";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { APIGatewayClient } from "@aws-sdk/client-api-gateway";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -46,6 +50,11 @@ import { AwsCloudFrontAdapter } from "../src/adapter-aws/AwsCloudFrontAdapter";
 import { AwsStorageAdapter } from "../src/adapter-aws/AwsStorageAdapter";
 import { AwsLogsAdapter } from "../src/adapter-aws/AwsLogsAdapter";
 import { AwsOpenSearchAdapter } from "../src/adapter-aws/AwsOpenSearchAdapter";
+import { AwsEksAdapter } from "../src/adapter-aws/AwsEksAdapter";
+import { AwsLoadBalancingAdapter } from "../src/adapter-aws/AwsLoadBalancingAdapter";
+import { AwsDynamoDbAdapter } from "../src/adapter-aws/AwsDynamoDbAdapter";
+import { AwsApiGatewayAdapter } from "../src/adapter-aws/AwsApiGatewayAdapter";
+import { createEksService } from "../src/services/eks";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -85,6 +94,10 @@ const registry = new CloudAdapterRegistry([
   new AwsStorageAdapter(new S3Client({ ...clientConfig, forcePathStyle: true })),
   new AwsLogsAdapter(new CloudWatchLogsClient(clientConfig)),
   new AwsOpenSearchAdapter(new OpenSearchClient(clientConfig)),
+  new AwsEksAdapter(createEksService(new EKSClient(clientConfig))),
+  new AwsLoadBalancingAdapter(new ElasticLoadBalancingV2Client(clientConfig)),
+  new AwsDynamoDbAdapter(new DynamoDBClient(clientConfig)),
+  new AwsApiGatewayAdapter(new APIGatewayClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

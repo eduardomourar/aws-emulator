@@ -53,6 +53,10 @@ const CLOUDFRONT_PREFIX = "/api/clouds/aws/services/cdn";
 const S3_PREFIX = "/api/clouds/aws/services/storage";
 const CLOUDWATCHLOGS_PREFIX = "/api/clouds/aws/services/logs";
 const OPENSEARCH_PREFIX = "/api/clouds/aws/services/search";
+const EKS_PREFIX = "/api/clouds/aws/services/k8s";
+const ELASTICLOADBALANCINGV2_PREFIX = "/api/clouds/aws/services/loadbalancing";
+const DYNAMODB_PREFIX = "/api/clouds/aws/services/nosql";
+const APIGATEWAY_PREFIX = "/api/clouds/aws/services/apigateway";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -133,6 +137,22 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(OPENSEARCH_PREFIX)) {
     const { handleOpenSearchRequest } = await import("./opensearch.js");
     return handleOpenSearchRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(EKS_PREFIX)) {
+    const { handleEksRequest } = await import("./eks.js");
+    return handleEksRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(ELASTICLOADBALANCINGV2_PREFIX)) {
+    const { handleElasticLoadBalancingV2Request } = await import("./elasticloadbalancingv2.js");
+    return handleElasticLoadBalancingV2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(DYNAMODB_PREFIX)) {
+    const { handleDynamoDbRequest } = await import("./dynamodb.js");
+    return handleDynamoDbRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(APIGATEWAY_PREFIX)) {
+    const { handleApiGatewayRequest } = await import("./apigateway.js");
+    return handleApiGatewayRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

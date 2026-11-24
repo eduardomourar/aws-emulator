@@ -61,8 +61,45 @@
 /// *our* `Cargo.toml` can strip `ahash`'s default features back off once
 /// `boon` has asked for them; fixing this would mean forking `boon` or
 /// `[patch]`-ing `ahash` workspace-wide, neither attempted. `eks` and
-/// `elasticloadbalancingv2` are NOT yet re-tested under the corrected
-/// `hyper`/listener understanding.
+/// `elasticloadbalancingv2` ARE now confirmed fixed under the corrected
+/// `hyper`/listener understanding: `eks` (and its
+/// `service-com-amazonaws-eksauth-eksauthfrontend` dependency) needed only
+/// the standard `tokio` ADDS-not-replaces split. `elasticloadbalancingv2`
+/// needed that same split plus its own instance of `dynamodb`'s
+/// `getrandom`-via-`rand` problem: its direct `rand = "0.9"` dependency hit
+/// the same unsupported `getrandom 0.3.4`, fixed the same way by bumping to
+/// `rand = "0.10"` — which also means porting the one call site
+/// (`src/service/access_logs.rs`'s `unique_field`) off the `random_range`
+/// method `rand = "0.9"`'s `Rng` trait had: `rand = "0.10"` moved that
+/// method onto a new `RngExt` trait instead (`use rand::Rng as _;` ->
+/// `use rand::RngExt as _;`, no call-site change needed beyond the import).
+///
+/// The `elasticloadbalancingv2` entry below wraps a DIFFERENT crate than its
+/// name suggests: `service-com-amazonaws-elasticloadbalancing-elasticloadbalancing-v7`
+/// (the CLASSIC Elastic Load Balancing model), not
+/// `service-com-amazonaws-elasticloadbalancingv2-elasticloadbalancing-v10`
+/// directly. Found by testing end to end, not by reasoning about the model
+/// alone: an AWS SDK ELBv2 client signs its SigV4 credential scope as
+/// `elasticloadbalancing` (confirmed both in the v2 model's own
+/// `aws.auth#sigv4` trait and in `@aws-sdk/client-elastic-load-balancing-v2`'s
+/// `httpAuthSchemeProvider.js`), the SAME signing name the classic model
+/// publishes — not `elasticloadbalancingv2`, which is a routing key internal
+/// to the v2 crate's own `can_handle` override
+/// (`src/service/service.rs`'s `ROUTE_KEY`), used only for addressing that
+/// model DIRECTLY without going through the shared front door. Only the
+/// CLASSIC crate's `can_handle` claims the real `elasticloadbalancing`
+/// signing name; it then dispatches a `Version=2015-12-01` envelope to the
+/// v2 model in-process via `src/service/api_version.rs`'s `serving_model`
+/// (both crates share one engine). Embedding the v2 crate alone — this
+/// experiment's first attempt — left every real SDK call unclaimed: the
+/// wasm component answered `404 UnknownService` ("no emulated service is
+/// registered for 'elasticloadbalancing'") for every request, confirmed via
+/// Playwright against the live embedded build, not assumed. The CLASSIC
+/// crate needed the same `tokio` ADDS-not-replaces split and the same
+/// `rand = "0.9"` -> `"0.10"` bump as the v2 crate (used only via the free
+/// function `rand::random::<f64>()` in `src/service/data_plane.rs`, which
+/// rand 0.10 did NOT move off the top-level module, so no `RngExt` import
+/// change was needed there).
 ///
 /// `rds` and `elasticache` are deferred for the same reason as `dsql`,
 /// confirmed by reading their source: each runs a REAL wire-protocol TCP
@@ -129,15 +166,40 @@
 /// also has its OWN, separate, GENUINE blocker, distinct from `rquickjs`:
 /// its direct `rand = "0.9"` dependency resolves `rand_core 0.9.5`, which
 /// pulls `getrandom 0.3.4` — the exact same no-`wasm32-wasip3`-support
-/// version `apigateway`'s `boon` chain hits above. Bumping to `rand =
-/// "0.10"` (whose `rand_core` pulls the newer, `wasm32-wasip3`-compatible
-/// `getrandom 0.4.x` instead) resolves the dependency version but breaks
-/// `dynamodb`'s own code NATIVELY too: `rand::rngs::ThreadRng` lost the
-/// `random_range` method between those two major versions (a real API
-/// migration, not a wasm-specific issue) — not yet attempted; `dynamodb`
-/// stays on `rand = "0.9"` and deferred until that call site is ported to
-/// whatever 0.10's replacement API is. `opensearch` and `cloudwatchlogs`
-/// have not yet been tested under the corrected `rquickjs` understanding.
+/// version `apigateway`'s `boon` chain hits above. This is now FIXED: bumped
+/// to `rand = "0.10"` (whose `rand_core` pulls the newer,
+/// `wasm32-wasip3`-compatible `getrandom 0.4.x` instead), and the one call
+/// site ported off `rand::Rng::random_range` onto `rand::RngExt::random_range`
+/// (rand 0.10 moved that method to a new extension trait — same migration
+/// `elasticloadbalancingv2` needed, see below). That tokio bump also surfaced
+/// the standard ADDS-not-replaces `tokio` bug in `dynamodb` itself and in two
+/// of its own workspace dependencies
+/// (`service-com-amazonaws-dynamodbstreams-dynamodbstreams-20120810` and
+/// `service-com-amazonaws-account-account`), fixed the same way everywhere
+/// else is. `opensearch` and `cloudwatchlogs` are confirmed fixed too (see
+/// `SIMPLE_EMBEDDED_COMPONENTS` below), needing only their own `tokio` splits.
+///
+/// `apigateway`'s `boon`/`ahash`/`getrandom` chain above is ALSO now fixed,
+/// for a reason narrower than forking `boon` or workspace-wide `[patch]`ing
+/// `ahash`: `ahash` shipped `0.8.13` after the original finding, adding its
+/// own `[target.'cfg(target_arch = "wasm32")'.dependencies]` override that
+/// pulls `wasm32-wasip3`-capable `getrandom 0.4` instead of `0.3.4`; `boon`'s
+/// own loose `ahash = "^0.8.3"` constraint already allows resolving to
+/// `0.8.13`, so `cargo update -p ahash --precise 0.8.13` fixed the whole
+/// chain with no `Cargo.toml` edit and no behavior change. `apigatewayv2`
+/// also needed the standard `tokio` fix (in itself and in its own dependency
+/// `service-com-amazonaws-apigatewaymanagementapi-apigatewaymanagementapi`)
+/// plus a source-level fix: `src/service/invoke.rs`'s `drivable_runtime`/
+/// `awaited` pair referenced `tokio::runtime::RuntimeFlavor::MultiThread`/
+/// `tokio::task::block_in_place`, both gated behind tokio's non-wasm-safe
+/// `rt-multi-thread` feature — cfg-split so the `wasm32` build reports "no
+/// drivable runtime" directly (always true there, since wasm32 has no OS
+/// threads) instead of naming either item. `apigateway-backplanecontrolservice`
+/// needed the same `tokio`/`rt-tokio`(`aws-sdk-s3`)/`block_in_place` fixes
+/// (independently, in its own `src/service/invoke/browser_invoke.rs`) plus
+/// its own `rand = "0.9"` -> `"0.10"` + `Rng` -> `RngExt` migration (used in
+/// `src/state/identifier.rs`'s `drawn_id`) — the same genuine, boon-unrelated
+/// `getrandom` blocker `dynamodb` hit, independently.
 ///
 /// `route53` was ONCE mistakenly deferred too, for an entanglement with
 /// `cloudfront` that turned out to be a FALSE POSITIVE: an earlier `cargo
@@ -194,4 +256,7 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("s3", "service-com-amazonaws-s3-amazons3"),
     ("xray", "service-com-amazonaws-xray-awsxray"),
     ("sns", "service-com-amazonaws-sns-amazonsimplenotificationservice"),
+    ("eks", "service-com-amazonaws-eks-awswesleyfrontend"),
+    ("elasticloadbalancingv2", "service-com-amazonaws-elasticloadbalancing-elasticloadbalancing-v7"),
+    ("apigateway", "service-com-amazonaws-apigateway-backplanecontrolservice"),
 ];

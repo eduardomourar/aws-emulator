@@ -19,7 +19,7 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `ListRegions`: hex-encodes the Region code a pagination token resumes after, so
@@ -30,6 +30,9 @@ tracing = { workspace = true }
 # `PutContactInformation`: the published ISO 3166-1 country-code table, which
 # decides whether a submitted `CountryCode` is an assigned alpha-2 code.
 rust_iso3166 = "0.2"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

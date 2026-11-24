@@ -22,7 +22,7 @@
 //! other headers and every byte of the body stay as the framework's renderer wrote them.
 
 use aws_smithy_runtime_api::http::Response as RtResponse;
-use rand::Rng;
+use rand::RngExt;
 use service_common::query_error_envelope::with_stated_request_id_header;
 
 /// The characters one of this service's request ids is written with: the uppercase letters

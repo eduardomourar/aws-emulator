@@ -615,7 +615,7 @@ pub(super) fn load_balancer_id(arn: &str) -> String {
 /// Drawn from the maintained generator this crate already draws with, never derived from the
 /// request: the field identifies the FILE and nothing about its contents.
 fn unique_field() -> String {
-    use ::rand::Rng as _;
+    use ::rand::RngExt as _;
 
     let mut rng = ::rand::rng();
     (0..UNIQUE_FIELD_LEN)

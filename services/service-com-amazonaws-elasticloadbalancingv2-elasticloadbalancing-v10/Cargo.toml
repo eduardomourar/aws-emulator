@@ -25,7 +25,7 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["io-util", "net", "time"] }
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # Speaks HTTP/1.1 on the raw connection the core hands a load balancer's own socket, which
@@ -81,7 +81,7 @@ ipnet = "2"
 # the action receives the share of requests its `Weight` gives it, so which group a single
 # request reaches is a sample of the unit interval rather than a position in a rotation
 # nothing may store (`src/service/target_group_selection.rs`).
-rand = "0.9"
+rand = "0.10"
 # The digest the target-group stickiness cookie carries instead of the chosen group's ARN, so
 # the pin names the group to this service and nothing of the account's naming to the client
 # (`src/service/target_group_selection.rs`).
@@ -137,6 +137,9 @@ chrono = { version = "0.4", default-features = false, features = ["std"] }
 # accessors on the shared engine, so a policy `iam:PutRolePolicy` wrote decides the next call.
 service-com-amazonaws-iam-awsidentitymanagementv20100508 = { workspace = true }
 service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["io-util", "net", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

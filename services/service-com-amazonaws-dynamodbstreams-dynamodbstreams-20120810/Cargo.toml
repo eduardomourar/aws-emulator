@@ -16,7 +16,7 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -28,6 +28,9 @@ service-common = { path = "../common" }
 # resource coordinates they name, so they are opaque yet reproducible.
 sha2 = { workspace = true }
 hex = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

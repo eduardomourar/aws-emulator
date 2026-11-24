@@ -11,3 +11,8 @@ export const kms = undefined as never;
 export const kinesis = undefined as never;
 export const sqs = undefined as never;
 export const s3 = undefined as never;
+export const dynamodb = undefined as never;
+export const apiGateway = undefined as never;
+// `services/eks.ts`'s `createEksService` default-parameters off `awsClients.eks`;
+// never read since every entry here passes its own client explicitly.
+export const awsClients = { eks: undefined as never };

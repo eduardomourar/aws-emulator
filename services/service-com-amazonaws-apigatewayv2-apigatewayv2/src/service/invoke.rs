@@ -931,9 +931,20 @@ fn request_head(req: &RtRequest) -> Option<http::request::Parts> {
 /// task spawned on it could not be polled and its timers would not advance, so an integration
 /// is not performed from there at all rather than waited on. This is also what keeps
 /// [`awaited`]'s `block_in_place` from the one runtime that refuses it.
+///
+/// A multi-thread runtime does not exist on `wasm32`, which has no OS threads for tokio's
+/// `rt-multi-thread` feature to spawn: that build of this crate never carries the feature
+/// `RuntimeFlavor::MultiThread` and `block_in_place` are gated behind, so this seam is never
+/// drivable there and reports that directly instead of naming either item.
+#[cfg(not(target_family = "wasm"))]
 pub(crate) fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
     let handle = ::tokio::runtime::Handle::try_current().ok()?;
     (handle.runtime_flavor() == ::tokio::runtime::RuntimeFlavor::MultiThread).then_some(handle)
+}
+
+#[cfg(target_family = "wasm")]
+pub(crate) fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
+    None
 }
 
 /// Run `work` to completion on `handle` from a SYNCHRONOUS seam, or `None` for work that
@@ -949,6 +960,11 @@ pub(crate) fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
 ///
 /// `pub(crate)` for the WEBSOCKET data plane's own use of this seam; see
 /// [`IntegrationPermit`].
+///
+/// Never reached on `wasm32`: [`drivable_runtime`] never hands this seam a handle there, so the
+/// `wasm32` build of this function below never runs and exists only so the crate still compiles
+/// without tokio's `rt-multi-thread` feature.
+#[cfg(not(target_family = "wasm"))]
 pub(crate) fn awaited<Answered: Send + 'static>(
     handle: &::tokio::runtime::Handle,
     work: impl ::std::future::Future<Output = Answered> + Send + 'static,
@@ -957,6 +973,14 @@ pub(crate) fn awaited<Answered: Send + 'static>(
     ::tokio::task::block_in_place(|| handle.block_on(task))
         .ok()
         .map(Box::new)
+}
+
+#[cfg(target_family = "wasm")]
+pub(crate) fn awaited<Answered: Send + 'static>(
+    _handle: &::tokio::runtime::Handle,
+    _work: impl ::std::future::Future<Output = Answered> + Send + 'static,
+) -> Option<Box<Answered>> {
+    None
 }
 
 /// Everything decided from the STORE for one invoke: the api's CORS decoration, and either

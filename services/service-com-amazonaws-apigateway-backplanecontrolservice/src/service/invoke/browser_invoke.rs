@@ -365,9 +365,20 @@ fn request_head(req: &RtRequest) -> Option<http::request::Parts> {
 /// spawned on it could not be polled and its timers would not advance, so the invoke is not
 /// served from there at all rather than waited on. This is also what keeps [`awaited`]'s
 /// `block_in_place` from the one runtime that refuses it.
+///
+/// A multi-thread runtime does not exist on `wasm32`, which has no OS threads for tokio's
+/// `rt-multi-thread` feature to spawn: that build of this crate never carries the feature
+/// `RuntimeFlavor::MultiThread` and `block_in_place` are gated behind, so this seam is never
+/// drivable there and reports that directly instead of naming either item.
+#[cfg(not(target_family = "wasm"))]
 fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
     let handle = ::tokio::runtime::Handle::try_current().ok()?;
     (handle.runtime_flavor() == ::tokio::runtime::RuntimeFlavor::MultiThread).then_some(handle)
+}
+
+#[cfg(target_family = "wasm")]
+fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
+    None
 }
 
 /// Run `work` to completion on `handle` from a SYNCHRONOUS seam, or `None` for work that
@@ -379,6 +390,11 @@ fn drivable_runtime() -> Option<::tokio::runtime::Handle> {
 /// `timeoutInMillis` is on the runtime's own timer, and the task stays cancellable.
 /// `block_in_place` hands this worker's queue to a replacement thread while it waits, so the
 /// runtime keeps serving every other request.
+///
+/// Never reached on `wasm32`: [`drivable_runtime`] never hands this seam a handle there, so the
+/// `wasm32` build of this function below never runs and exists only so the crate still compiles
+/// without tokio's `rt-multi-thread` feature.
+#[cfg(not(target_family = "wasm"))]
 fn awaited(
     handle: &::tokio::runtime::Handle,
     work: impl ::std::future::Future<Output = RtResponse> + Send + 'static,
@@ -387,6 +403,14 @@ fn awaited(
     ::tokio::task::block_in_place(|| handle.block_on(task))
         .ok()
         .map(Box::new)
+}
+
+#[cfg(target_family = "wasm")]
+fn awaited(
+    _handle: &::tokio::runtime::Handle,
+    _work: impl ::std::future::Future<Output = RtResponse> + Send + 'static,
+) -> Option<Box<RtResponse>> {
+    None
 }
 
 /// How many cross-origin invokes this seam serves AT ONCE, across the whole process.

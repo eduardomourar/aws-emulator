@@ -83,6 +83,10 @@ const AUTHORITY_BY_SERVICE = {
   s3: "s3.local.invalid",
   logs: "cloudwatchlogs.local.invalid",
   es: "opensearch.local.invalid",
+  eks: "eks.local.invalid",
+  elasticloadbalancing: "elasticloadbalancingv2.local.invalid",
+  dynamodb: "dynamodb.local.invalid",
+  apigateway: "apigateway.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -107,6 +111,11 @@ const AUTHORITY_MODULES = {
   "s3.local.invalid": () => import("./jco-out-s3/aws_emulator_embedded_s3.js"),
   "cloudwatchlogs.local.invalid": () => import("./jco-out-cloudwatchlogs/aws_emulator_embedded_cloudwatchlogs.js"),
   "opensearch.local.invalid": () => import("./jco-out-opensearch/aws_emulator_embedded_opensearch.js"),
+  "eks.local.invalid": () => import("./jco-out-eks/aws_emulator_embedded_eks.js"),
+  "elasticloadbalancingv2.local.invalid": () =>
+    import("./jco-out-elasticloadbalancingv2/aws_emulator_embedded_elasticloadbalancingv2.js"),
+  "dynamodb.local.invalid": () => import("./jco-out-dynamodb/aws_emulator_embedded_dynamodb.js"),
+  "apigateway.local.invalid": () => import("./jco-out-apigateway/aws_emulator_embedded_apigateway.js"),
 };
 
 const clientsByAuthority = new Map();

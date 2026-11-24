@@ -16,7 +16,7 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["io-util", "net", "time"] }
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # Speaks HTTP/1.1 on the raw connection the core hands a load balancer's own socket, which
@@ -29,7 +29,7 @@ http-body-util = "0.1"
 # The DRAW that spreads one cookie-less client's requests across the registered instances a
 # load balancer may send them to: which instance a single request reaches is a sample rather
 # than a position in a rotation nothing may store (`src/service/data_plane.rs`).
-rand = "0.9"
+rand = "0.10"
 serde_json = { workspace = true }
 tracing = { workspace = true }
 # SHA-256, for the stable per-record id in a load balancer's generated DNS name, and for
@@ -53,6 +53,9 @@ service-com-amazonaws-ec2-amazonec2 = { path = "../service-com-amazonaws-ec2-ama
 # write. Shared with the ELBv2 crate, which this front door serves on the endpoint the two
 # models share, so one endpoint cannot answer two envelopes.
 service-common = { path = "../common" }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["io-util", "net", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

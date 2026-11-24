@@ -14,7 +14,7 @@
 //! The record keeps the id it was drawn: the handler that mints one stores it with the
 //! record, so every later read, listing and cross-reference reports the same characters.
 
-use rand::Rng;
+use rand::RngExt;
 
 /// The characters an API Gateway id is written with: the lowercase letters and the digits.
 const ID_ALPHABET: &[u8; 36] = b"abcdefghijklmnopqrstuvwxyz0123456789";
