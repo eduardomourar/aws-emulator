@@ -83,6 +83,13 @@ const MAX_INPUTS_RUN: usize = alerting::MAX_INPUTS_PER_MONITOR;
 /// on; on a current-thread runtime (a test harness) there is no other worker to hand anything
 /// to, so the work is performed directly. Either way it is the SAME bounded work: the ceilings
 /// that confine it are the engine's and this module's, not the runtime's.
+///
+/// WASM-EMBEDDED EXPERIMENT: `tokio::task::block_in_place` does not exist at all without
+/// tokio's `rt-multi-thread` feature, which wasm32 cannot build — not a runtime choice this
+/// function could still check for, a compile-time one. A wasm32 build only ever runs the
+/// current-thread flavor anyway, so it takes the same "no other worker" path the native
+/// build already falls back to.
+#[cfg(not(target_family = "wasm"))]
 pub(super) fn off_the_async_worker<T>(work: impl FnOnce() -> T) -> T {
     match ::tokio::runtime::Handle::try_current() {
         Ok(handle)
@@ -92,6 +99,11 @@ pub(super) fn off_the_async_worker<T>(work: impl FnOnce() -> T) -> T {
         }
         _ => work(),
     }
+}
+
+#[cfg(target_family = "wasm")]
+pub(super) fn off_the_async_worker<T>(work: impl FnOnce() -> T) -> T {
+    work()
 }
 
 /// The monitor a run is about: the stored record's id and version, or nothing for a monitor

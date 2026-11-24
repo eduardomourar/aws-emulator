@@ -24,6 +24,8 @@ import { ACMClient } from "@aws-sdk/client-acm";
 import { Route53Client } from "@aws-sdk/client-route-53";
 import { CloudFrontClient } from "@aws-sdk/client-cloudfront";
 import { S3Client } from "@aws-sdk/client-s3";
+import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
+import { OpenSearchClient } from "@aws-sdk/client-opensearch";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -42,6 +44,8 @@ import { AwsAcmAdapter } from "../src/adapter-aws/AwsAcmAdapter";
 import { AwsRoute53Adapter } from "../src/adapter-aws/AwsRoute53Adapter";
 import { AwsCloudFrontAdapter } from "../src/adapter-aws/AwsCloudFrontAdapter";
 import { AwsStorageAdapter } from "../src/adapter-aws/AwsStorageAdapter";
+import { AwsLogsAdapter } from "../src/adapter-aws/AwsLogsAdapter";
+import { AwsOpenSearchAdapter } from "../src/adapter-aws/AwsOpenSearchAdapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -79,6 +83,8 @@ const registry = new CloudAdapterRegistry([
   // `forcePathStyle` keeps a bucket addressed as a path under the one synthetic
   // authority every component answers at, instead of as a `<bucket>.`subdomain.
   new AwsStorageAdapter(new S3Client({ ...clientConfig, forcePathStyle: true })),
+  new AwsLogsAdapter(new CloudWatchLogsClient(clientConfig)),
+  new AwsOpenSearchAdapter(new OpenSearchClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

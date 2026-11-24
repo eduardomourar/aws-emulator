@@ -486,6 +486,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-cloudwatchlogs"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-cloudwatchlogs-logs-20140328",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-codebuild"
 version = "0.1.0"
 dependencies = [
@@ -599,6 +614,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-kms-trentservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-opensearch"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-opensearch-amazonopensearchservice",
  "tokio",
  "wstd",
 ]

@@ -3,24 +3,28 @@
 `secretsmanager.js`, `kms.js`, `iam.js`, `codebuild.js`, `cloudwatch.js`,
 `cognitoidentityprovider.js`, `kinesis.js`, `paymentcryptography.js`,
 `sqs.js`, `xray.js`, `ecr.js`, `sns.js`, `acm.js`, `route53.js`,
-`cloudfront.js`, and `s3.js` are what replace Floci UI's own Node/Bun
-backend (`@floci/api`) for this embedded build: each is a browser bundle of
-that backend's *real* route/adapter source for one AWS service —
-`routes/secretsmanager.ts` for Secrets Manager, `routes/clouds.ts` +
+`cloudfront.js`, `s3.js`, `cloudwatchlogs.js`, and `opensearch.js` are what
+replace Floci UI's own Node/Bun backend (`@floci/api`) for this embedded
+build: each is a browser bundle of that backend's *real* route/adapter
+source for one AWS service — `routes/secretsmanager.ts` for Secrets
+Manager, `routes/clouds.ts` +
 `AwsKmsAdapter`/`AwsIamAdapter`/`AwsCodeBuildAdapter`/`AwsCloudWatchAdapter`/
 `AwsCognitoAdapter`/`AwsKinesisAdapter`/`AwsPaymentCryptographyAdapter`/
 `AwsSqsAdapter`/`AwsXrayAdapter`/`AwsRegistryAdapter`/`AwsSnsAdapter`/
-`AwsAcmAdapter`/`AwsRoute53Adapter`/`AwsCloudFrontAdapter`/`AwsStorageAdapter`
-for the rest — with only the client construction swapped to point at this
-emulator's single synthetic authority (`emulator.local.invalid`) instead of
-a real network endpoint. Each one answers requests to its service's own
-Floci catalog key, which is not the same string as its AWS SigV4 signing
-name (`../external-dispatch-bridge.js` matches on the latter): `identity`
-for IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
+`AwsAcmAdapter`/`AwsRoute53Adapter`/`AwsCloudFrontAdapter`/`AwsStorageAdapter`/
+`AwsLogsAdapter`/`AwsOpenSearchAdapter` for the rest — with only the client
+construction swapped to point at this emulator's single synthetic authority
+(`emulator.local.invalid`) instead of a real network endpoint. Each one
+answers requests to its service's own Floci catalog key, which is not the
+same string as its AWS SigV4 signing name
+(`../external-dispatch-bridge.js` matches on the latter): `identity` for
+IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
 Cognito, `streams` for Kinesis, `messaging` for SQS, `registry` for ECR,
 `certificates` for ACM, `dns` for Route 53, `cdn` for CloudFront, `storage`
-for S3 — `paymentcryptography`, `xray`, `sns` and `s3` happen to match their
-own signing names — see `router.js`'s own prefix constants.
+for S3, `logs` for CloudWatch Logs, `search` for OpenSearch (whose own
+signing name is the legacy `es`, not `opensearch`) —
+`paymentcryptography`, `xray`, `sns` and `s3` happen to match their own
+signing names — see `router.js`'s own prefix constants.
 `AwsCloudFrontAdapter` and `AwsRoute53Adapter` both call `node:crypto`'s
 `randomUUID`, aliased to the Web Crypto API the same way as for route53
 (`node-crypto-stub.ts`).
@@ -32,15 +36,22 @@ injected into it — so it has no browser bundle here and no wiring in
 `router.js` or `../external-dispatch-bridge.js`, even though
 `core/embedded-dsql` itself builds and transpiles fine. `rds` and
 `elasticache` are the same story, for the same reason (a real wire-protocol
-TCP server as their data plane), and have no Floci bundle either. ECR has
-no `Aws*Ecr*` adapter name; it's `AwsRegistryAdapter` (catalog key
-`registry`) in Floci's own source.
+TCP server as their data plane), and have no Floci bundle either. SES is the
+same story for a different reason: `core/embedded-ses` itself builds and
+transpiles fine, but Floci's only `ses`-related adapter, `AwsSesAdapter` for
+the catalog key `email` (displayed as "SES Mailbox"), does not take an AWS
+SDK client at all — it polls a raw mailbox endpoint
+(`cloudEndpoint('aws')` + `fetchInbox()`, parsed with `postal-mime`), an
+entirely different feature from the standard SigV4 SES API this crate
+implements, so there's no sensible adapter to wire it into. ECR has no
+`Aws*Ecr*` adapter name; it's `AwsRegistryAdapter` (catalog key `registry`)
+in Floci's own source.
 
 `catalog.js` is the one exception to "separate bundles, not one" below: it
 registers every adapter this build supports (KMS, IAM, CodeBuild,
 CloudWatch, Cognito, Secrets Manager, Kinesis, Payment Cryptography, SQS,
-X-Ray, ECR, SNS, ACM, Route 53, CloudFront, S3), because the
-registry-dependent generic routes it answers —
+X-Ray, ECR, SNS, ACM, Route 53, CloudFront, S3, CloudWatch Logs,
+OpenSearch), because the registry-dependent generic routes it answers —
 `GET /api/clouds`, `GET /api/clouds/aws/status`, `GET /api/clouds/aws/services`
 — need to see all of them to report the catalog and connection status
 correctly. It never answers a `/services/:service/resources` call itself;
@@ -131,12 +142,14 @@ Floci UI's upstream route/adapter source changes, don't hand-edit them.
    vite build --config browser-bundle/vite.route53.config.ts
    vite build --config browser-bundle/vite.cloudfront.config.ts
    vite build --config browser-bundle/vite.s3.config.ts
+   vite build --config browser-bundle/vite.cloudwatchlogs.config.ts
+   vite build --config browser-bundle/vite.opensearch.config.ts
    vite build --config browser-bundle/vite.catalog.config.ts
    ```
    `vite` isn't resolvable from `packages/api` on its own (see below) — if
    the build fails with `Cannot find package 'vite'`, symlink it in first:
    `ln -s ../../frontend/node_modules/vite packages/api/node_modules/vite`.
-4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,acm,route53,cloudfront,s3,catalog}.js`
+4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,acm,route53,cloudfront,s3,cloudwatchlogs,opensearch,catalog}.js`
    back into this directory, overwriting the committed copies.
 
 `vite` itself isn't a declared dependency of `packages/api` — it's only ever

@@ -51,6 +51,8 @@ const ACM_PREFIX = "/api/clouds/aws/services/certificates";
 const ROUTE53_PREFIX = "/api/clouds/aws/services/dns";
 const CLOUDFRONT_PREFIX = "/api/clouds/aws/services/cdn";
 const S3_PREFIX = "/api/clouds/aws/services/storage";
+const CLOUDWATCHLOGS_PREFIX = "/api/clouds/aws/services/logs";
+const OPENSEARCH_PREFIX = "/api/clouds/aws/services/search";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -123,6 +125,14 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(S3_PREFIX)) {
     const { handleS3Request } = await import("./s3.js");
     return handleS3Request(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(CLOUDWATCHLOGS_PREFIX)) {
+    const { handleCloudWatchLogsRequest } = await import("./cloudwatchlogs.js");
+    return handleCloudWatchLogsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(OPENSEARCH_PREFIX)) {
+    const { handleOpenSearchRequest } = await import("./opensearch.js");
+    return handleOpenSearchRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

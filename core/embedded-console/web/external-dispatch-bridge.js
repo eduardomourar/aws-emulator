@@ -81,6 +81,8 @@ const AUTHORITY_BY_SERVICE = {
   route53: "route53.local.invalid",
   cloudfront: "cloudfront.local.invalid",
   s3: "s3.local.invalid",
+  logs: "cloudwatchlogs.local.invalid",
+  es: "opensearch.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -103,6 +105,8 @@ const AUTHORITY_MODULES = {
   "route53.local.invalid": () => import("./jco-out-route53/aws_emulator_embedded_route53.js"),
   "cloudfront.local.invalid": () => import("./jco-out-cloudfront/aws_emulator_embedded_cloudfront.js"),
   "s3.local.invalid": () => import("./jco-out-s3/aws_emulator_embedded_s3.js"),
+  "cloudwatchlogs.local.invalid": () => import("./jco-out-cloudwatchlogs/aws_emulator_embedded_cloudwatchlogs.js"),
+  "opensearch.local.invalid": () => import("./jco-out-opensearch/aws_emulator_embedded_opensearch.js"),
 };
 
 const clientsByAuthority = new Map();

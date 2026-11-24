@@ -108,6 +108,8 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-cloudfront", "cloudfront"),
     ("aws-emulator-embedded-s3", "s3"),
     ("aws-emulator-embedded-ses", "ses"),
+    ("aws-emulator-embedded-cloudwatchlogs", "cloudwatchlogs"),
+    ("aws-emulator-embedded-opensearch", "opensearch"),
 ];
 // `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
 // SERVER that, to answer a request, makes an outgoing CLIENT call to the real
