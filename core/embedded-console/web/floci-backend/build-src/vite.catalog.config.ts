@@ -20,6 +20,15 @@ export default defineConfig({
       // zone's `CallerReference`: no such module in a browser, but the same function
       // under the Web Crypto API, which every target this build runs in already has.
       { find: "node:crypto", replacement: path.resolve(__dirname, "node-crypto-stub.ts") },
+      // `AwsDsqlAdapter`'s interactive SQL browsing path (never called for basic cluster
+      // CRUD) resolves the cluster host and opens a raw Postgres socket to it, neither of
+      // which exists in a browser — see `dsql-data-client-stub.ts`.
+      { find: "node:dns/promises", replacement: path.resolve(__dirname, "node-dns-stub.ts") },
+      { find: "node:net", replacement: path.resolve(__dirname, "node-net-stub.ts") },
+      {
+        find: "../adapter-azure/PostgresDataClient",
+        replacement: path.resolve(__dirname, "dsql-data-client-stub.ts"),
+      },
     ],
   },
   build: {

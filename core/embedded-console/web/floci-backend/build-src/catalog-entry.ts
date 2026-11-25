@@ -43,6 +43,8 @@ import { AppConfigClient } from "@aws-sdk/client-appconfig";
 import { AthenaClient } from "@aws-sdk/client-athena";
 import { SageMakerClient } from "@aws-sdk/client-sagemaker";
 import { EventBridgeV2Client } from "@aws-sdk/client-eventbridgev2";
+import { DSQLClient } from "@aws-sdk/client-dsql";
+import { STSClient } from "@aws-sdk/client-sts";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -82,6 +84,9 @@ import { AwsAppConfigAdapter } from "../src/adapter-aws/AwsAppConfigAdapter";
 import { AwsAthenaAdapter } from "../src/adapter-aws/AwsAthenaAdapter";
 import { AwsSageMakerAdapter } from "../src/adapter-aws/AwsSageMakerAdapter";
 import { AwsEventBridgeV2Adapter } from "../src/adapter-aws/AwsEventBridgeV2Adapter";
+import { AwsNetworkingAdapter } from "../src/adapter-aws/AwsNetworkingAdapter";
+import { AwsDsqlAdapter } from "../src/adapter-aws/AwsDsqlAdapter";
+import { PostgresDataClient } from "./dsql-data-client-stub";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -146,6 +151,13 @@ const registry = new CloudAdapterRegistry([
   new AwsAthenaAdapter(new AthenaClient(clientConfig)),
   new AwsSageMakerAdapter(new SageMakerClient(clientConfig)),
   new AwsEventBridgeV2Adapter(new EventBridgeV2Client(clientConfig)),
+  new AwsNetworkingAdapter(createEc2Service(new EC2Client(clientConfig), new ElasticLoadBalancingV2Client(clientConfig))),
+  new AwsDsqlAdapter(
+    new DSQLClient(clientConfig),
+    new STSClient(clientConfig),
+    null,
+    new PostgresDataClient(),
+  ),
 ]);
 const service = new CloudProxyService(
   registry,

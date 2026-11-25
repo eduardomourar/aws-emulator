@@ -15,7 +15,16 @@ export const dynamodb = undefined as never;
 export const apiGateway = undefined as never;
 export const lambda = undefined as never;
 export const cloudformation = undefined as never;
-// `services/eks.ts`'s `createEksService` and `services/ec2.ts`'s `createEc2Service`
-// default-parameter off these; never read since every entry here passes its own
-// client explicitly.
-export const awsClients = { eks: undefined as never, ec2: undefined as never, elbv2: undefined as never };
+// `AwsDsqlAdapter`'s own `flociApiEndpoint` default parameter; never read since every
+// entry here passes its own client and endpoint explicitly.
+export const endpoint = undefined as never;
+// `services/eks.ts`'s `createEksService`, `services/ec2.ts`'s `createEc2Service` and
+// `AwsDsqlAdapter`'s own `dsql`/`sts` default parameters; never read since every entry
+// here passes its own client explicitly.
+export const awsClients = {
+  eks: undefined as never,
+  ec2: undefined as never,
+  elbv2: undefined as never,
+  dsql: undefined as never,
+  sts: undefined as never,
+};

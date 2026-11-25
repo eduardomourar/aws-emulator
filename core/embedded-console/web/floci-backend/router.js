@@ -80,6 +80,8 @@ const APPCONFIG_PREFIX = "/api/clouds/aws/services/configuration";
 const ATHENA_PREFIX = "/api/clouds/aws/services/analytics";
 const SAGEMAKER_PREFIX = "/api/clouds/aws/services/sagemaker";
 const EVENTBRIDGEV2_PREFIX = "/api/clouds/aws/services/eventsv2";
+const NETWORKING_PREFIX = "/api/clouds/aws/services/networking";
+const DSQL_PREFIX = "/api/clouds/aws/services/dsql";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -228,6 +230,14 @@ export async function handleApiRequest(request) {
   if (matchesPrefix(pathname, EVENTBRIDGEV2_PREFIX)) {
     const { handleEventBridgeV2Request } = await import("./eventbridgev2.js");
     return handleEventBridgeV2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, NETWORKING_PREFIX)) {
+    const { handleNetworkingRequest } = await import("./networking.js");
+    return handleNetworkingRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, DSQL_PREFIX)) {
+    const { handleDsqlRequest } = await import("./dsql.js");
+    return handleDsqlRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

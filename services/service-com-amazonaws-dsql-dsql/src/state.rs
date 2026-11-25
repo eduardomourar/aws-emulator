@@ -2087,10 +2087,21 @@ pub fn new_resource_identifier() -> String {
     // 80 bits of entropy from a one-way hash of the sub-nanosecond clock, a
     // process-lifetime counter and the process id, so two ids never collide
     // within a run and ids from different runs stay apart.
+    //
+    // WASM-EMBEDDED EXPERIMENT: `std::process::id()` panics on wasm32 ("no pids on this
+    // platform") -- there is no OS process there to have one. This host's state is
+    // in-memory only and never survives a restart anyway, so cross-run distinguishing
+    // buys nothing there; the nanosecond clock plus the sequence counter already give
+    // strong collision resistance within one run, which is all that matters.
+    #[cfg(not(target_family = "wasm"))]
+    let process_id = std::process::id();
+    #[cfg(target_family = "wasm")]
+    let process_id = 0u32;
+
     let mut hasher = Sha256::new();
     hasher.update(since_epoch.as_nanos().to_be_bytes());
     hasher.update(SEQUENCE.fetch_add(1, Ordering::Relaxed).to_be_bytes());
-    hasher.update(std::process::id().to_be_bytes());
+    hasher.update(process_id.to_be_bytes());
     let digest = hasher.finalize();
     let entropy = digest
         .iter()
