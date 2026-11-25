@@ -60,6 +60,11 @@ const COMPONENTS: &[(&str, u16)] = &[
     ("elasticloadbalancingv2", 9423),
     ("dynamodb", 9424),
     ("apigateway", 9425),
+    ("ec2", 9426),
+    ("lambda", 9427),
+    ("sfn", 9428),
+    ("eventbridge", 9429),
+    ("applicationautoscaling", 9430),
     ("router", 9397),
 ];
 

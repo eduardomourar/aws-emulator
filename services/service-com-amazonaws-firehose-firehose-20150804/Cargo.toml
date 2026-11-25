@@ -18,7 +18,10 @@ aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
 # `time` beyond the workspace default: the tests await the clock-owed
 # CREATING -> ACTIVE / DELETING -> removed spans with `tokio::time::sleep`.
-tokio = { workspace = true, features = ["time"] }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# (and "macros") on top of whatever a dependent lists, and `tokio` itself refuses to build
+# "rt-multi-thread" for `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -109,6 +112,9 @@ jaq-core = "2"
 # `serde_json`: the record a `MetadataExtraction` query reads is JSON, so the jq value is
 # converted to and from the JSON value the rest of this crate parses it as.
 jaq-json = { version = "1", features = ["serde_json"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

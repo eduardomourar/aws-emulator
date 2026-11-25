@@ -22,7 +22,10 @@ aws-smithy-types = { workspace = true }
 # (`state::event_source_poller`) waits between passes with `tokio::time::sleep` rather
 # than parking a worker thread, and `sync` for the run slots an invocation takes one of
 # (`state::execution`).
-tokio = { workspace = true, features = ["io-util", "sync", "time"] }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# on top of whatever a dependent lists, which `tokio` itself refuses to build for
+# `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["io-util", "sync", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -101,7 +104,7 @@ hmac = "0.12"
 hex = { workspace = true }
 # The cryptographic random bytes `crypto.randomBytes`/`randomUUID` draw from: the one
 # source of randomness a run has, read from the platform rather than from a seed.
-getrandom = "0.3"
+getrandom = "0.4"
 # The IANA time-zone database a run's `Intl` and local `Date` readings stand on
 # (`state::execution::node::intl`): a zone's offset at an instant, with its daylight-saving
 # transitions, is this database's answer, compiled into the binary rather than read from a
@@ -262,7 +265,7 @@ nix = { version = "0.31", default-features = false, features = ["resource"] }
 # The TRAFFIC SPLIT an alias with a `RoutingConfig` performs: one uniform draw per
 # invocation decides which of the two versions that invocation runs on
 # (`state::alias_routing`).
-rand = "0.9"
+rand = "0.10"
 # A deployment package is a .zip archive, and the handler's module is one entry in it.
 # Read with `deflate` alone — no other compression method is linked in — and never
 # extracted to a host path.
@@ -314,6 +317,9 @@ libc = "0.2"
 # between them one dependency of their own (`bitflags`, already in this workspace's lock).
 ipnet = "2"
 simple-dns = "0.13"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["io-util", "sync", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

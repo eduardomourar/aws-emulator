@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["time", "rt", "sync"] }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# (and "macros") on top of whatever a dependent lists, and `tokio` itself refuses to build
+# "rt-multi-thread" for `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["time", "rt", "sync"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -57,29 +60,29 @@ service-com-amazonaws-s3tables-s3tablebuckets = { workspace = true }
 # encrypts and decrypts a catalog object's data key with, over the in-process callback
 # into this same emulator (no network client feature is enabled: the transport is the
 # emulator's own).
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The Amazon S3 client a column statistics task run reads the objects behind a table's
 # `StorageDescriptor.Location` through, over the in-process callback into this same
 # emulator (no network client feature is enabled: the transport is the emulator's own, so
 # no socket is opened and no host is resolved).
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The Amazon DynamoDB client a crawl of a `DynamoDBTarget` reads the table behind that
 # target through — its key attributes and the items a scan returns — over the in-process
 # callback into this same emulator, so a crawl classifies exactly the items a client's own
 # DynamoDB writes stored (no network client feature is enabled: the transport is the
 # emulator's own, so no socket is opened and no host is resolved).
-aws-sdk-dynamodb = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-dynamodb = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for EventBridge, driven over the in-process callback into this same emulator:
 # a Glue job run that comes to rest is published onto the account's default event bus as a
 # `Glue Job State Change` event (`state::job_run_events`), through the ONE in-process
 # EventBridge client `service_common::eventbridge_client` builds. Only the generated client
 # is needed — the emulator supplies the transport, so no network client feature is enabled.
-aws-sdk-eventbridge = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-eventbridge = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The Lake Formation client the Data Catalog's read paths consult the permissions held on
 # a database through, over the in-process callback into this same emulator: Lake Formation
 # owns those grants, so they are read from it rather than kept a second time here (no
 # network client feature is enabled: the transport is the emulator's own).
-aws-sdk-lakeformation = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-lakeformation = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The glob patterns a crawler's `S3Target$Exclusions` are written in, matched against each
 # object's path relative to the target — `**`, `{a,b}` and character classes included — by
 # the globset crate rather than by a hand-rolled matcher.
@@ -120,6 +123,16 @@ service-com-amazonaws-lambda-awsgirapiservice = { workspace = true }
 # published action names (`state::authorization::policy_action_names`) rather than keeping a
 # second list here, so "may this role touch that queue at all?" leaves out no call it serves.
 service-com-amazonaws-sqs-amazonsqs = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time", "rt", "sync"] }
+# `rt-tokio` (unsupported on wasm32, per each SDK's own feature definition) dropped
+# above and added back only for native here.
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-dynamodb = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-eventbridge = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-lakeformation = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -30,6 +30,11 @@ import { EKSClient } from "@aws-sdk/client-eks";
 import { ElasticLoadBalancingV2Client } from "@aws-sdk/client-elastic-load-balancing-v2";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { APIGatewayClient } from "@aws-sdk/client-api-gateway";
+import { EC2Client } from "@aws-sdk/client-ec2";
+import { LambdaClient } from "@aws-sdk/client-lambda";
+import { SFNClient } from "@aws-sdk/client-sfn";
+import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
+import { ApplicationAutoScalingClient } from "@aws-sdk/client-application-auto-scaling";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -55,6 +60,12 @@ import { AwsLoadBalancingAdapter } from "../src/adapter-aws/AwsLoadBalancingAdap
 import { AwsDynamoDbAdapter } from "../src/adapter-aws/AwsDynamoDbAdapter";
 import { AwsApiGatewayAdapter } from "../src/adapter-aws/AwsApiGatewayAdapter";
 import { createEksService } from "../src/services/eks";
+import { createEc2Service } from "../src/services/ec2";
+import { AwsComputeAdapter } from "../src/adapter-aws/AwsComputeAdapter";
+import { AwsServerlessAdapter } from "../src/adapter-aws/AwsServerlessAdapter";
+import { AwsStepFunctionsAdapter } from "../src/adapter-aws/AwsStepFunctionsAdapter";
+import { AwsEventBridgeAdapter } from "../src/adapter-aws/AwsEventBridgeAdapter";
+import { AwsApplicationAutoScalingAdapter } from "../src/adapter-aws/AwsApplicationAutoScalingAdapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -98,6 +109,19 @@ const registry = new CloudAdapterRegistry([
   new AwsLoadBalancingAdapter(new ElasticLoadBalancingV2Client(clientConfig)),
   new AwsDynamoDbAdapter(new DynamoDBClient(clientConfig)),
   new AwsApiGatewayAdapter(new APIGatewayClient(clientConfig)),
+  new AwsComputeAdapter(
+    createEc2Service(new EC2Client(clientConfig), new ElasticLoadBalancingV2Client(clientConfig)),
+  ),
+  new AwsServerlessAdapter(
+    new LambdaClient(clientConfig),
+    new S3Client({ ...clientConfig, forcePathStyle: true }),
+    new DynamoDBClient(clientConfig),
+    new SQSClient(clientConfig),
+    new KinesisClient(clientConfig),
+  ),
+  new AwsStepFunctionsAdapter(new SFNClient(clientConfig)),
+  new AwsEventBridgeAdapter(new EventBridgeClient(clientConfig)),
+  new AwsApplicationAutoScalingAdapter(new ApplicationAutoScalingClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

@@ -594,10 +594,13 @@ pub mod openid_discovery;
 /// whose API carries one — so the ceilings that confine an engine evaluating a caller's
 /// text are stated, and met, in one place rather than per service.
 ///
-/// WASM-EMBEDDED EXPERIMENT: the module itself refuses to build under `panic = "abort"`
-/// (its containment needs `catch_unwind`), which wasm32 targets default to; no secrets-only
-/// consumer reaches this module, so it is simply excluded from that build.
-#[cfg(not(target_family = "wasm"))]
+/// WASM-EMBEDDED EXPERIMENT: `wasm32` has no real OS threads to run the parse on a
+/// dedicated, bounded-stack one the way every other target does, and defaults to
+/// `panic = "abort"`, under which `catch_unwind` cannot turn the engine's own
+/// `unreachable!()` into a `Refused` either — so on `wasm32` the module evaluates
+/// directly with neither, accepting the host component instance's own trap as the
+/// isolation boundary in place of a dedicated thread's. See `jsonata.rs`'s own module
+/// doc and `evaluate_on_bounded_context` for the two targets' different scheduling.
 pub mod jsonata;
 /// The ONE bounded, session-local POSIX/bash shell session every service that has to
 /// PERFORM caller-supplied shell text drives — a build's command lines, a container's

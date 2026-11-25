@@ -133,6 +133,7 @@ pub const MAX_EVALUATION_ARENA_BYTES: usize = 8 * 1024 * 1024;
 /// This is a 2x margin over their sum. It is RESERVED address space, committed only as
 /// a parse touches it, and at most [`MAX_LIVE_EVALUATIONS`] of these threads exist at
 /// once.
+#[cfg(not(target_family = "wasm"))]
 const EVALUATION_STACK_BYTES: usize = 32 * 1024 * 1024;
 
 /// The most evaluations alive in this process at once.
@@ -150,7 +151,14 @@ static LIVE_EVALUATIONS: AtomicUsize = AtomicUsize::new(0);
 /// aborting panic, so a profile built with `panic = "abort"` would turn the arena's
 /// refusal — and the engine's own `unreachable!()` on some malformed expressions —
 /// into the death of the serving process instead of a refusal.
-#[cfg(panic = "abort")]
+///
+/// `wasm32` is the one exception: it has no real OS threads to begin with (the
+/// dedicated, bounded-stack thread [`evaluate`] gives the parse on every other target
+/// is simply unavailable there), so its own panic there traps the ONE host component
+/// instance evaluating it rather than the serving process — a wasm panic was never
+/// going to unwind into a `Refused` on this target regardless of this crate's own
+/// profile, so there is nothing `panic = "unwind"` would additionally buy it here.
+#[cfg(all(panic = "abort", not(target_family = "wasm")))]
 compile_error!(
     "evaluating a caller's JSONata expression needs catch_unwind, so this crate requires \
      panic = \"unwind\" (the default)"
@@ -482,19 +490,39 @@ pub fn evaluate(expression: &Expression<'_>) -> Result<Option<(Value, usize)>, R
             input.len()
         )));
     }
-    // The parse is recursive descent over a caller's text, so it runs on a thread with
-    // a stack sized for it, and the evaluation stays on that thread: ONE thread per
-    // expression, counted against the live-evaluation ceiling.
+    // Counted against the live-evaluation ceiling regardless of how the evaluation
+    // that follows is scheduled: one slot per expression, native thread or not.
     let _live = LiveEvaluation::start().ok_or_else(|| {
         Refused::NotEvaluated(format!(
             "more than the {MAX_LIVE_EVALUATIONS} expressions this emulator evaluates at once are \
              already being evaluated, so this one was not"
         ))
     })?;
-    let answered = ::std::thread::scope(|scope| {
+    evaluate_on_bounded_context(expression, &input)
+}
+
+/// The parse and the evaluation themselves, scheduled the one way each target can
+/// actually schedule them.
+///
+/// Native: a thread of its own, with a stack sized for the recursive-descent parse
+/// ([`EVALUATION_STACK_BYTES`]), [`contained`] inside [`::std::panic::catch_unwind`] so
+/// the arena's refusal and the engine's own `unreachable!()` become a [`Refused`]
+/// rather than the death of the serving process.
+///
+/// `wasm32`: there is no thread to spawn one on at all, so the parse runs in THIS
+/// call directly — [`evaluate_uncontained`], with no `catch_unwind` wrapping it (see
+/// the `compile_error!` above for why none is needed here): a panic traps the ONE
+/// host component instance evaluating it, which is the isolation boundary this target
+/// has instead of a dedicated thread's.
+#[cfg(not(target_family = "wasm"))]
+fn evaluate_on_bounded_context(
+    expression: &Expression<'_>,
+    input: &str,
+) -> Result<Option<(Value, usize)>, Refused> {
+    ::std::thread::scope(|scope| {
         let spawned = ::std::thread::Builder::new()
             .stack_size(EVALUATION_STACK_BYTES)
-            .spawn_scoped(scope, || contained(expression, &input));
+            .spawn_scoped(scope, || contained(expression, input));
         match spawned {
             Ok(thread) => thread.join().map_err(|_| {
                 Refused::NotEvaluated(
@@ -511,8 +539,15 @@ pub fn evaluate(expression: &Expression<'_>) -> Result<Option<(Value, usize)>, R
                     .to_string(),
             )),
         }
-    })?;
-    answered
+    })?
+}
+
+#[cfg(target_family = "wasm")]
+fn evaluate_on_bounded_context(
+    expression: &Expression<'_>,
+    input: &str,
+) -> Result<Option<(Value, usize)>, Refused> {
+    evaluate_uncontained(expression, input)
 }
 
 /// How deeply `value` nests, counted ITERATIVELY — over an explicit stack rather than
@@ -539,78 +574,19 @@ fn nesting(value: &Value) -> usize {
     deepest
 }
 
-/// The parse and the evaluation themselves, on the thread [`evaluate`] sized for them.
-///
-/// `input` is the TEXT of the context document, rendered from the value `evaluate`
-/// bounded, so what the engine parses here is a document whose size and nesting are
-/// already inside the ceilings this thread's stack was sized for.
-///
-/// Every failure is the caller's expression failing, so each is reported rather than
-/// left to unwind: the whole of it runs inside [`::std::panic::catch_unwind`], since
-/// the arena's refusal of an over-ceiling allocation and the engine's own
-/// `unreachable!()` on some malformed expressions are panics.
+/// The parse and the evaluation themselves, on the thread [`evaluate`] sized for them,
+/// inside [`::std::panic::catch_unwind`]: the arena's refusal of an over-ceiling
+/// allocation and the engine's own `unreachable!()` on some malformed expressions are
+/// panics, and every failure here is the caller's expression failing, so each is
+/// reported rather than left to unwind.
+#[cfg(not(target_family = "wasm"))]
 fn contained(
     expression: &Expression<'_>,
     input: &str,
 ) -> Result<Option<(Value, usize)>, Refused> {
     let text = expression.text;
     let evaluated = ::std::panic::catch_unwind(::std::panic::AssertUnwindSafe(|| {
-        let arena = ::bumpalo::Bump::new();
-        arena.set_allocation_limit(Some(MAX_EVALUATION_ARENA_BYTES));
-        let parsed = ::jsonata_rs::JsonAta::new(text, &arena).map_err(|why| {
-            Refused::NotEvaluated(format!("'{text}' is not a valid JSONata expression: {why}"))
-        })?;
-        // Read off the ENGINE's own parse, before anything is evaluated: a step this
-        // emulator cannot bound cannot be interrupted either.
-        if let Some(construct) = unbounded_construct(&parsed.ast()) {
-            return Err(Refused::NotEvaluated(format!(
-                "'{text}' uses {construct}, whose cost this emulator cannot bound, so it was not \
-                 evaluated"
-            )));
-        }
-        // And the one step whose cost is a WIDTH the expression names: read off that
-        // same parse and held to what this evaluation may build at all.
-        if let Some(width) = unboundable_pad(&format!("{:?}", parsed.ast()), expression.allowance) {
-            return Err(Refused::NotEvaluated(format!(
-                "'{text}' uses $pad with {width}, which this emulator cannot bound against the {} \
-                 bytes this evaluation may build, so it was not evaluated",
-                expression.allowance
-            )));
-        }
-        for (name, value) in expression.variables {
-            let bound = arena_value(&arena, value, MAX_EVALUATION_DEPTH)?;
-            parsed.assign_var(name, bound);
-        }
-        let answer = parsed
-            .evaluate_timeboxed(
-                Some(input),
-                Some(MAX_EVALUATION_DEPTH),
-                Some(expression.allowed_ms),
-            )
-            .map_err(|why| evaluation_failure(text, &why, expression.allowed_ms))?;
-        if answer.is_undefined() {
-            return Ok(None);
-        }
-        // The size is decided on the ENGINE's value, before the JSON text of it is
-        // built: that text is allocated on the global heap, which the arena's limit
-        // does not govern, so a value aliased into many places would otherwise be
-        // measured only once it already existed.
-        let mut allowance = expression.allowance;
-        if !fits(answer, &mut allowance, MAX_EVALUATION_DEPTH) {
-            return Err(Refused::TooLarge(format!(
-                "'{text}' produces more than the {} bytes left of what this may build",
-                expression.allowance
-            )));
-        }
-        let built = expression.allowance.saturating_sub(allowance);
-        let serialized = answer.serialize(false);
-        ::serde_json::from_str::<Value>(&serialized)
-            .map(|value| Some((value, built.max(serialized.len()))))
-            .map_err(|_| {
-                Refused::NotEvaluated(format!(
-                    "'{text}' produces a value that is not a JSON document"
-                ))
-            })
+        evaluate_uncontained(expression, input)
     }));
     match evaluated {
         Ok(answered) => answered,
@@ -619,6 +595,77 @@ fn contained(
              emulator evaluates one expression in, or could not be parsed at all"
         ))),
     }
+}
+
+/// The parse and the evaluation themselves.
+///
+/// `input` is the TEXT of the context document, rendered from the value [`evaluate`]
+/// bounded, so what the engine parses here is a document whose size and nesting are
+/// already inside the ceilings the caller sized its stack for (native: a dedicated
+/// thread's, [`contained`]; `wasm32`: the host component instance's own, with no
+/// `catch_unwind` around this call at all — see the `compile_error!` near
+/// [`MAX_LIVE_EVALUATIONS`] for why).
+fn evaluate_uncontained(
+    expression: &Expression<'_>,
+    input: &str,
+) -> Result<Option<(Value, usize)>, Refused> {
+    let text = expression.text;
+    let arena = ::bumpalo::Bump::new();
+    arena.set_allocation_limit(Some(MAX_EVALUATION_ARENA_BYTES));
+    let parsed = ::jsonata_rs::JsonAta::new(text, &arena).map_err(|why| {
+        Refused::NotEvaluated(format!("'{text}' is not a valid JSONata expression: {why}"))
+    })?;
+    // Read off the ENGINE's own parse, before anything is evaluated: a step this
+    // emulator cannot bound cannot be interrupted either.
+    if let Some(construct) = unbounded_construct(&parsed.ast()) {
+        return Err(Refused::NotEvaluated(format!(
+            "'{text}' uses {construct}, whose cost this emulator cannot bound, so it was not \
+             evaluated"
+        )));
+    }
+    // And the one step whose cost is a WIDTH the expression names: read off that
+    // same parse and held to what this evaluation may build at all.
+    if let Some(width) = unboundable_pad(&format!("{:?}", parsed.ast()), expression.allowance) {
+        return Err(Refused::NotEvaluated(format!(
+            "'{text}' uses $pad with {width}, which this emulator cannot bound against the {} \
+             bytes this evaluation may build, so it was not evaluated",
+            expression.allowance
+        )));
+    }
+    for (name, value) in expression.variables {
+        let bound = arena_value(&arena, value, MAX_EVALUATION_DEPTH)?;
+        parsed.assign_var(name, bound);
+    }
+    let answer = parsed
+        .evaluate_timeboxed(
+            Some(input),
+            Some(MAX_EVALUATION_DEPTH),
+            Some(expression.allowed_ms),
+        )
+        .map_err(|why| evaluation_failure(text, &why, expression.allowed_ms))?;
+    if answer.is_undefined() {
+        return Ok(None);
+    }
+    // The size is decided on the ENGINE's value, before the JSON text of it is
+    // built: that text is allocated on the global heap, which the arena's limit
+    // does not govern, so a value aliased into many places would otherwise be
+    // measured only once it already existed.
+    let mut allowance = expression.allowance;
+    if !fits(answer, &mut allowance, MAX_EVALUATION_DEPTH) {
+        return Err(Refused::TooLarge(format!(
+            "'{text}' produces more than the {} bytes left of what this may build",
+            expression.allowance
+        )));
+    }
+    let built = expression.allowance.saturating_sub(allowance);
+    let serialized = answer.serialize(false);
+    ::serde_json::from_str::<Value>(&serialized)
+        .map(|value| Some((value, built.max(serialized.len()))))
+        .map_err(|_| {
+            Refused::NotEvaluated(format!(
+                "'{text}' produces a value that is not a JSON document"
+            ))
+        })
 }
 
 /// One live evaluation thread, counted in [`LIVE_EVALUATIONS`] for as long as it runs.

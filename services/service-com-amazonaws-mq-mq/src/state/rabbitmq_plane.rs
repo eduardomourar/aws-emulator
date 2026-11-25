@@ -26,14 +26,25 @@
 //! wrong protocol.
 
 /// The AMQP 0-9-1 server one connection is served by.
+///
+/// Built on `amq-protocol`, whose `amq-protocol-tcp` dependency pulls in `async-rs` —
+/// a raw-fd socket abstraction with no `wasm32` backend at all, not even with every
+/// feature off. A `wasm32` build never opens a real socket for this anyway
+/// (`engine.listeners().tcp` already refuses there), so the module is native-only and
+/// [`serve_broker`] below is a wasm no-op with the same observable effect: a broker
+/// that never gets a socket of its own.
+#[cfg(not(target_family = "wasm"))]
 pub mod amqp_session;
 /// The exchanges, queues and messages that server answers out of.
+#[cfg(not(target_family = "wasm"))]
 pub mod message_broker;
 
+#[cfg(not(target_family = "wasm"))]
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 
 use super::*;
 
+#[cfg(not(target_family = "wasm"))]
 use message_broker::MessageBroker;
 
 /// The address a broker's own socket answers on, as the control plane publishes it.
@@ -52,9 +63,11 @@ pub struct ServedAddress {
 /// A newtype rather than a bare `Arc<Mutex<_>>` so locking recovers from a poisoned lock
 /// the way the engine's own state handle does: one session that panicked must not wedge
 /// the broker for every later client.
+#[cfg(not(target_family = "wasm"))]
 #[derive(Debug, Clone, Default)]
 pub struct SharedMessageBroker(Arc<Mutex<MessageBroker>>);
 
+#[cfg(not(target_family = "wasm"))]
 impl SharedMessageBroker {
     /// Lock the broker for exclusive access.
     pub fn lock(&self) -> MutexGuard<'_, MessageBroker> {
@@ -67,6 +80,7 @@ impl SharedMessageBroker {
 ///
 /// Dropping it closes the port, so it is held for exactly as long as the broker it
 /// belongs to.
+#[cfg(not(target_family = "wasm"))]
 pub struct BrokerDataPlane {
     endpoint: ServedAddress,
     broker: SharedMessageBroker,
@@ -74,6 +88,7 @@ pub struct BrokerDataPlane {
     _listener: ::emulator_server::ResourceListener,
 }
 
+#[cfg(not(target_family = "wasm"))]
 impl std::fmt::Debug for BrokerDataPlane {
     /// Everything about this record that is not a live socket: where it answers and what
     /// its broker holds. `ResourceListener` is not `Debug`.
@@ -86,6 +101,7 @@ impl std::fmt::Debug for BrokerDataPlane {
     }
 }
 
+#[cfg(not(target_family = "wasm"))]
 impl BrokerDataPlane {
     /// The address a client reaches this broker at.
     pub fn endpoint(&self) -> &ServedAddress {
@@ -96,6 +112,15 @@ impl BrokerDataPlane {
     pub fn broker(&self) -> &SharedMessageBroker {
         &self.broker
     }
+}
+
+/// A `wasm32` build never opens a real broker socket ([`serve_broker`] is a no-op
+/// there), so [`Self::broker_data_planes`](super::ComAmazonawsMqMqState::broker_data_planes)
+/// never holds one of these — it exists only so that map's value type compiles.
+#[cfg(target_family = "wasm")]
+#[derive(Debug)]
+pub struct BrokerDataPlane {
+    _never_constructed: ::std::convert::Infallible,
 }
 
 /// Whether this emulator serves a data plane for a broker running `engine_type`.
@@ -116,6 +141,19 @@ pub fn engine_speaks_amqp_0_9_1(engine_type: &str) -> bool {
 /// on an engine that vends no listeners — in which case the broker publishes the port
 /// Amazon MQ publishes for its protocol on the host this emulator answered the create
 /// on.
+///
+/// `wasm32` never reaches a real socket here regardless (see the module doc above), so
+/// this is a no-op there — the same observable outcome as the native "no socket could
+/// be opened" branch below.
+#[cfg(target_family = "wasm")]
+pub async fn serve_broker<Eng: Send + Sync + 'static>(
+    _engine: &Eng,
+    _state: &::engine::ServiceState<ComAmazonawsMqMqState>,
+    _broker_id: &str,
+) {
+}
+
+#[cfg(not(target_family = "wasm"))]
 pub async fn serve_broker<Eng: Send + Sync + 'static>(
     engine: &Eng,
     state: &::engine::ServiceState<ComAmazonawsMqMqState>,

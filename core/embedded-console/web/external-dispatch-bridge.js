@@ -87,6 +87,11 @@ const AUTHORITY_BY_SERVICE = {
   elasticloadbalancing: "elasticloadbalancingv2.local.invalid",
   dynamodb: "dynamodb.local.invalid",
   apigateway: "apigateway.local.invalid",
+  ec2: "ec2.local.invalid",
+  lambda: "lambda.local.invalid",
+  states: "sfn.local.invalid",
+  events: "eventbridge.local.invalid",
+  "application-autoscaling": "applicationautoscaling.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -116,6 +121,12 @@ const AUTHORITY_MODULES = {
     import("./jco-out-elasticloadbalancingv2/aws_emulator_embedded_elasticloadbalancingv2.js"),
   "dynamodb.local.invalid": () => import("./jco-out-dynamodb/aws_emulator_embedded_dynamodb.js"),
   "apigateway.local.invalid": () => import("./jco-out-apigateway/aws_emulator_embedded_apigateway.js"),
+  "ec2.local.invalid": () => import("./jco-out-ec2/aws_emulator_embedded_ec2.js"),
+  "lambda.local.invalid": () => import("./jco-out-lambda/aws_emulator_embedded_lambda.js"),
+  "sfn.local.invalid": () => import("./jco-out-sfn/aws_emulator_embedded_sfn.js"),
+  "eventbridge.local.invalid": () => import("./jco-out-eventbridge/aws_emulator_embedded_eventbridge.js"),
+  "applicationautoscaling.local.invalid": () =>
+    import("./jco-out-applicationautoscaling/aws_emulator_embedded_applicationautoscaling.js"),
 };
 
 const clientsByAuthority = new Map();

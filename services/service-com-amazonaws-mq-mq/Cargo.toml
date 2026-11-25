@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# and "macros" on top of whatever a dependent lists, and `tokio` itself refuses to build
+# "rt-multi-thread" for `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["rt", "io-util", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -26,17 +29,22 @@ sha2 = { workspace = true }
 # Parses and re-serializes the ActiveMQ XML configuration document a revision
 # stores, so a revision reports the canonical form rather than the bytes sent.
 quick-xml = "0.41"
-# The AMQP 0-9-1 wire format a RabbitMQ broker's clients speak: this crate carries
-# the protocol's frame codec and its generated method and property types, so the
-# broker's data plane parses and writes the real wire rather than a hand-rolled one.
-# `default-features = false` leaves out its client-side TCP/TLS connector, which the
-# core owns here.
-amq-protocol = { version = "10.7", default-features = false }
 # `service-common` carries the ONE reading of the address a client reaches this
 # emulator at, which a broker's published endpoints name, and of the framing an
 # answer that carries no content states (`service_common::no_content_responses`),
 # which this service's tag mutations answer at.
 service-common = { path = "../common" }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["rt", "io-util", "time"] }
+# The AMQP 0-9-1 wire format a RabbitMQ broker's clients speak: this crate carries
+# the protocol's frame codec and its generated method and property types, so the
+# broker's data plane parses and writes the real wire rather than a hand-rolled one.
+# `default-features = false` leaves out its client-side TCP/TLS connector, which the
+# core owns here. Native-only: its own `amq-protocol-tcp` dependency pulls in
+# `async-rs`, a raw-fd socket abstraction with no `wasm32` backend at all (see
+# `state/rabbitmq_plane.rs`'s module doc).
+amq-protocol = { version = "10.7", default-features = false }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

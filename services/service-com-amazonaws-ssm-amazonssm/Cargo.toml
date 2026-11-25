@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["time", "sync"] }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# (and "macros") on top of whatever a dependent lists, and `tokio` itself refuses to build
+# "rt-multi-thread" for `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["time", "sync"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `raw_value` is what lets the one body this service writes a member onto be read and
@@ -107,6 +110,9 @@ iso8601 = "0.6"
 # the private hosted zones associated with that VPC hold, read through that service's own
 # state accessors rather than from a second copy of them here (`state::guest_resolver`).
 service-com-amazonaws-route53resolver-route53resolver = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time", "sync"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

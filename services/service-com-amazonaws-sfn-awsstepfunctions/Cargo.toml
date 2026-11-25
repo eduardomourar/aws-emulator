@@ -28,7 +28,11 @@ aws-smithy-types = { workspace = true }
 # `tokio::time::sleep` between looks at the store, instead of blocking a thread.
 # `sync` is the channel a `Task` state's integration call is handed over on, from
 # the blocking thread the walk runs on to the async request that makes the call.
-tokio = { workspace = true, features = ["sync", "time"] }
+#
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# on top of whatever a dependent lists, which `tokio` itself refuses to build for
+# `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["sync", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `raw_value`: a document the DEFINITION writes is reported in the text it was written
@@ -113,6 +117,9 @@ service-com-amazonaws-cloudwatchlogs-logs-20140328 = { workspace = true }
 # under (`state::task_authorization::new_session_name`): a fresh version-4 UUID from the
 # maintained crate, rendered as its 32 hexadecimal digits.
 uuid = { version = "1", features = ["v4"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["sync", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -259,4 +259,15 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("eks", "service-com-amazonaws-eks-awswesleyfrontend"),
     ("elasticloadbalancingv2", "service-com-amazonaws-elasticloadbalancing-elasticloadbalancing-v7"),
     ("apigateway", "service-com-amazonaws-apigateway-backplanecontrolservice"),
+    // Unblocked by fixing `lambda`'s non-Linux `nix::UsageWho::RUSAGE_THREAD` compile
+    // error (see issues/things-that-do-not-work -- filed upstream as
+    // https://github.com/aws/aws-emulator/issues/648): `eventbridge`, `sfn` and
+    // `applicationautoscaling` depend on `lambda` through `glue`; `ec2` depends on
+    // `eventbridge`. All five confirmed compiling clean natively; not yet attempted
+    // for `wasm32-wasip3` beyond this.
+    ("lambda", "service-com-amazonaws-lambda-awsgirapiservice"),
+    ("ec2", "service-com-amazonaws-ec2-amazonec2"),
+    ("sfn", "service-com-amazonaws-sfn-awsstepfunctions"),
+    ("eventbridge", "service-com-amazonaws-eventbridge-awsevents"),
+    ("applicationautoscaling", "service-com-amazonaws-applicationautoscaling-anyscalefrontendservice"),
 ];

@@ -57,6 +57,11 @@ const EKS_PREFIX = "/api/clouds/aws/services/k8s";
 const ELASTICLOADBALANCINGV2_PREFIX = "/api/clouds/aws/services/loadbalancing";
 const DYNAMODB_PREFIX = "/api/clouds/aws/services/nosql";
 const APIGATEWAY_PREFIX = "/api/clouds/aws/services/apigateway";
+const EC2_PREFIX = "/api/clouds/aws/services/compute";
+const LAMBDA_PREFIX = "/api/clouds/aws/services/serverless";
+const SFN_PREFIX = "/api/clouds/aws/services/workflows";
+const EVENTBRIDGE_PREFIX = "/api/clouds/aws/services/events";
+const APPLICATIONAUTOSCALING_PREFIX = "/api/clouds/aws/services/autoscaling";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -153,6 +158,26 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(APIGATEWAY_PREFIX)) {
     const { handleApiGatewayRequest } = await import("./apigateway.js");
     return handleApiGatewayRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(EC2_PREFIX)) {
+    const { handleEc2Request } = await import("./ec2.js");
+    return handleEc2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(LAMBDA_PREFIX)) {
+    const { handleLambdaRequest } = await import("./lambda.js");
+    return handleLambdaRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(SFN_PREFIX)) {
+    const { handleSfnRequest } = await import("./sfn.js");
+    return handleSfnRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(EVENTBRIDGE_PREFIX)) {
+    const { handleEventBridgeRequest } = await import("./eventbridge.js");
+    return handleEventBridgeRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(APPLICATIONAUTOSCALING_PREFIX)) {
+    const { handleApplicationAutoScalingRequest } = await import("./applicationautoscaling.js");
+    return handleApplicationAutoScalingRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

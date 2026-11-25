@@ -13,6 +13,8 @@ export const sqs = undefined as never;
 export const s3 = undefined as never;
 export const dynamodb = undefined as never;
 export const apiGateway = undefined as never;
-// `services/eks.ts`'s `createEksService` default-parameters off `awsClients.eks`;
-// never read since every entry here passes its own client explicitly.
-export const awsClients = { eks: undefined as never };
+export const lambda = undefined as never;
+// `services/eks.ts`'s `createEksService` and `services/ec2.ts`'s `createEc2Service`
+// default-parameter off these; never read since every entry here passes its own
+// client explicitly.
+export const awsClients = { eks: undefined as never, ec2: undefined as never, elbv2: undefined as never };

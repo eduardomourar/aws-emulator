@@ -39,6 +39,11 @@ const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
     ("elasticloadbalancing", "127.0.0.1:9423"),
     ("dynamodb", "127.0.0.1:9424"),
     ("apigateway", "127.0.0.1:9425"),
+    ("ec2", "127.0.0.1:9426"),
+    ("lambda", "127.0.0.1:9427"),
+    ("states", "127.0.0.1:9428"),
+    ("events", "127.0.0.1:9429"),
+    ("application-autoscaling", "127.0.0.1:9430"),
 ];
 
 #[wstd::http_server]

@@ -19,7 +19,10 @@ aws-smithy-types = { workspace = true }
 # `time`: the clock pump that publishes a group's instance lifecycle events as they fall
 # due waits for the earliest due instant the store holds
 # (`state::lifecycle_events::drive_lifecycle_clock`).
-tokio = { workspace = true, features = ["time"] }
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# (and "macros") on top of whatever a dependent lists, and `tokio` itself refuses to build
+# "rt-multi-thread" for `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -86,6 +89,9 @@ chrono = { version = "0.4", default-features = false, features = ["std"] }
 # ("the canonical names of the IANA time zones"), which is the zone its recurrence is read
 # in.
 chrono-tz = { version = "0.10", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

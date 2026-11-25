@@ -440,6 +440,7 @@ members = [
     "core/embedded",
     "core/embedded-acm",
     "core/embedded-apigateway",
+    "core/embedded-applicationautoscaling",
     "core/embedded-console",
     "core/embedded-cloudfront",
     "core/embedded-cloudwatch",
@@ -448,12 +449,15 @@ members = [
     "core/embedded-cognitoidentityprovider",
     "core/embedded-dsql",
     "core/embedded-dynamodb",
+    "core/embedded-ec2",
     "core/embedded-ecr",
     "core/embedded-eks",
     "core/embedded-elasticloadbalancingv2",
+    "core/embedded-eventbridge",
     "core/embedded-iam",
     "core/embedded-kinesis",
     "core/embedded-kms",
+    "core/embedded-lambda",
     "core/embedded-opensearch",
     "core/embedded-paymentcryptography",
     "core/embedded-route53",
@@ -461,6 +465,7 @@ members = [
     "core/embedded-s3",
     "core/embedded-secretsmanager",
     "core/embedded-ses",
+    "core/embedded-sfn",
     "core/embedded-sns",
     "core/embedded-sqs",
     "core/embedded-sts",
@@ -1003,8 +1008,8 @@ automod = "1.0.17"
 # platform it already no-ops on) rather than disabling real stack-overflow guarding anywhere
 # else.
 [patch.crates-io]
-stacker = { git = "https://github.com/eduardomourar/stacker", rev = "226ff6263b0d4b2a7cdcf2420d3e47aa0b065127" }
-psm = { git = "https://github.com/eduardomourar/stacker", rev = "226ff6263b0d4b2a7cdcf2420d3e47aa0b065127" }
+stacker = { git = "https://github.com/eduardomourar/stacker", rev = "28e4145" }
+psm = { git = "https://github.com/eduardomourar/stacker", rev = "28e4145" }
 # `tempfile` (via `insta`, pulled the same way as `stacker`/`psm` above) pins the published
 # 3.27.0's `getrandom` requirement to the exact `^0.3` range, which can't resolve to the
 # `getrandom 0.4` already in this lockfile (needed for wasip3 support). The fork's

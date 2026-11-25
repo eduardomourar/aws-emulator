@@ -972,6 +972,12 @@ const VERIFIED_NAME: &str = "localhost";
 /// it opens (`emulator_server::TlsCertificateAuthority`). So a session is negotiated with a
 /// listener of this emulator and with nothing else, and the verification a client performs
 /// against a certificate authority really is performed.
+///
+/// `emulator_server::TlsCertificateAuthority` is vendor-immutable and gated off `wasm32`
+/// there (it is wired to the native listener this host serves — `-b`/`EMULATOR_BIND_ADDRESS`
+/// — which has no counterpart for a wasm guest), so a wasm host refuses this negotiation
+/// instead: see the `wasm32` branch below.
+#[cfg(not(target_family = "wasm"))]
 fn client_config() -> Result<::std::sync::Arc<::rustls::ClientConfig>, Failure> {
     static HELD: OnceLock<Result<::std::sync::Arc<::rustls::ClientConfig>, String>> =
         OnceLock::new();
@@ -994,6 +1000,13 @@ fn client_config() -> Result<::std::sync::Arc<::rustls::ClientConfig>, Failure> 
     })
     .clone()
     .map_err(Failure::tls)
+}
+
+#[cfg(target_family = "wasm")]
+fn client_config() -> Result<::std::sync::Arc<::rustls::ClientConfig>, Failure> {
+    Err(Failure::tls(
+        "this host serves no listener of its own to verify a TLS session against".to_string(),
+    ))
 }
 
 /// What one negotiated session reports, read off the session itself: the protocol version,

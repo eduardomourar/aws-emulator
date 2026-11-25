@@ -693,6 +693,23 @@ pub async fn run_invocation(
     let Some(handler) = invocation.handler.clone() else {
         return Err(Unrunnable::NoHandler);
     };
+    // The run below needs a real OS thread of its own (a dedicated, bounded stack for the
+    // interpreter; isolation so a hung handler cannot take this host down; the lifecycle
+    // marker other code uses to detect and abandon a run that outlived its caller's wait).
+    // `wasm32` has none of that, and running a handler inline instead -- with no way to
+    // preempt it from outside -- would let one hung or infinite-looping handler wedge this
+    // service's one long-lived host instance for every later invocation, forever. So this
+    // refuses explicitly rather than reaching the thread-spawn attempt below, whose own
+    // failure would otherwise surface the identical refusal by accident (a real OS's
+    // `std::thread::Builder::spawn` simply has none to give here either) with a less
+    // intentional message. The control plane (`CreateFunction`, `ListFunctions`, ...) is
+    // unaffected: this is the one capability this host cannot serve, not the whole service.
+    #[cfg(target_family = "wasm")]
+    return Err(Unrunnable::Internal(
+        "this host runs no handler at all: invoking a function needs a native OS thread of \
+         its own, which this host has none of"
+            .to_string(),
+    ));
     // The AWS SDK a managed runtime ships reads the invocation's own tracing context out of
     // the environment and stamps it on every request it makes, so the seam the handler calls
     // through carries this invocation's header ([`aws_api::AwsAccess::tracing`]). That is

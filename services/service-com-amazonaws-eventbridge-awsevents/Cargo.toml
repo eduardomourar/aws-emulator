@@ -20,7 +20,11 @@ aws-smithy-types = { workspace = true }
 # client execution timeout AWS documents for one (`ops::put_events`), and the
 # schedule clock waits between its passes with it rather than parking a worker
 # thread; `rt` is the handle it spawns that one task onto (`state::schedule`).
-tokio = { workspace = true, features = ["rt", "time"] }
+#
+# Plain, not `workspace = true`: the workspace's own tokio entry ADDS "rt-multi-thread"
+# on top of whatever a dependent lists, which `tokio` itself refuses to build for
+# `wasm32`. The native extra is restored below instead.
+tokio = { version = "1", features = ["rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 # `unbounded_depth`: the parser's own depth default is replaced by this service's
@@ -119,6 +123,9 @@ uuid = { version = "1", features = ["v4"] }
 # is what the instants it names are read as (`state::schedule`).
 cron = "0.15"
 chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true, features = ["rt", "time"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

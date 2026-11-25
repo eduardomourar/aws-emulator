@@ -114,6 +114,11 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-elasticloadbalancingv2", "elasticloadbalancingv2"),
     ("aws-emulator-embedded-dynamodb", "dynamodb"),
     ("aws-emulator-embedded-apigateway", "apigateway"),
+    ("aws-emulator-embedded-ec2", "ec2"),
+    ("aws-emulator-embedded-lambda", "lambda"),
+    ("aws-emulator-embedded-sfn", "sfn"),
+    ("aws-emulator-embedded-eventbridge", "eventbridge"),
+    ("aws-emulator-embedded-applicationautoscaling", "applicationautoscaling"),
 ];
 // `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
 // SERVER that, to answer a request, makes an outgoing CLIENT call to the real
@@ -123,10 +128,6 @@ const COMPONENTS: &[(&str, &str)] = &[
 // relay dead code. `web/external-dispatch-bridge.js` does this same SigV4-based
 // dispatch in the browser instead, calling each real component directly with no
 // nesting. The crate's source stays as the authoritative reference for that mapping.
-// Generated but not yet included above, pending a retry in a future session (the
-// wasm32-wasip3 batch build hung partway through this set on this host — not a
-// known compile error, see the session notes): dsql, dynamodb, kinesis,
-// cloudwatchlogs, opensearch, paymentcryptography, ecr, route53, ses, sqs, s3, xray.
 
 fn main() {
     println!("cargo:rerun-if-env-changed={TRIGGER_VAR}");
