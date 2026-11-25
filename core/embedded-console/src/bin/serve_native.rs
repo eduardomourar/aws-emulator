@@ -65,6 +65,7 @@ const COMPONENTS: &[(&str, u16)] = &[
     ("sfn", 9428),
     ("eventbridge", 9429),
     ("applicationautoscaling", 9430),
+    ("cloudformation", 9431),
     ("router", 9397),
 ];
 

@@ -502,6 +502,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-cloudformation"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-cloudformation-cloudformation",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-cloudfront"
 version = "0.1.0"
 dependencies = [

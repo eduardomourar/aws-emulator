@@ -442,6 +442,7 @@ members = [
     "core/embedded-apigateway",
     "core/embedded-applicationautoscaling",
     "core/embedded-console",
+    "core/embedded-cloudformation",
     "core/embedded-cloudfront",
     "core/embedded-cloudwatch",
     "core/embedded-cloudwatchlogs",

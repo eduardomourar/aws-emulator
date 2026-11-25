@@ -35,6 +35,7 @@ import { LambdaClient } from "@aws-sdk/client-lambda";
 import { SFNClient } from "@aws-sdk/client-sfn";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 import { ApplicationAutoScalingClient } from "@aws-sdk/client-application-auto-scaling";
+import { CloudFormationClient } from "@aws-sdk/client-cloudformation";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -66,6 +67,7 @@ import { AwsServerlessAdapter } from "../src/adapter-aws/AwsServerlessAdapter";
 import { AwsStepFunctionsAdapter } from "../src/adapter-aws/AwsStepFunctionsAdapter";
 import { AwsEventBridgeAdapter } from "../src/adapter-aws/AwsEventBridgeAdapter";
 import { AwsApplicationAutoScalingAdapter } from "../src/adapter-aws/AwsApplicationAutoScalingAdapter";
+import { AwsCloudFormationAdapter } from "../src/adapter-aws/AwsCloudFormationAdapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -122,6 +124,7 @@ const registry = new CloudAdapterRegistry([
   new AwsStepFunctionsAdapter(new SFNClient(clientConfig)),
   new AwsEventBridgeAdapter(new EventBridgeClient(clientConfig)),
   new AwsApplicationAutoScalingAdapter(new ApplicationAutoScalingClient(clientConfig)),
+  new AwsCloudFormationAdapter(new CloudFormationClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

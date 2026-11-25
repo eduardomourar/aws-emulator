@@ -62,6 +62,7 @@ const LAMBDA_PREFIX = "/api/clouds/aws/services/serverless";
 const SFN_PREFIX = "/api/clouds/aws/services/workflows";
 const EVENTBRIDGE_PREFIX = "/api/clouds/aws/services/events";
 const APPLICATIONAUTOSCALING_PREFIX = "/api/clouds/aws/services/autoscaling";
+const CLOUDFORMATION_PREFIX = "/api/clouds/aws/services/iac";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -178,6 +179,10 @@ export async function handleApiRequest(request) {
   if (pathname.startsWith(APPLICATIONAUTOSCALING_PREFIX)) {
     const { handleApplicationAutoScalingRequest } = await import("./applicationautoscaling.js");
     return handleApplicationAutoScalingRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (pathname.startsWith(CLOUDFORMATION_PREFIX)) {
+    const { handleCloudFormationRequest } = await import("./cloudformation.js");
+    return handleCloudFormationRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

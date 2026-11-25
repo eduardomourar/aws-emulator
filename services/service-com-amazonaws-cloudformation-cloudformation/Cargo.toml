@@ -12,8 +12,11 @@ engine = { workspace = true }
 # a stack's declared buckets and roles, over the in-process callback into this same
 # emulator (no network client feature: the transport is the emulator's own). See
 # `state::provisioner`.
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
-aws-sdk-iam = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
+aws-sdk-iam = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # Publishes this service's own StackSet status-change events onto the account's default
 # EventBridge bus, over the in-process callback into this same emulator (no network client
 # feature: the transport is the emulator's own). See `state::stack_set_events`.
@@ -30,7 +33,10 @@ aws-smithy-types = { workspace = true }
 # `tokio::spawn` serves each in-process provisioning call on a task of its own, so a chain
 # of them does not pile one request's frames onto another's stack (see
 # `state::provisioning::dispatch`).
-tokio = { workspace = true, features = ["time", "rt"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["time", "rt"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -112,6 +118,11 @@ service-com-amazonaws-lambda-awsgirapiservice = { workspace = true }
 # are the shell's rules rather than this crate's
 # (`state::provisioning::instance_signals`).
 shell-words = "1.1"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-iam = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

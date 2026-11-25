@@ -92,6 +92,7 @@ const AUTHORITY_BY_SERVICE = {
   states: "sfn.local.invalid",
   events: "eventbridge.local.invalid",
   "application-autoscaling": "applicationautoscaling.local.invalid",
+  cloudformation: "cloudformation.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -127,6 +128,8 @@ const AUTHORITY_MODULES = {
   "eventbridge.local.invalid": () => import("./jco-out-eventbridge/aws_emulator_embedded_eventbridge.js"),
   "applicationautoscaling.local.invalid": () =>
     import("./jco-out-applicationautoscaling/aws_emulator_embedded_applicationautoscaling.js"),
+  "cloudformation.local.invalid": () =>
+    import("./jco-out-cloudformation/aws_emulator_embedded_cloudformation.js"),
 };
 
 const clientsByAuthority = new Map();

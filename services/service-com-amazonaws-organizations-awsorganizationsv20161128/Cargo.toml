@@ -16,7 +16,6 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -24,6 +23,15 @@ tracing = { workspace = true }
 # The opaque `NextToken` this service's paginated list operations hand back is a hex
 # encoding of the cursor, so a caller cannot read or hand-write one.
 hex = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32. Not used directly in
+# this crate's own source at all (a leftover dependency), so wasm gets no features either.
+[target.'cfg(target_family = "wasm")'.dependencies]
+tokio = { version = "1" }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

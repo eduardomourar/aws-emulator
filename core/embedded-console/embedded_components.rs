@@ -270,4 +270,7 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("sfn", "service-com-amazonaws-sfn-awsstepfunctions"),
     ("eventbridge", "service-com-amazonaws-eventbridge-awsevents"),
     ("applicationautoscaling", "service-com-amazonaws-applicationautoscaling-anyscalefrontendservice"),
+    // Also unblocked by the same `lambda` fix: `cloudformation` reaches `lambda`
+    // transitively through `glue`'s own `[build-dependencies]`, same as the five above.
+    ("cloudformation", "service-com-amazonaws-cloudformation-cloudformation"),
 ];

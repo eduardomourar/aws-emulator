@@ -44,6 +44,7 @@ const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
     ("states", "127.0.0.1:9428"),
     ("events", "127.0.0.1:9429"),
     ("application-autoscaling", "127.0.0.1:9430"),
+    ("cloudformation", "127.0.0.1:9431"),
 ];
 
 #[wstd::http_server]
