@@ -592,10 +592,7 @@ pub async fn load_served_artifact(
     // [`MAX_ARTIFACT_ENTRIES`] and the ceilings in [`super::boosted_model`] and
     // [`super::binary_json`]), so the pool is never occupied for long.
     let program = variant.inference_program.clone();
-    let decoded =
-        ::tokio::task::spawn_blocking(move || artifact_from_bytes(&bytes, program.as_deref()))
-            .await
-            .ok()?;
+    let decoded = crate::state::cpu_bound::run(move || artifact_from_bytes(&bytes, program.as_deref())).await?;
     Some(decoded.ok_or(ServingRefusal::ArtifactNotServable {
         uri: location.uri(),
     }))
@@ -618,7 +615,7 @@ pub async fn serve_inference_off_worker(
     let body = body.to_vec();
     let content_type = content_type.map(str::to_string);
     let accept = accept.map(str::to_string);
-    ::tokio::task::spawn_blocking(move || {
+    crate::state::cpu_bound::run(move || {
         serve_artifact(
             &artifact,
             &body,
@@ -627,7 +624,6 @@ pub async fn serve_inference_off_worker(
         )
     })
     .await
-    .ok()
 }
 
 /// What `artifact` answers for `body`: the prediction its parameters compute, or what its own

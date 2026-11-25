@@ -34,6 +34,16 @@ function withStrippedPrefix(request, prefix) {
   return new Request(url, request);
 }
 
+// A plain `pathname.startsWith(prefix)` false-matches a service whose own segment is a
+// prefix of another's (e.g. `.../services/eventsv2/...` passes `startsWith(".../events")`,
+// since "eventsv2" itself starts with "events") — confirmed by a real 501 "no adapter
+// registered for aws/eventsv2" because that request landed on `events`'s own dedicated
+// bundle instead. Requiring the next character to be "/" or nothing (the prefix is the
+// WHOLE next path segment) rules that out.
+function matchesPrefix(pathname, prefix) {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
 const SECRETSMANAGER_PREFIX = "/api/secretsmanager";
 const CLOUDS_PREFIX = "/api/clouds";
 const KMS_PREFIX = "/api/clouds/aws/services/kms";
@@ -63,6 +73,13 @@ const SFN_PREFIX = "/api/clouds/aws/services/workflows";
 const EVENTBRIDGE_PREFIX = "/api/clouds/aws/services/events";
 const APPLICATIONAUTOSCALING_PREFIX = "/api/clouds/aws/services/autoscaling";
 const CLOUDFORMATION_PREFIX = "/api/clouds/aws/services/iac";
+const SSM_PREFIX = "/api/clouds/aws/services/parameters";
+const ECS_PREFIX = "/api/clouds/aws/services/containers";
+const SCHEDULER_PREFIX = "/api/clouds/aws/services/scheduler";
+const APPCONFIG_PREFIX = "/api/clouds/aws/services/configuration";
+const ATHENA_PREFIX = "/api/clouds/aws/services/analytics";
+const SAGEMAKER_PREFIX = "/api/clouds/aws/services/sagemaker";
+const EVENTBRIDGEV2_PREFIX = "/api/clouds/aws/services/eventsv2";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -72,117 +89,145 @@ export async function handleApiRequest(request) {
     const { handleCatalogRequest } = await import("./catalog.js");
     return handleCatalogRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(SECRETSMANAGER_PREFIX)) {
+  if (matchesPrefix(pathname, SECRETSMANAGER_PREFIX)) {
     const { handleSecretsManagerRequest } = await import("./secretsmanager.js");
     return handleSecretsManagerRequest(withStrippedPrefix(request, SECRETSMANAGER_PREFIX));
   }
-  if (pathname.startsWith(KMS_PREFIX)) {
+  if (matchesPrefix(pathname, KMS_PREFIX)) {
     const { handleKmsRequest } = await import("./kms.js");
     return handleKmsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(IAM_PREFIX)) {
+  if (matchesPrefix(pathname, IAM_PREFIX)) {
     const { handleIamRequest } = await import("./iam.js");
     return handleIamRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(CODEBUILD_PREFIX)) {
+  if (matchesPrefix(pathname, CODEBUILD_PREFIX)) {
     const { handleCodeBuildRequest } = await import("./codebuild.js");
     return handleCodeBuildRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(CLOUDWATCH_PREFIX)) {
+  if (matchesPrefix(pathname, CLOUDWATCH_PREFIX)) {
     const { handleCloudWatchRequest } = await import("./cloudwatch.js");
     return handleCloudWatchRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(COGNITO_PREFIX)) {
+  if (matchesPrefix(pathname, COGNITO_PREFIX)) {
     const { handleCognitoIdentityProviderRequest } = await import("./cognitoidentityprovider.js");
     return handleCognitoIdentityProviderRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(KINESIS_PREFIX)) {
+  if (matchesPrefix(pathname, KINESIS_PREFIX)) {
     const { handleKinesisRequest } = await import("./kinesis.js");
     return handleKinesisRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(PAYMENTCRYPTOGRAPHY_PREFIX)) {
+  if (matchesPrefix(pathname, PAYMENTCRYPTOGRAPHY_PREFIX)) {
     const { handlePaymentCryptographyRequest } = await import("./paymentcryptography.js");
     return handlePaymentCryptographyRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(SQS_PREFIX)) {
+  if (matchesPrefix(pathname, SQS_PREFIX)) {
     const { handleSqsRequest } = await import("./sqs.js");
     return handleSqsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(XRAY_PREFIX)) {
+  if (matchesPrefix(pathname, XRAY_PREFIX)) {
     const { handleXrayRequest } = await import("./xray.js");
     return handleXrayRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(ECR_PREFIX)) {
+  if (matchesPrefix(pathname, ECR_PREFIX)) {
     const { handleEcrRequest } = await import("./ecr.js");
     return handleEcrRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(SNS_PREFIX)) {
+  if (matchesPrefix(pathname, SNS_PREFIX)) {
     const { handleSnsRequest } = await import("./sns.js");
     return handleSnsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(ACM_PREFIX)) {
+  if (matchesPrefix(pathname, ACM_PREFIX)) {
     const { handleAcmRequest } = await import("./acm.js");
     return handleAcmRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(ROUTE53_PREFIX)) {
+  if (matchesPrefix(pathname, ROUTE53_PREFIX)) {
     const { handleRoute53Request } = await import("./route53.js");
     return handleRoute53Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(CLOUDFRONT_PREFIX)) {
+  if (matchesPrefix(pathname, CLOUDFRONT_PREFIX)) {
     const { handleCloudFrontRequest } = await import("./cloudfront.js");
     return handleCloudFrontRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(S3_PREFIX)) {
+  if (matchesPrefix(pathname, S3_PREFIX)) {
     const { handleS3Request } = await import("./s3.js");
     return handleS3Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(CLOUDWATCHLOGS_PREFIX)) {
+  if (matchesPrefix(pathname, CLOUDWATCHLOGS_PREFIX)) {
     const { handleCloudWatchLogsRequest } = await import("./cloudwatchlogs.js");
     return handleCloudWatchLogsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(OPENSEARCH_PREFIX)) {
+  if (matchesPrefix(pathname, OPENSEARCH_PREFIX)) {
     const { handleOpenSearchRequest } = await import("./opensearch.js");
     return handleOpenSearchRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(EKS_PREFIX)) {
+  if (matchesPrefix(pathname, EKS_PREFIX)) {
     const { handleEksRequest } = await import("./eks.js");
     return handleEksRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(ELASTICLOADBALANCINGV2_PREFIX)) {
+  if (matchesPrefix(pathname, ELASTICLOADBALANCINGV2_PREFIX)) {
     const { handleElasticLoadBalancingV2Request } = await import("./elasticloadbalancingv2.js");
     return handleElasticLoadBalancingV2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(DYNAMODB_PREFIX)) {
+  if (matchesPrefix(pathname, DYNAMODB_PREFIX)) {
     const { handleDynamoDbRequest } = await import("./dynamodb.js");
     return handleDynamoDbRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(APIGATEWAY_PREFIX)) {
+  if (matchesPrefix(pathname, APIGATEWAY_PREFIX)) {
     const { handleApiGatewayRequest } = await import("./apigateway.js");
     return handleApiGatewayRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(EC2_PREFIX)) {
+  if (matchesPrefix(pathname, EC2_PREFIX)) {
     const { handleEc2Request } = await import("./ec2.js");
     return handleEc2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(LAMBDA_PREFIX)) {
+  if (matchesPrefix(pathname, LAMBDA_PREFIX)) {
     const { handleLambdaRequest } = await import("./lambda.js");
     return handleLambdaRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(SFN_PREFIX)) {
+  if (matchesPrefix(pathname, SFN_PREFIX)) {
     const { handleSfnRequest } = await import("./sfn.js");
     return handleSfnRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(EVENTBRIDGE_PREFIX)) {
+  if (matchesPrefix(pathname, EVENTBRIDGE_PREFIX)) {
     const { handleEventBridgeRequest } = await import("./eventbridge.js");
     return handleEventBridgeRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(APPLICATIONAUTOSCALING_PREFIX)) {
+  if (matchesPrefix(pathname, APPLICATIONAUTOSCALING_PREFIX)) {
     const { handleApplicationAutoScalingRequest } = await import("./applicationautoscaling.js");
     return handleApplicationAutoScalingRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
-  if (pathname.startsWith(CLOUDFORMATION_PREFIX)) {
+  if (matchesPrefix(pathname, CLOUDFORMATION_PREFIX)) {
     const { handleCloudFormationRequest } = await import("./cloudformation.js");
     return handleCloudFormationRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, SSM_PREFIX)) {
+    const { handleSsmRequest } = await import("./ssm.js");
+    return handleSsmRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, ECS_PREFIX)) {
+    const { handleEcsRequest } = await import("./ecs.js");
+    return handleEcsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, SCHEDULER_PREFIX)) {
+    const { handleSchedulerRequest } = await import("./scheduler.js");
+    return handleSchedulerRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, APPCONFIG_PREFIX)) {
+    const { handleAppConfigRequest } = await import("./appconfig.js");
+    return handleAppConfigRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, ATHENA_PREFIX)) {
+    const { handleAthenaRequest } = await import("./athena.js");
+    return handleAthenaRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, SAGEMAKER_PREFIX)) {
+    const { handleSageMakerRequest } = await import("./sagemaker.js");
+    return handleSageMakerRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, EVENTBRIDGEV2_PREFIX)) {
+    const { handleEventBridgeV2Request } = await import("./eventbridgev2.js");
+    return handleEventBridgeV2Request(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

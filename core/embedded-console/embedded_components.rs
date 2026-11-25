@@ -268,9 +268,59 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("lambda", "service-com-amazonaws-lambda-awsgirapiservice"),
     ("ec2", "service-com-amazonaws-ec2-amazonec2"),
     ("sfn", "service-com-amazonaws-sfn-awsstepfunctions"),
-    ("eventbridge", "service-com-amazonaws-eventbridge-awsevents"),
+    // `eventbridge` is NOT here (even though it compiles clean for wasm32-wasip3 on its
+    // own): EventBridge V2 (`eventbridgev2`) signs as the SAME SigV4 name (`events`), only
+    // disambiguated from V1 by URI path (`can_handle_based_on_route_key_and_path`, see each
+    // crate's `service.rs`) -- one wasm component only ever answers ONE synthetic
+    // authority, so serving V1 and V2 as separate components would make V2's `events`-
+    // signed, `rpcv2Cbor`-shaped requests land on whichever component the front door's
+    // single `events` authority entry points at and get rejected by that component's own
+    // `can_handle`. `core/embedded-eventbridge` is hand-written instead (like
+    // `embedded-iam`/`embedded-secretsmanager`/`embedded-router`) to register BOTH
+    // services on one `MultiServiceRouter`, which already disambiguates them by path --
+    // see its own `lib.rs`.
     ("applicationautoscaling", "service-com-amazonaws-applicationautoscaling-anyscalefrontendservice"),
     // Also unblocked by the same `lambda` fix: `cloudformation` reaches `lambda`
     // transitively through `glue`'s own `[build-dependencies]`, same as the five above.
+    // Needed its own two fixes beyond that: its own unsplit `tokio = { workspace = true,
+    // features = [...] }` (ADDS-not-replaces, same bug as everywhere else) and the
+    // unconditional `"rt-tokio"` on its own `aws-sdk-s3`/`-iam`; plus the same
+    // ADDS-not-replaces `tokio` bug, independently, in
+    // `service-com-amazonaws-organizations-awsorganizationsv20161128` (reached
+    // transitively, `tokio` unused in its own source at all).
     ("cloudformation", "service-com-amazonaws-cloudformation-cloudformation"),
+    // `ssm` and `ecs` were ALSO originally deferred alongside `eventbridge`/`sfn`/
+    // `scheduler`/`appconfig` for the same `lambda`-through-`glue` reason, but both
+    // already carried the standard wasm-safe `tokio` split from an earlier pass (see this
+    // crate's own `Cargo.toml`), so once `lambda` was unblocked they needed NO further
+    // fix at all.
+    ("ssm", "service-com-amazonaws-ssm-amazonssm"),
+    ("ecs", "service-com-amazonaws-ecs-amazonec2containerservicev20141113"),
+    // `scheduler`, `appconfig`, `athena` and `sagemaker` needed the standard
+    // ADDS-not-replaces `tokio` split (same bug, different crate, every time).
+    // `sagemaker` additionally needed its own `aws-sdk-s3`/`-cloudwatchlogs`
+    // unconditional `"rt-tokio"` fixed the same way as `cloudformation`'s. Both `athena`
+    // and `sagemaker` run real work on `tokio::task::spawn_blocking` (a query execution,
+    // a training/transform/recommendation job) -- this compiled clean for `wasm32-wasip3`
+    // (tokio's blocking pool is feature-gated on `rt`, not on real OS threads, so the
+    // type-check passes) but TRAPPED AT RUNTIME when actually called: `spawn_blocking`
+    // panics ("OS can't spawn worker thread: Not supported (os error 58)"), and -- worse
+    // than failing just that one call -- that panic aborts the whole shared, long-lived
+    // component instance, wedging every future request to it (confirmed via `serve_native`
+    // against a real `StartQueryExecution`). Fixed the same way `lambda`'s `Invoke` and
+    // `jsonata`'s `catch_unwind` were handled earlier in this effort, but landing on a
+    // THIRD distinct shape: neither an outright refusal (lambda) nor relying on wasmtime's
+    // own trap isolation (jsonata) -- `athena`'s and `sagemaker`'s blocking work has no
+    // other async work in flight to protect by moving it off the task anyway (concurrency
+    // into one instance is already serialized by the host), so a small
+    // `cpu_bound::run` helper (`sagemaker`'s `src/state/cpu_bound.rs`; inlined directly at
+    // `athena`'s one call site) dispatches to `spawn_blocking` on native and just calls the
+    // closure inline on wasm, confirmed FIXED by re-running the same `StartQueryExecution`
+    // (now completes `SUCCEEDED`) and a `sagemaker` `CreateTrainingJob` (reaches its real
+    // training work without a trap; the one test run failed slightly later, on an
+    // unrelated S3 data-read refusal nothing here touches).
+    ("scheduler", "service-com-amazonaws-scheduler-awschronosservice"),
+    ("appconfig", "service-com-amazonaws-appconfig-amazonappconfig"),
+    ("athena", "service-com-amazonaws-athena-amazonathena"),
+    ("sagemaker", "service-com-amazonaws-sagemaker-sagemaker"),
 ];

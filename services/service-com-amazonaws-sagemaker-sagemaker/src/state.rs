@@ -1120,6 +1120,7 @@ pub const STATUS_COMPLETED: &str = "Completed";
 
 /// The algorithm slice: see `state/algorithms.rs`.
 pub mod algorithms;
+pub(crate) mod cpu_bound;
 pub use algorithms::*;
 
 /// The AI-benchmark-job slice: see `state/ai_benchmark_job.rs`.

@@ -352,7 +352,7 @@ pub async fn run_auto_ml_job_v2(
     let base_epochs = fit_epochs(fitted_on.len(), columns);
     let widest = CANDIDATE_EPOCH_BUDGETS.iter().copied().max().unwrap_or(1);
     let problem_type = resolved_problem_type.clone();
-    let fitting = ::tokio::task::spawn_blocking(move || {
+    let fitting = crate::state::cpu_bound::run(move || {
         CANDIDATE_EPOCH_BUDGETS
             .iter()
             .map(|budget| {
@@ -364,7 +364,7 @@ pub async fn run_auto_ml_job_v2(
             .collect::<Vec<_>>()
     })
     .await;
-    let Ok(fits) = fitting else {
+    let Some(fits) = fitting else {
         return AutoMLRunOutcome::failed_in(phases, crate::state::INTERNAL_FAILURE_REASON);
     };
 

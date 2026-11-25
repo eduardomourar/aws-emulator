@@ -487,6 +487,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-appconfig"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-appconfig-amazonappconfig",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-applicationautoscaling"
 version = "0.1.0"
 dependencies = [
@@ -497,6 +512,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-applicationautoscaling-anyscalefrontendservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-athena"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-athena-amazonathena",
  "tokio",
  "wstd",
 ]
@@ -670,6 +700,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-ecs"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-ecs-amazonec2containerservicev20141113",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-eks"
 version = "0.1.0"
 dependencies = [
@@ -710,6 +755,7 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-eventbridge-awsevents",
+ "service-com-amazonaws-eventbridgev2-awseventsv2",
  "tokio",
  "wstd",
 ]
@@ -847,6 +893,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-sagemaker"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-sagemaker-sagemaker",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-scheduler"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-scheduler-awschronosservice",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-secretsmanager"
 version = "0.1.0"
 dependencies = [
@@ -917,6 +993,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-sqs-amazonsqs",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-ssm"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-ssm-amazonssm",
  "tokio",
  "wstd",
 ]
@@ -15314,7 +15405,6 @@ dependencies = [
  "service-com-amazonaws-sqs-amazonsqs",
  "service-common",
  "sha2 0.10.9",
- "tokio",
  "tracing",
  "uuid",
 ]

@@ -14,6 +14,10 @@ engine = { workspace = true }
 smithy-server-runtime = { workspace = true }
 emulator-server = { workspace = true }
 service-com-amazonaws-eventbridge-awsevents = { workspace = true }
+# EventBridge V2 signs as the SAME SigV4 name as V1 (`events`); registered on the same
+# `MultiServiceRouter` here rather than as its own component -- see this crate's `lib.rs`
+# and `embedded_components.rs`'s comment for why.
+service-com-amazonaws-eventbridgev2-awseventsv2 = { workspace = true }
 # WASM-EMBEDDED EXPERIMENT: see core/embedded-secretsmanager/Cargo.toml for why these
 # two dependencies are split by target.
 tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }

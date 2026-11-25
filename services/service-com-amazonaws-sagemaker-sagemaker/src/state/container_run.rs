@@ -340,11 +340,7 @@ pub async fn run_container_program_off_worker(
     let program = program.to_vec();
     let image = image.to_string();
     let environment = environment.cloned();
-    ::tokio::task::spawn_blocking(move || {
-        run_container_program(&program, &image, environment.as_ref())
-    })
-    .await
-    .ok()
+    crate::state::cpu_bound::run(move || run_container_program(&program, &image, environment.as_ref())).await
 }
 
 #[cfg(test)]

@@ -498,37 +498,64 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
                 // One statement, or text this parser could not read at all — in which case
                 // the engine is the one that reports why.
                 Some(1) | None => {
-                    let sql = statement_sql.clone();
-                    let parameters = bound_parameters.clone();
-                    let engine = ::std::sync::Arc::clone(&self.engine);
-                    // The statement runs on a blocking thread: the catalog's store, the
-                    // object store and the SQL engine are all synchronous, and the engine is
-                    // CPU-bound, so none of that work belongs on an async worker. The bounds
-                    // one run is held to are installed by `catalog_sql::execute`.
-                    let run = ::tokio::task::spawn_blocking(move || {
+                    // WASM-EMBEDDED EXPERIMENT: `spawn_blocking` has no real OS thread to hand
+                    // this off to on wasm32-wasip3 -- confirmed by running it: it panics "OS
+                    // can't spawn worker thread: Not supported (os error 58)", and that panic
+                    // does not just fail this one call, it aborts the whole shared, long-lived
+                    // component instance, wedging every future request to it (worse than
+                    // failing this query). This host has no other async work in flight to
+                    // protect by moving the query off this task anyway -- concurrency into one
+                    // instance is already serialized by the host that embeds it -- so the query
+                    // just runs inline there instead of through the blocking pool.
+                    #[cfg(target_family = "wasm")]
+                    {
                         catalog_sql::execute(
-                            &*engine,
+                            &*self.engine,
                             &prepared,
-                            &sql,
+                            &statement_sql,
                             reading,
                             &catalog_sql::Submission {
                                 context: &query_context,
-                                parameters: &parameters,
+                                parameters: &bound_parameters,
                                 access: &access,
                                 now: SystemTime::now(),
                             },
                         )
-                    })
-                    .await;
-                    run.unwrap_or_else(|_| query_engine::Completion {
-                        outcome: query_engine::Outcome::Failed {
-                            message: UNREPORTED_RUN.to_string(),
-                            reason: None,
-                            cause: query_engine::FailureCause::Emulator,
-                        },
-                        engine_time: Duration::ZERO,
-                        planning_time: Duration::ZERO,
-                    })
+                    }
+                    #[cfg(not(target_family = "wasm"))]
+                    {
+                        let sql = statement_sql.clone();
+                        let parameters = bound_parameters.clone();
+                        let engine = ::std::sync::Arc::clone(&self.engine);
+                        // The statement runs on a blocking thread: the catalog's store, the
+                        // object store and the SQL engine are all synchronous, and the engine is
+                        // CPU-bound, so none of that work belongs on an async worker. The bounds
+                        // one run is held to are installed by `catalog_sql::execute`.
+                        let run = ::tokio::task::spawn_blocking(move || {
+                            catalog_sql::execute(
+                                &*engine,
+                                &prepared,
+                                &sql,
+                                reading,
+                                &catalog_sql::Submission {
+                                    context: &query_context,
+                                    parameters: &parameters,
+                                    access: &access,
+                                    now: SystemTime::now(),
+                                },
+                            )
+                        })
+                        .await;
+                        run.unwrap_or_else(|_| query_engine::Completion {
+                            outcome: query_engine::Outcome::Failed {
+                                message: UNREPORTED_RUN.to_string(),
+                                reason: None,
+                                cause: query_engine::FailureCause::Emulator,
+                            },
+                            engine_time: Duration::ZERO,
+                            planning_time: Duration::ZERO,
+                        })
+                    }
                 }
                 // A query execution runs ONE statement, so text carrying another count is a
                 // query that fails rather than one that runs its first statement and drops

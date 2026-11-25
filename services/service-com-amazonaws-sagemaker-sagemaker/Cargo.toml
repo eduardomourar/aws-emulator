@@ -18,7 +18,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["sync", "time"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["sync", "time", "rt"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -37,13 +40,16 @@ percent-encoding = "2"
 # model artifact with, over the in-process callback into this same emulator (no network
 # client feature: the transport is the emulator's own, so no socket is opened and no host is
 # resolved).
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for CloudWatch Logs, driven over the same in-process callback: a notebook
 # instance's lifecycle-configuration hook publishes what its script wrote to the log group
 # and stream the hook's own model doc names (`state::notebook_hook_logs`), through that
 # service's own API, so what a client reads back with `GetLogEvents` is what the log service
 # stored.
-aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for EC2, driven over the same in-process callback: the VPC, subnets and
 # security groups a Studio domain is placed in are EC2's resources, so
 # `state::domain_network` asks the service that owns them which VPC holds each one rather
@@ -106,6 +112,11 @@ service-com-amazonaws-ecr-amazonec2containerregistry-v20150921 = { workspace = t
 # build-time code of its own beyond the generated service scaffolding every service crate here
 # builds.
 service-com-amazonaws-lambda-awsgirapiservice = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-cloudwatchlogs = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

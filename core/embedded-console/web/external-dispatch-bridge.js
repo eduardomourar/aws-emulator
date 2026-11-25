@@ -93,6 +93,12 @@ const AUTHORITY_BY_SERVICE = {
   events: "eventbridge.local.invalid",
   "application-autoscaling": "applicationautoscaling.local.invalid",
   cloudformation: "cloudformation.local.invalid",
+  ssm: "ssm.local.invalid",
+  ecs: "ecs.local.invalid",
+  scheduler: "scheduler.local.invalid",
+  appconfig: "appconfig.local.invalid",
+  athena: "athena.local.invalid",
+  sagemaker: "sagemaker.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -130,6 +136,12 @@ const AUTHORITY_MODULES = {
     import("./jco-out-applicationautoscaling/aws_emulator_embedded_applicationautoscaling.js"),
   "cloudformation.local.invalid": () =>
     import("./jco-out-cloudformation/aws_emulator_embedded_cloudformation.js"),
+  "ssm.local.invalid": () => import("./jco-out-ssm/aws_emulator_embedded_ssm.js"),
+  "ecs.local.invalid": () => import("./jco-out-ecs/aws_emulator_embedded_ecs.js"),
+  "scheduler.local.invalid": () => import("./jco-out-scheduler/aws_emulator_embedded_scheduler.js"),
+  "appconfig.local.invalid": () => import("./jco-out-appconfig/aws_emulator_embedded_appconfig.js"),
+  "athena.local.invalid": () => import("./jco-out-athena/aws_emulator_embedded_athena.js"),
+  "sagemaker.local.invalid": () => import("./jco-out-sagemaker/aws_emulator_embedded_sagemaker.js"),
 };
 
 const clientsByAuthority = new Map();

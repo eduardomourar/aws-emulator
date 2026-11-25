@@ -45,6 +45,12 @@ const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
     ("events", "127.0.0.1:9429"),
     ("application-autoscaling", "127.0.0.1:9430"),
     ("cloudformation", "127.0.0.1:9431"),
+    ("ssm", "127.0.0.1:9432"),
+    ("ecs", "127.0.0.1:9433"),
+    ("scheduler", "127.0.0.1:9434"),
+    ("appconfig", "127.0.0.1:9435"),
+    ("athena", "127.0.0.1:9436"),
+    ("sagemaker", "127.0.0.1:9437"),
 ];
 
 #[wstd::http_server]

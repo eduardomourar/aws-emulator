@@ -340,9 +340,8 @@ pub async fn run_inference_recommendations_job(
         } else {
             payloads.clone()
         };
-        let benchmark = ::tokio::task::spawn_blocking(move || benchmark_model(&model, &traffic))
-            .await;
-        let Ok(benchmark) = benchmark else {
+        let benchmark = crate::state::cpu_bound::run(move || benchmark_model(&model, &traffic)).await;
+        let Some(benchmark) = benchmark else {
             return RecommendationRunOutcome::Failed {
                 reason: crate::state::INTERNAL_FAILURE_REASON.to_string(),
             };

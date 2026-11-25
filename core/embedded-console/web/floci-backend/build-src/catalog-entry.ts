@@ -36,6 +36,13 @@ import { SFNClient } from "@aws-sdk/client-sfn";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 import { ApplicationAutoScalingClient } from "@aws-sdk/client-application-auto-scaling";
 import { CloudFormationClient } from "@aws-sdk/client-cloudformation";
+import { SSMClient } from "@aws-sdk/client-ssm";
+import { ECSClient } from "@aws-sdk/client-ecs";
+import { SchedulerClient } from "@aws-sdk/client-scheduler";
+import { AppConfigClient } from "@aws-sdk/client-appconfig";
+import { AthenaClient } from "@aws-sdk/client-athena";
+import { SageMakerClient } from "@aws-sdk/client-sagemaker";
+import { EventBridgeV2Client } from "@aws-sdk/client-eventbridgev2";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
 import { CloudProxyService } from "../src/service/CloudProxyService";
@@ -68,6 +75,13 @@ import { AwsStepFunctionsAdapter } from "../src/adapter-aws/AwsStepFunctionsAdap
 import { AwsEventBridgeAdapter } from "../src/adapter-aws/AwsEventBridgeAdapter";
 import { AwsApplicationAutoScalingAdapter } from "../src/adapter-aws/AwsApplicationAutoScalingAdapter";
 import { AwsCloudFormationAdapter } from "../src/adapter-aws/AwsCloudFormationAdapter";
+import { AwsParameterStoreAdapter } from "../src/adapter-aws/AwsParameterStoreAdapter";
+import { AwsEcsAdapter } from "../src/adapter-aws/AwsEcsAdapter";
+import { AwsSchedulerAdapter } from "../src/adapter-aws/AwsSchedulerAdapter";
+import { AwsAppConfigAdapter } from "../src/adapter-aws/AwsAppConfigAdapter";
+import { AwsAthenaAdapter } from "../src/adapter-aws/AwsAthenaAdapter";
+import { AwsSageMakerAdapter } from "../src/adapter-aws/AwsSageMakerAdapter";
+import { AwsEventBridgeV2Adapter } from "../src/adapter-aws/AwsEventBridgeV2Adapter";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
 // route (`routeByCloud: {aws: '/secretsmanager'}` in Floci's own service
@@ -125,6 +139,13 @@ const registry = new CloudAdapterRegistry([
   new AwsEventBridgeAdapter(new EventBridgeClient(clientConfig)),
   new AwsApplicationAutoScalingAdapter(new ApplicationAutoScalingClient(clientConfig)),
   new AwsCloudFormationAdapter(new CloudFormationClient(clientConfig)),
+  new AwsParameterStoreAdapter(new SSMClient(clientConfig)),
+  new AwsEcsAdapter(new ECSClient(clientConfig)),
+  new AwsSchedulerAdapter(new SchedulerClient(clientConfig)),
+  new AwsAppConfigAdapter(new AppConfigClient(clientConfig)),
+  new AwsAthenaAdapter(new AthenaClient(clientConfig)),
+  new AwsSageMakerAdapter(new SageMakerClient(clientConfig)),
+  new AwsEventBridgeV2Adapter(new EventBridgeV2Client(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

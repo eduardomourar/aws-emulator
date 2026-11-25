@@ -364,7 +364,7 @@ async fn serve_transform_records(
     let bytes = bytes.to_vec();
     let content_type = content_type.map(str::to_string);
     let accept = accept.map(str::to_string);
-    ::tokio::task::spawn_blocking(move || {
+    crate::state::cpu_bound::run(move || {
         serve_artifact(
             &artifact,
             &bytes,
@@ -386,7 +386,6 @@ async fn serve_transform_records(
         })
     })
     .await
-    .ok()
 }
 
 /// Where one input object's transformed data goes: "batch transform stores the transformed data

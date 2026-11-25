@@ -120,6 +120,12 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-eventbridge", "eventbridge"),
     ("aws-emulator-embedded-applicationautoscaling", "applicationautoscaling"),
     ("aws-emulator-embedded-cloudformation", "cloudformation"),
+    ("aws-emulator-embedded-ssm", "ssm"),
+    ("aws-emulator-embedded-ecs", "ecs"),
+    ("aws-emulator-embedded-scheduler", "scheduler"),
+    ("aws-emulator-embedded-appconfig", "appconfig"),
+    ("aws-emulator-embedded-athena", "athena"),
+    ("aws-emulator-embedded-sagemaker", "sagemaker"),
 ];
 // `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
 // SERVER that, to answer a request, makes an outgoing CLIENT call to the real

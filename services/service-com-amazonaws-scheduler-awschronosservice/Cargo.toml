@@ -20,7 +20,10 @@ aws-smithy-types = { workspace = true }
 # parking a worker thread, and it drives the tests' wait past a group deletion's
 # due instant; `rt` is the handle it spawns that one task onto
 # (`state::invocation`).
-tokio = { workspace = true, features = ["rt", "time"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["rt", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -78,6 +81,9 @@ fancy-regex = "0.16"
 # operation the same way, so it resolves and makes the call there rather than restating
 # those facts (`state::universal_target`).
 service-com-amazonaws-sfn-awsstepfunctions = { workspace = true }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

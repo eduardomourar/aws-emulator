@@ -1,0 +1,26 @@
+[package]
+name = "aws-emulator-embedded-scheduler"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+http = { workspace = true }
+bytes = { workspace = true }
+engine = { workspace = true }
+smithy-server-runtime = { workspace = true }
+emulator-server = { workspace = true }
+service-com-amazonaws-scheduler-awschronosservice = { workspace = true }
+# WASM-EMBEDDED EXPERIMENT: see core/embedded-secretsmanager/Cargo.toml for why these
+# two dependencies are split by target.
+tokio = { version = "1", features = ["sync", "macros", "io-util", "rt", "time"] }
+embedded-console = { path = "../embedded-console", package = "aws-emulator-embedded-console" }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { version = "1", features = ["rt-multi-thread"] }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+wstd = { workspace = true }

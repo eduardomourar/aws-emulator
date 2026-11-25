@@ -607,7 +607,7 @@ pub async fn run_training_job(
         .filter(|read| !read.records.is_empty())
         .map(|read| (read.name.clone(), read.records.clone()))
         .collect();
-    let fit_and_measure = ::tokio::task::spawn_blocking(move || {
+    let fit_and_measure = crate::state::cpu_bound::run(move || {
         let model = fit(&fitted_on, fit_epochs(fitted_on.len(), columns));
         let metrics: Vec<MetricData> = measured
             .iter()
@@ -628,7 +628,7 @@ pub async fn run_training_job(
         (model, metrics)
     })
     .await;
-    let Ok((model, final_metrics)) = fit_and_measure else {
+    let Some((model, final_metrics)) = fit_and_measure else {
         return TrainingRunOutcome::failed_in(phases, crate::state::INTERNAL_FAILURE_REASON);
     };
 
