@@ -85,10 +85,60 @@ const DSQL_PREFIX = "/api/clouds/aws/services/dsql";
 const RDS_PREFIX = "/api/clouds/aws/services/database";
 const ELASTICACHE_PREFIX = "/api/clouds/aws/services/cache";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
+const ACTIVITY_PATH = "/api/activity";
+
+// The catalog key a dispatched request's `service` activity field names, read
+// straight back out of its own path rather than carried alongside each of the
+// 36 branches below: every one of them (`secretsmanager` is the one exception,
+// mounted at its own top-level prefix instead of under `/services/`) names its
+// key as the path segment right after `/api/clouds/aws/services/`.
+function serviceKeyFromPath(pathname) {
+  if (matchesPrefix(pathname, SECRETSMANAGER_PREFIX)) return "secretsmanager";
+  return pathname.match(/^\/api\/clouds\/aws\/services\/([^/]+)/)?.[1] ?? null;
+}
+
+// `GET`/`HEAD` list and describe calls — not a change this console made, so
+// `ActivityPage.tsx`'s "Resource operations performed in this console" never
+// shows a single poll of them. `response` is read, never consumed: callers
+// still return the SAME body to whoever made the request.
+async function recordActivity(request, response, pathname) {
+  if (request.method === "GET" || request.method === "HEAD") return;
+  const service = serviceKeyFromPath(pathname);
+  if (service == null) return;
+
+  const operation = { POST: "Create", PUT: "Update", PATCH: "Update", DELETE: "Delete" }[request.method] ?? request.method;
+  const resourceSegment = pathname.split("/").filter(Boolean).pop();
+  const resourceName = resourceSegment && resourceSegment !== "resources" ? resourceSegment : undefined;
+  const status = response.status < 400 ? "success" : "failed";
+  let detail;
+  if (status === "failed") {
+    try {
+      const body = await response.clone().json();
+      detail = body.message ?? body.error ?? undefined;
+    } catch {
+      // A non-JSON error body (plain text, or none at all) names nothing
+      // further to show; the status code and operation already do.
+    }
+  }
+
+  const { recordActivity: record } = await import("./activity.js");
+  record({ cloud: "aws", service, operation, status, resourceName, detail, source: "console" });
+}
 
 export async function handleApiRequest(request) {
   const { pathname } = new URL(request.url);
 
+  if (pathname === ACTIVITY_PATH) {
+    const { handleActivityRequest } = await import("./activity.js");
+    return handleActivityRequest(request);
+  }
+
+  const response = await dispatchApiRequest(request, pathname);
+  await recordActivity(request, response, pathname);
+  return response;
+}
+
+async function dispatchApiRequest(request, pathname) {
   if (CATALOG_EXACT_PATHS.has(pathname)) {
     const { handleCatalogRequest } = await import("./catalog.js");
     return handleCatalogRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
