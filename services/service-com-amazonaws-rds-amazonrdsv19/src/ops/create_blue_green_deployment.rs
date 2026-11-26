@@ -643,7 +643,7 @@ async fn open_the_green_endpoint<Eng: Send + Sync + 'static>(
     .map_err(CreateBlueGreenDeploymentError::internal_failure)?;
     if let Some(storage) = source_storage {
         let destination = endpoint.database();
-        ::tokio::task::spawn_blocking(move || destination.load_from(&storage))
+        crate::state::cpu_bound::run(move || destination.load_from(&storage))
             .await
             .map_err(|error| {
                 CreateBlueGreenDeploymentError::internal_failure(format!(

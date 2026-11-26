@@ -1616,6 +1616,16 @@ impl StatementAnswer {
 /// statement of this endpoint runs anyway. With no runtime to hand (a drop outside one) it
 /// runs here instead, still bounded by the rollback's own deadline.
 pub fn off_the_async_worker(work: impl FnOnce() + Send + 'static) {
+    // WASM-EMBEDDED EXPERIMENT: `spawn_blocking` has no real OS thread to hand this off to
+    // on wasm32 -- confirmed elsewhere in this crate panicking ("OS can't spawn worker
+    // thread") and aborting the whole shared component instance. There is no other async
+    // work in flight on this host to protect by moving the rollback off this task anyway,
+    // so it always runs inline there, the same as the "no runtime to hand" case below.
+    #[cfg(target_family = "wasm")]
+    {
+        work();
+    }
+    #[cfg(not(target_family = "wasm"))]
     match ::tokio::runtime::Handle::try_current() {
         Ok(handle) => {
             handle.spawn_blocking(work);

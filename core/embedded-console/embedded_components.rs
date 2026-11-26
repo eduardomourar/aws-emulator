@@ -101,15 +101,47 @@
 /// rand 0.10 did NOT move off the top-level module, so no `RngExt` import
 /// change was needed there).
 ///
-/// `rds` and `elasticache` are deferred for the same reason as `dsql`,
-/// confirmed by reading their source: each runs a REAL wire-protocol TCP
-/// server as its data plane (`rds`'s
-/// `src/state/data_plane/{pg,mysql}_server.rs`, `elasticache`'s
-/// `src/state/cache_data_plane/resp_wire.rs`) that a real database/cache
-/// client connects to over a plain `tokio::net` socket, not through
-/// `vendor/server`'s `Listeners` abstraction at all — so the wasm stub
-/// above does not save them. Opening a raw TCP socket is not something a
-/// browser can do at all, regardless of what's injected into it.
+/// `rds` and `elasticache` were ONCE assumed permanently blocked the same way `dsql` was,
+/// for running a real wire-protocol data plane (`rds`'s Postgres/MySQL server, `elasticache`'s
+/// RESP server) a real client dials over a raw socket, which a browser cannot open. Reading
+/// the source (rather than trusting that assumption, the same mistake made about `hyper`
+/// elsewhere in this effort) found it WRONG: both already go through `vendor/server`'s
+/// `Listeners` abstraction (`engine.listeners().tcp_plaintext(...)`/`.tcp(...)`), the same one
+/// `acm`/`cloudfront` use, and both already treat a failed bind as a modelled, non-fatal
+/// outcome (`rds`'s `open_engine_endpoint` returns `Err(String)`; `elasticache`'s
+/// `open_cache_data_plane` calls `.ok()` on the bind result directly) — so the wasm stub's
+/// `Err(SurfaceError::Bind(...))` is handled exactly like every other real-TCP data plane
+/// already embedded. A real Postgres/MySQL/RESP CONNECTION still cannot happen in a browser
+/// (no raw sockets there, regardless of what this host does). Confirmed by actually running
+/// both: `elasticache`'s `CreateReplicationGroup`/`CreateCacheCluster` never touch the data
+/// plane at creation time, so basic resource CRUD (list, create, delete) works end to end --
+/// a real create, through the real browser-embedded component, verified. `rds`'s
+/// `CreateDBInstance` is DIFFERENT: it binds the engine endpoint EAGERLY, as part of creating
+/// the instance (a real RDS instance is connectable the moment it exists), so every create
+/// fails there -- cleanly, as a modelled `503 Runtime unavailable` ("listener bind failed:
+/// resource listeners are not available in a wasm32 embed"), not a crash, the same honest
+/// refusal every other listener-dependent operation on this host gives. `rds`'s own basic
+/// listing still works. Both needed the standard wasm-safe `tokio` split (`elasticache` only
+/// in its own `Cargo.toml`; `rds` additionally in `getrandom` bumped `0.3`->`0.4`, same
+/// no-wasm32-wasip3-support issue every other crate here hit, and `net` dropped from its own
+/// wasm-side tokio features -- tokio's wasm32 build does not support it at all, and nothing in
+/// either crate calls `tokio::net` directly: the real socket work is entirely behind
+/// `vendor/server`'s own `Listeners`) and the standard unconditional `"rt-tokio"` fix on their
+/// own `aws-sdk-*` clients -- including, for `rds`, one on `service-com-amazonaws-rdsdata-\
+/// rdsdataservice`'s own `aws-sdk-rds` dependency, missed on the first pass and only found by
+/// actually building (an unconditional `aws-smithy-types` feature a `cargo tree -e features`
+/// trace surfaces, not something reading the `Cargo.toml` alone catches reliably). `rds` ALSO
+/// needed its OWN two fixes, found only by running it (not by reading alone): its
+/// `state::minted_values::mint_seed` calls `std::process::id()` for an id-minting ingredient,
+/// which panics on wasm32 ("no pids on this platform") — fixed the same way `dsql`'s identical
+/// bug was, dropping to a fixed value there since this host's in-memory state never survives a
+/// restart anyway; and its 22 `tokio::task::spawn_blocking` call sites (a storage copy, a
+/// snapshot read, a bulk load) panic there too ("OS can't spawn worker thread") and wedge the
+/// whole component the same way `athena`'s and `sagemaker`'s did, fixed the same way: a shared
+/// `cpu_bound::run` helper (`src/state/cpu_bound.rs`) that calls the closure inline on wasm
+/// instead (one more such call site, in `service-com-amazonaws-rdsdata-rdsdataservice`'s own
+/// `state::in_data_plane`, fixed inline rather than through that helper since it is wrapped in
+/// an outer `tokio::time::timeout` the fix has to preserve the shape of).
 ///
 /// `dsql`, `kinesis`, `paymentcryptography`, `ecr`, `route53`, `acm`,
 /// `cloudfront`, `ses`, `sqs`, `s3` and `xray` all carry the same wasm-safe
@@ -323,4 +355,6 @@ const SIMPLE_EMBEDDED_COMPONENTS: &[(&str, &str)] = &[
     ("appconfig", "service-com-amazonaws-appconfig-amazonappconfig"),
     ("athena", "service-com-amazonaws-athena-amazonathena"),
     ("sagemaker", "service-com-amazonaws-sagemaker-sagemaker"),
+    ("rds", "service-com-amazonaws-rds-amazonrdsv19"),
+    ("elasticache", "service-com-amazonaws-elasticache-amazonelasticachev9"),
 ];

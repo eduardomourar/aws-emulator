@@ -125,6 +125,7 @@ pub use service_common::rds_cluster_parameters::{
 };
 
 pub mod option_catalog;
+pub(crate) mod cpu_bound;
 
 // The records of the resource families whose own fields, quotas and projections are large
 // enough to crowd this module: each lives in its own file and is re-exported here, so a

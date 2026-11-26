@@ -10950,6 +10950,17 @@ const _trampoline5 = function() {
 }
 _trampoline5.fnName = 'wasi:random/random@0.3.0#getRandomU64';
 
+const handleTable1 = [T_FLAG, 0];
+handleTable1._createdReps = new Set();
+handleTable1._componentIdx = 0;
+
+
+const captureTable1= new Map();
+let captureCnt1= 0;
+
+STORE_TRAP.resourceTables.push({ handles: handleTable1, captures: captureTable1 });
+HANDLE_TABLES[1] = handleTable1;
+
 const handleTable0 = [T_FLAG, 0];
 handleTable0._createdReps = new Set();
 handleTable0._componentIdx = 0;
@@ -10961,22 +10972,11 @@ let captureCnt0= 0;
 STORE_TRAP.resourceTables.push({ handles: handleTable0, captures: captureTable0 });
 HANDLE_TABLES[0] = handleTable0;
 
-const handleTable3 = [T_FLAG, 0];
-handleTable3._createdReps = new Set();
-handleTable3._componentIdx = 0;
-
-
-const captureTable3= new Map();
-let captureCnt3= 0;
-
-STORE_TRAP.resourceTables.push({ handles: handleTable3, captures: captureTable3 });
-HANDLE_TABLES[3] = handleTable3;
-
 const _trampoline6 = function(arg0) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11072,9 +11072,9 @@ const _trampoline6 = function(arg0) {
   
   var handle3 = ret[symbolRscHandle];
   if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
-    captureTable3.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable3, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
+    captureTable0.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable0, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-headers"][Instruction::Return]', {
@@ -11089,16 +11089,16 @@ const _trampoline6 = function(arg0) {
 }
 _trampoline6.fnName = 'wasi:http/types@0.3.0#getHeaders';
 
-const handleTable1 = [T_FLAG, 0];
-handleTable1._createdReps = new Set();
-handleTable1._componentIdx = 0;
+const handleTable3 = [T_FLAG, 0];
+handleTable3._createdReps = new Set();
+handleTable3._componentIdx = 0;
 
 
-const captureTable1= new Map();
-let captureCnt1= 0;
+const captureTable3= new Map();
+let captureCnt3= 0;
 
-STORE_TRAP.resourceTables.push({ handles: handleTable1, captures: captureTable1 });
-HANDLE_TABLES[1] = handleTable1;
+STORE_TRAP.resourceTables.push({ handles: handleTable3, captures: captureTable3 });
+HANDLE_TABLES[3] = handleTable3;
 
 const _trampoline7 = function() {
   _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"] [Instruction::CallInterface] (sync, @ enter)');
@@ -11179,9 +11179,9 @@ const _trampoline7 = function() {
   
   var handle0 = ret[symbolRscHandle];
   if (!handle0) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt1) >>> 0;
-    captureTable1.set(rep, ret);
-    handle0 = rscTableCreateOwn(handleTable1, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
+    captureTable3.set(rep, ret);
+    handle0 = rscTableCreateOwn(handleTable3, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"][Instruction::Return]', {
@@ -11199,8 +11199,8 @@ _trampoline7.fnName = 'wasi:http/types@0.3.0#new RequestOptions';
 const _trampoline8 = function(arg0) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11296,9 +11296,9 @@ const _trampoline8 = function(arg0) {
   
   var handle3 = ret[symbolRscHandle];
   if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt1) >>> 0;
-    captureTable1.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable1, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
+    captureTable3.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable3, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request-options.clone"][Instruction::Return]', {
@@ -11644,9 +11644,9 @@ const _trampoline11 = function(arg0) {
   
   var handle3 = ret[symbolRscHandle];
   if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
-    captureTable3.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable3, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
+    captureTable0.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable0, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[method]response.get-headers"][Instruction::Return]', {
@@ -13106,8 +13106,8 @@ let realloc0Async;
 const _trampoline46 = function(arg0, arg1, arg2, arg3, arg4) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -13269,8 +13269,8 @@ _trampoline46.fnName = 'wasi:http/types@0.3.0#setScheme';
 const _trampoline47 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -13410,8 +13410,8 @@ _trampoline47.fnName = 'wasi:http/types@0.3.0#getAuthority';
 const _trampoline48 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -13548,8 +13548,8 @@ _trampoline48.fnName = 'wasi:http/types@0.3.0#setAuthority';
 const _trampoline49 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -13651,9 +13651,9 @@ const _trampoline49 = function(arg0, arg1) {
     
     var handle3 = e[symbolRscHandle];
     if (!handle3) {
-      const rep = (e[symbolRscRep] ?? ++captureCnt1) >>> 0;
-      captureTable1.set(rep, e);
-      handle3 = rscTableCreateOwn(handleTable1, rep);
+      const rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
+      captureTable3.set(rep, e);
+      handle3 = rscTableCreateOwn(handleTable3, rep);
     }
     
     dataView(memory0).setInt32(((arg1 >>> 0)) + 4, handle3, true);
@@ -13672,8 +13672,8 @@ _trampoline49.fnName = 'wasi:http/types@0.3.0#getOptions';
 const _trampoline50 = function(arg0, arg1, arg2) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -13681,9 +13681,9 @@ const _trampoline50 = function(arg0, arg1, arg2) {
   }
   
   else {
-    captureTable0.delete(rep2);
+    captureTable1.delete(rep2);
   }
-  rscTableRemove(handleTable0, handle1);
+  rscTableRemove(handleTable1, handle1);
   
   const futureResult3 = futureNewFromLift({
     componentIdx: 0,
@@ -14432,20 +14432,20 @@ const _trampoline50 = function(arg0, arg1, arg2) {
             ['none', null, 0, 0, 0, [] ],
             ['some', _liftFlatOwn({
               componentIdx: 0,
-              tableIdx: 3,
+              tableIdx: 0,
               classNameFn: () => Fields,
               createResourceFn: 
               (handle) => {
-                const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-                let resourceObj = captureTable3.get(rep);
+                const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+                let resourceObj = captureTable0.get(rep);
                 if (!resourceObj) {
                   resourceObj = Object.create(Fields.prototype);
                   Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                   Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
                 } else {
-                  captureTable3.delete(rep);
+                  captureTable0.delete(rep);
                 }
-                rscTableRemove(handleTable3, handle);
+                rscTableRemove(handleTable0, handle);
                 return resourceObj;
               }
               ,
@@ -14769,7 +14769,7 @@ const _trampoline50 = function(arg0, arg1, arg2) {
             [ 'none', null, 0, 0, 0 ],
             [ 'some', _lowerFlatOwn({
               componentIdx: 0,
-              tableIdx: 3,
+              tableIdx: 0,
               lowerFn: 
               function lowerImportedOwnedHost_Fields(obj) {
                 if (!(obj instanceof Fields)) {
@@ -14777,9 +14777,9 @@ const _trampoline50 = function(arg0, arg1, arg2) {
                 }
                 let handle = obj[symbolRscHandle];
                 if (!handle) {
-                  const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-                  captureTable3.set(rep, obj);
-                  handle = rscTableCreateOwn(handleTable3, rep);
+                  const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                  captureTable0.set(rep, obj);
+                  handle = rscTableCreateOwn(handleTable0, rep);
                 }
                 return handle;
               }
@@ -15146,8 +15146,8 @@ _trampoline50.fnName = 'wasi:http/types@0.3.0#Request.consumeBody';
 const _trampoline51 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15331,8 +15331,8 @@ _trampoline51.fnName = 'wasi:http/types@0.3.0#setConnectTimeout';
 const _trampoline52 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15516,8 +15516,8 @@ _trampoline52.fnName = 'wasi:http/types@0.3.0#setFirstByteTimeout';
 const _trampoline53 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15701,8 +15701,8 @@ _trampoline53.fnName = 'wasi:http/types@0.3.0#setBetweenBytesTimeout';
 const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15710,9 +15710,9 @@ const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
   }
   
   else {
-    captureTable3.delete(rep2);
+    captureTable0.delete(rep2);
   }
-  rscTableRemove(handleTable3, handle1);
+  rscTableRemove(handleTable0, handle1);
   let variant4;
   switch (arg1) {
     case 0: {
@@ -15751,20 +15751,20 @@ const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable3.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable3.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable3, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -16088,7 +16088,7 @@ const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -16096,9 +16096,9 @@ const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-              captureTable3.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable3, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -17931,20 +17931,20 @@ const _trampoline55 = function(arg0, arg1, arg2) {
             ['none', null, 0, 0, 0, [] ],
             ['some', _liftFlatOwn({
               componentIdx: 0,
-              tableIdx: 3,
+              tableIdx: 0,
               classNameFn: () => Fields,
               createResourceFn: 
               (handle) => {
-                const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-                let resourceObj = captureTable3.get(rep);
+                const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+                let resourceObj = captureTable0.get(rep);
                 if (!resourceObj) {
                   resourceObj = Object.create(Fields.prototype);
                   Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                   Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
                 } else {
-                  captureTable3.delete(rep);
+                  captureTable0.delete(rep);
                 }
-                rscTableRemove(handleTable3, handle);
+                rscTableRemove(handleTable0, handle);
                 return resourceObj;
               }
               ,
@@ -18268,7 +18268,7 @@ const _trampoline55 = function(arg0, arg1, arg2) {
             [ 'none', null, 0, 0, 0 ],
             [ 'some', _lowerFlatOwn({
               componentIdx: 0,
-              tableIdx: 3,
+              tableIdx: 0,
               lowerFn: 
               function lowerImportedOwnedHost_Fields(obj) {
                 if (!(obj instanceof Fields)) {
@@ -18276,9 +18276,9 @@ const _trampoline55 = function(arg0, arg1, arg2) {
                 }
                 let handle = obj[symbolRscHandle];
                 if (!handle) {
-                  const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-                  captureTable3.set(rep, obj);
-                  handle = rscTableCreateOwn(handleTable3, rep);
+                  const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                  captureTable0.set(rep, obj);
+                  handle = rscTableCreateOwn(handleTable0, rep);
                 }
                 return handle;
               }
@@ -18740,9 +18740,9 @@ const _trampoline56 = function(arg0, arg1, arg2) {
       
       var handle4 = e[symbolRscHandle];
       if (!handle4) {
-        const rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
-        captureTable3.set(rep, e);
-        handle4 = rscTableCreateOwn(handleTable3, rep);
+        const rep = (e[symbolRscRep] ?? ++captureCnt0) >>> 0;
+        captureTable0.set(rep, e);
+        handle4 = rscTableCreateOwn(handleTable0, rep);
       }
       
       dataView(memory0).setInt32(((arg2 >>> 0)) + 4, handle4, true);
@@ -18839,8 +18839,8 @@ _trampoline56.fnName = 'wasi:http/types@0.3.0#Fields.fromList';
 const _trampoline57 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19045,8 +19045,8 @@ _trampoline57.fnName = 'wasi:http/types@0.3.0#get';
 const _trampoline58 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19275,8 +19275,8 @@ _trampoline58.fnName = 'wasi:http/types@0.3.0#copyAll';
 const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19284,9 +19284,9 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   }
   
   else {
-    captureTable3.delete(rep2);
+    captureTable0.delete(rep2);
   }
-  rscTableRemove(handleTable3, handle1);
+  rscTableRemove(handleTable0, handle1);
   let variant4;
   switch (arg1) {
     case 0: {
@@ -19325,20 +19325,20 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable3.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable3.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable3, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -19662,7 +19662,7 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -19670,9 +19670,9 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-              captureTable3.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable3, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -19977,8 +19977,8 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
     case 1: {
       var handle7 = arg5;
       
-      var rep8 = handleTable1[(handle7 << 1) + 1] % T_OWN;
-      var rsc6 = captureTable1.get(rep8);
+      var rep8 = handleTable3[(handle7 << 1) + 1] % T_OWN;
+      var rsc6 = captureTable3.get(rep8);
       if (!rsc6) {
         rsc6 = Object.create(RequestOptions.prototype);
         Object.defineProperty(rsc6, symbolRscHandle, { writable: true, value: handle7});
@@ -19986,9 +19986,9 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
       }
       
       else {
-        captureTable1.delete(rep8);
+        captureTable3.delete(rep8);
       }
-      rscTableRemove(handleTable1, handle7);
+      rscTableRemove(handleTable3, handle7);
       variant9 = rsc6;
       break;
     }
@@ -20075,9 +20075,9 @@ const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   
   var handle11 = tuple10_0[symbolRscHandle];
   if (!handle11) {
-    const rep = (tuple10_0[symbolRscRep] ?? ++captureCnt0) >>> 0;
-    captureTable0.set(rep, tuple10_0);
-    handle11 = rscTableCreateOwn(handleTable0, rep);
+    const rep = (tuple10_0[symbolRscRep] ?? ++captureCnt1) >>> 0;
+    captureTable1.set(rep, tuple10_0);
+    handle11 = rscTableCreateOwn(handleTable1, rep);
   }
   
   dataView(memory0).setInt32(((arg6 >>> 0)) + 0, handle11, true);
@@ -20773,8 +20773,8 @@ _trampoline59.fnName = 'wasi:http/types@0.3.0#Request.new';
 const _trampoline60 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -20954,8 +20954,8 @@ _trampoline60.fnName = 'wasi:http/types@0.3.0#getMethod';
 const _trampoline61 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21145,8 +21145,8 @@ _trampoline61.fnName = 'wasi:http/types@0.3.0#setMethod';
 const _trampoline62 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21286,8 +21286,8 @@ _trampoline62.fnName = 'wasi:http/types@0.3.0#getPathWithQuery';
 const _trampoline63 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21424,8 +21424,8 @@ _trampoline63.fnName = 'wasi:http/types@0.3.0#setPathWithQuery';
 const _trampoline64 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21978,8 +21978,8 @@ _trampoline76.fnName = 'wasi:cli/stdin@0.3.0#readViaStream';
 const _trampoline77 = _maybeSyncGenerator(function*(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21987,9 +21987,9 @@ const _trampoline77 = _maybeSyncGenerator(function*(arg0, arg1) {
   }
   
   else {
-    captureTable0.delete(rep2);
+    captureTable1.delete(rep2);
   }
-  rscTableRemove(handleTable0, handle1);
+  rscTableRemove(handleTable1, handle1);
   _debugLog('[iface="wasi:http/client@0.3.0", function="send"] [Instruction::CallInterface] (async, @ enter)');
   const hostProvided = true;
   
@@ -26226,7 +26226,7 @@ const handleTable7 = [T_FLAG, 0];
 handleTable7._createdReps = new Set();
 handleTable7._componentIdx = 1;
 
-STORE_TRAP.resourceTables.push({ handles: handleTable7, captures: captureTable0 });
+STORE_TRAP.resourceTables.push({ handles: handleTable7, captures: captureTable1 });
 HANDLE_TABLES[7] = handleTable7;
 
 const handleTable8 = [T_FLAG, 0];
@@ -26312,9 +26312,9 @@ async function handle(arg0) {
         
         var handle0 = arg0[symbolRscHandle];
         if (!handle0) {
-          const rep = (arg0[symbolRscRep] ?? ++captureCnt0) >>> 0;
-          captureTable0.set(rep, arg0);
-          handle0 = rscTableCreateOwn(handleTable0, rep);
+          const rep = (arg0[symbolRscRep] ?? ++captureCnt1) >>> 0;
+          captureTable1.set(rep, arg0);
+          handle0 = rscTableCreateOwn(handleTable1, rep);
         }
         
         _debugLog('[iface="wasi:http/handler@0.3.0", function="handle"][Instruction::CallWasm] enter', {
@@ -26453,8 +26453,8 @@ function trampoline0(handle) {
       captureTable0.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (Request[symbolCabiDispose]) {
-      Request[symbolCabiDispose](handleEntry.rep);
+    } else if (Fields[symbolCabiDispose]) {
+      Fields[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
@@ -26467,12 +26467,19 @@ function trampoline1(handle) {
       captureTable1.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (RequestOptions[symbolCabiDispose]) {
-      RequestOptions[symbolCabiDispose](handleEntry.rep);
+    } else if (Request[symbolCabiDispose]) {
+      Request[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
-function trampoline2(handle) {
+
+const trampoline2Cancel = subtaskCancel.bind(null, 0, false);
+const trampoline2 = _conditionalSuspending1I32ToI32(
+_guardTrap(0, trampoline2Cancel, true),
+_suspendingImport(0, (subtaskRep) => trampoline2Cancel(subtaskRep, true)),
+);
+
+function trampoline3(handle) {
   const handleEntry = rscTableRemove(handleTable2, handle);
   if (handleEntry.own) {
     
@@ -26486,7 +26493,7 @@ function trampoline2(handle) {
     }
   }
 }
-function trampoline3(handle) {
+function trampoline4(handle) {
   const handleEntry = rscTableRemove(handleTable3, handle);
   if (handleEntry.own) {
     
@@ -26495,18 +26502,11 @@ function trampoline3(handle) {
       captureTable3.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (Fields[symbolCabiDispose]) {
-      Fields[symbolCabiDispose](handleEntry.rep);
+    } else if (RequestOptions[symbolCabiDispose]) {
+      RequestOptions[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
-
-const trampoline4Cancel = subtaskCancel.bind(null, 0, false);
-const trampoline4 = _conditionalSuspending1I32ToI32(
-_guardTrap(0, trampoline4Cancel, true),
-_suspendingImport(0, (subtaskRep) => trampoline4Cancel(subtaskRep, true)),
-);
-
 let trampoline5 = _lowerImportBackwardsCompat.bind(null, {
   trampolineIdx: 5,
   componentIdx: 0,
@@ -26530,10 +26530,10 @@ let trampoline6 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline6.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 3,
+    tableIdx: 0,
     lowerFn: 
     function lowerImportedOwnedHost_Fields(obj) {
       if (!(obj instanceof Fields)) {
@@ -26541,9 +26541,9 @@ let trampoline6 = _lowerImportBackwardsCompat.bind(null, {
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-        captureTable3.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable3, rep);
+        const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+        captureTable0.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable0, rep);
       }
       return handle;
     }
@@ -26568,7 +26568,7 @@ let trampoline7 = _lowerImportBackwardsCompat.bind(null, {
   paramLiftFns: [],
   resultLowerFns: [_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 1,
+    tableIdx: 3,
     lowerFn: 
     function lowerImportedOwnedHost_RequestOptions(obj) {
       if (!(obj instanceof RequestOptions)) {
@@ -26576,9 +26576,9 @@ let trampoline7 = _lowerImportBackwardsCompat.bind(null, {
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
-        captureTable1.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable1, rep);
+        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+        captureTable3.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable3, rep);
       }
       return handle;
     }
@@ -26600,10 +26600,10 @@ let trampoline8 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline8.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
   resultLowerFns: [_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 1,
+    tableIdx: 3,
     lowerFn: 
     function lowerImportedOwnedHost_RequestOptions(obj) {
       if (!(obj instanceof RequestOptions)) {
@@ -26611,9 +26611,9 @@ let trampoline8 = _lowerImportBackwardsCompat.bind(null, {
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
-        captureTable1.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable1, rep);
+        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+        captureTable3.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable3, rep);
       }
       return handle;
     }
@@ -26685,7 +26685,7 @@ let trampoline11 = _lowerImportBackwardsCompat.bind(null, {
   paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
   resultLowerFns: [_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 3,
+    tableIdx: 0,
     lowerFn: 
     function lowerImportedOwnedHost_Fields(obj) {
       if (!(obj instanceof Fields)) {
@@ -26693,9 +26693,9 @@ let trampoline11 = _lowerImportBackwardsCompat.bind(null, {
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-        captureTable3.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable3, rep);
+        const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+        captureTable0.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable0, rep);
       }
       return handle;
     }
@@ -26743,20 +26743,20 @@ const trampoline13 = futureNew.bind(null, {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable3.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable3.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable3, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -27080,7 +27080,7 @@ const trampoline13 = futureNew.bind(null, {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -27088,9 +27088,9 @@ const trampoline13 = futureNew.bind(null, {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-              captureTable3.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable3, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -28561,7 +28561,7 @@ let trampoline46 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline46.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -28610,7 +28610,7 @@ let trampoline47 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline47.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [
   _lowerFlatOption({
     caseMetas: [
@@ -28640,7 +28640,7 @@ let trampoline48 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline48.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -28682,14 +28682,14 @@ let trampoline49 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline49.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [
   _lowerFlatOption({
     caseMetas: [
     [ 'none', null, 0, 0, 0 ],
     [ 'some', _lowerFlatOwn({
       componentIdx: 0,
-      tableIdx: 1,
+      tableIdx: 3,
       lowerFn: 
       function lowerImportedOwnedHost_RequestOptions(obj) {
         if (!(obj instanceof RequestOptions)) {
@@ -28697,9 +28697,9 @@ let trampoline49 = _lowerImportBackwardsCompat.bind(null, {
         }
         let handle = obj[symbolRscHandle];
         if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
-          captureTable1.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable1, rep);
+          const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+          captureTable3.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable3, rep);
         }
         return handle;
       }
@@ -28731,20 +28731,20 @@ let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
   isManualAsync: _trampoline50.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 0,
+    tableIdx: 1,
     classNameFn: () => Request,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable0.get(rep);
+      const rep = handleTable1[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable1.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Request.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable0.delete(rep);
+        captureTable1.delete(rep);
       }
-      rscTableRemove(handleTable0, handle);
+      rscTableRemove(handleTable1, handle);
       return resourceObj;
     }
     ,
@@ -28780,20 +28780,20 @@ let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
           ['none', null, 0, 0, 0, [] ],
           ['some', _liftFlatOwn({
             componentIdx: 0,
-            tableIdx: 3,
+            tableIdx: 0,
             classNameFn: () => Fields,
             createResourceFn: 
             (handle) => {
-              const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-              let resourceObj = captureTable3.get(rep);
+              const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+              let resourceObj = captureTable0.get(rep);
               if (!resourceObj) {
                 resourceObj = Object.create(Fields.prototype);
                 Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                 Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
               } else {
-                captureTable3.delete(rep);
+                captureTable0.delete(rep);
               }
-              rscTableRemove(handleTable3, handle);
+              rscTableRemove(handleTable0, handle);
               return resourceObj;
             }
             ,
@@ -29117,7 +29117,7 @@ let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
           [ 'none', null, 0, 0, 0 ],
           [ 'some', _lowerFlatOwn({
             componentIdx: 0,
-            tableIdx: 3,
+            tableIdx: 0,
             lowerFn: 
             function lowerImportedOwnedHost_Fields(obj) {
               if (!(obj instanceof Fields)) {
@@ -29125,9 +29125,9 @@ let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
               }
               let handle = obj[symbolRscHandle];
               if (!handle) {
-                const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-                captureTable3.set(rep, obj);
-                handle = rscTableCreateOwn(handleTable3, rep);
+                const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                captureTable0.set(rep, obj);
+                handle = rscTableCreateOwn(handleTable0, rep);
               }
               return handle;
             }
@@ -29446,7 +29446,7 @@ let trampoline51 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline51.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -29506,7 +29506,7 @@ let trampoline52 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline52.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -29566,7 +29566,7 @@ let trampoline53 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline53.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -29628,20 +29628,20 @@ let trampoline54 = _lowerImportBackwardsCompat.bind(null, {
   isManualAsync: _trampoline54.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 3,
+    tableIdx: 0,
     classNameFn: () => Fields,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable3.get(rep);
+      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable0.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Fields.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable3.delete(rep);
+        captureTable0.delete(rep);
       }
-      rscTableRemove(handleTable3, handle);
+      rscTableRemove(handleTable0, handle);
       return resourceObj;
     }
     ,
@@ -30345,20 +30345,20 @@ let trampoline55 = _lowerImportBackwardsCompat.bind(null, {
           ['none', null, 0, 0, 0, [] ],
           ['some', _liftFlatOwn({
             componentIdx: 0,
-            tableIdx: 3,
+            tableIdx: 0,
             classNameFn: () => Fields,
             createResourceFn: 
             (handle) => {
-              const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-              let resourceObj = captureTable3.get(rep);
+              const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+              let resourceObj = captureTable0.get(rep);
               if (!resourceObj) {
                 resourceObj = Object.create(Fields.prototype);
                 Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                 Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
               } else {
-                captureTable3.delete(rep);
+                captureTable0.delete(rep);
               }
-              rscTableRemove(handleTable3, handle);
+              rscTableRemove(handleTable0, handle);
               return resourceObj;
             }
             ,
@@ -30682,7 +30682,7 @@ let trampoline55 = _lowerImportBackwardsCompat.bind(null, {
           [ 'none', null, 0, 0, 0 ],
           [ 'some', _lowerFlatOwn({
             componentIdx: 0,
-            tableIdx: 3,
+            tableIdx: 0,
             lowerFn: 
             function lowerImportedOwnedHost_Fields(obj) {
               if (!(obj instanceof Fields)) {
@@ -30690,9 +30690,9 @@ let trampoline55 = _lowerImportBackwardsCompat.bind(null, {
               }
               let handle = obj[symbolRscHandle];
               if (!handle) {
-                const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-                captureTable3.set(rep, obj);
-                handle = rscTableCreateOwn(handleTable3, rep);
+                const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                captureTable0.set(rep, obj);
+                handle = rscTableCreateOwn(handleTable0, rep);
               }
               return handle;
             }
@@ -31027,7 +31027,7 @@ let trampoline56 = _lowerImportBackwardsCompat.bind(null, {
     caseMetas: [
     [ 'ok', _lowerFlatOwn({
       componentIdx: 0,
-      tableIdx: 3,
+      tableIdx: 0,
       lowerFn: 
       function lowerImportedOwnedHost_Fields(obj) {
         if (!(obj instanceof Fields)) {
@@ -31035,9 +31035,9 @@ let trampoline56 = _lowerImportBackwardsCompat.bind(null, {
         }
         let handle = obj[symbolRscHandle];
         if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-          captureTable3.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable3, rep);
+          const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+          captureTable0.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable0, rep);
         }
         return handle;
       }
@@ -31085,7 +31085,7 @@ let trampoline57 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline57.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 3),_liftFlatStringAny],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 0),_liftFlatStringAny],
   resultLowerFns: [_lowerFlatList({
     elemLowerFn: _lowerFlatList({
       elemLowerFn: _lowerFlatU8,
@@ -31113,7 +31113,7 @@ let trampoline58 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline58.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
   resultLowerFns: [_lowerFlatList({
     elemLowerFn: _lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStringAny, 8, 4],[_lowerFlatList({
       elemLowerFn: _lowerFlatU8,
@@ -31143,20 +31143,20 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
   isManualAsync: _trampoline59.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 3,
+    tableIdx: 0,
     classNameFn: () => Fields,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable3.get(rep);
+      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable0.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Fields.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable3.delete(rep);
+        captureTable0.delete(rep);
       }
-      rscTableRemove(handleTable3, handle);
+      rscTableRemove(handleTable0, handle);
       return resourceObj;
     }
     ,
@@ -31180,20 +31180,20 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
     ['none', null, 0, 0, 0, [] ],
     ['some', _liftFlatOwn({
       componentIdx: 0,
-      tableIdx: 1,
+      tableIdx: 3,
       classNameFn: () => RequestOptions,
       createResourceFn: 
       (handle) => {
-        const rep = handleTable1[(handle << 1) + 1] % T_OWN;
-        let resourceObj = captureTable1.get(rep);
+        const rep = handleTable3[(handle << 1) + 1] % T_OWN;
+        let resourceObj = captureTable3.get(rep);
         if (!resourceObj) {
           resourceObj = Object.create(RequestOptions.prototype);
           Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
           Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
         } else {
-          captureTable1.delete(rep);
+          captureTable3.delete(rep);
         }
-        rscTableRemove(handleTable1, handle);
+        rscTableRemove(handleTable3, handle);
         return resourceObj;
       }
       ,
@@ -31210,7 +31210,7 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
   ],
   resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 0,
+    tableIdx: 1,
     lowerFn: 
     function lowerImportedOwnedHost_Request(obj) {
       if (!(obj instanceof Request)) {
@@ -31218,9 +31218,9 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
-        captureTable0.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable0, rep);
+        const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
+        captureTable1.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable1, rep);
       }
       return handle;
     }
@@ -31842,7 +31842,7 @@ let trampoline60 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline60.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [_lowerFlatVariant({
     caseMetas: [[ "get", null, 0, 0, 0 ],[ "head", null, 0, 0, 0 ],[ "post", null, 0, 0, 0 ],[ "put", null, 0, 0, 0 ],[ "delete", null, 0, 0, 0 ],[ "connect", null, 0, 0, 0 ],[ "options", null, 0, 0, 0 ],[ "trace", null, 0, 0, 0 ],[ "patch", null, 0, 0, 0 ],[ "other", _lowerFlatStringAny, 8, 4, 2 ],],
     variantSize32: 12,
@@ -31866,7 +31866,7 @@ let trampoline61 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline61.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),_liftFlatVariant({
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1),_liftFlatVariant({
     caseMetas: [["get", null, 0, 0, 0, []],["head", null, 0, 0, 0, []],["post", null, 0, 0, 0, []],["put", null, 0, 0, 0, []],["delete", null, 0, 0, 0, []],["connect", null, 0, 0, 0, []],["options", null, 0, 0, 0, []],["trace", null, 0, 0, 0, []],["patch", null, 0, 0, 0, []],["other", _liftFlatStringAny, 8, 4, 2, ['i32','i32']],],
     variantSize32: 12,
     variantAlign32: 4,
@@ -31902,7 +31902,7 @@ let trampoline62 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline62.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [
   _lowerFlatOption({
     caseMetas: [
@@ -31932,7 +31932,7 @@ let trampoline63 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline63.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -31974,7 +31974,7 @@ let trampoline64 = _lowerImportBackwardsCompat.bind(null, {
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline64.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
   resultLowerFns: [
   _lowerFlatOption({
     caseMetas: [
@@ -33234,20 +33234,20 @@ const trampoline67 = futureWrite.bind(null, {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable3.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable3.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable3, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -33571,7 +33571,7 @@ const trampoline67 = futureWrite.bind(null, {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -33579,9 +33579,9 @@ const trampoline67 = futureWrite.bind(null, {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-              captureTable3.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable3, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -33902,20 +33902,20 @@ const trampoline68 = futureRead.bind(null, {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable3.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable3.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable3, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -34239,7 +34239,7 @@ const trampoline68 = futureRead.bind(null, {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 3,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -34247,9 +34247,9 @@ const trampoline68 = futureRead.bind(null, {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-              captureTable3.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable3, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -34599,7 +34599,17 @@ const trampoline70 = streamRead.bind(null, {
     size32: 1,
   },
 });
-const trampoline71 = taskReturn.bind(null, {
+
+const trampoline71 = waitableSetPoll.bind(null, { componentIdx: 0, isAsync: false, isCancellable: false, memoryIdx: 0, getMemoryFn: () => memory0 });
+
+
+const trampoline72Wait = waitableSetWait.bind(null, { componentIdx: 0, isAsync: false, isCancellable: false, memoryIdx: 0, getMemoryFn: () => memory0 });
+const trampoline72 = _conditionalSuspending2I32ToI32(
+_suspendingImport(0, (waitableSetRep, resultPtr) => trampoline72Wait(waitableSetRep, resultPtr, true), true),
+_suspendingImport(0, trampoline72Wait),
+);
+
+const trampoline73 = taskReturn.bind(null, {
   componentIdx: 0,
   useDirectParams: true,
   getMemoryFn: () => memory0,
@@ -35230,16 +35240,6 @@ const trampoline71 = taskReturn.bind(null, {
   stringEncoding: 'utf8',
   resultTypeIdx: 37,
 });
-
-const trampoline72 = waitableSetPoll.bind(null, { componentIdx: 0, isAsync: false, isCancellable: false, memoryIdx: 0, getMemoryFn: () => memory0 });
-
-
-const trampoline73Wait = waitableSetWait.bind(null, { componentIdx: 0, isAsync: false, isCancellable: false, memoryIdx: 0, getMemoryFn: () => memory0 });
-const trampoline73 = _conditionalSuspending2I32ToI32(
-_suspendingImport(0, (waitableSetRep, resultPtr) => trampoline73Wait(waitableSetRep, resultPtr, true), true),
-_suspendingImport(0, trampoline73Wait),
-);
-
 let trampoline74 = _lowerImportBackwardsCompat.bind(null, {
   trampolineIdx: 74,
   componentIdx: 0,
@@ -35417,20 +35417,20 @@ let trampoline77 = _suspendingImport(0, _lowerImport.bind(null, {
   isManualAsync: _trampoline77.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 0,
+    tableIdx: 1,
     classNameFn: () => Request,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable0.get(rep);
+      const rep = handleTable1[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable1.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Request.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable0.delete(rep);
+        captureTable1.delete(rep);
       }
-      rscTableRemove(handleTable0, handle);
+      rscTableRemove(handleTable1, handle);
       return resourceObj;
     }
     ,
@@ -36468,19 +36468,19 @@ const $init = (() => {
       ({ exports: exports0 } = yield instantiateCore(yield module1));
       ({ exports: exports1 } = yield instantiateCore(yield module0, (_setGlobalCurrentThreadMeta({ componentIdx: 0, taskID: _initTaskID0, threadID: _initThreadID0 }), {
         $root: {
-          "[subtask-cancel]": trampoline4,
+          "[subtask-cancel]": trampoline2,
           "[subtask-drop]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline31), true), { _jcoMaySuspend: false }),
           "[waitable-join]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline28), true), { _jcoMaySuspend: false }),
           "[waitable-set-drop]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline29), true), { _jcoMaySuspend: false }),
           "[waitable-set-new]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline27), true), { _jcoMaySuspend: false }),
-          "[waitable-set-poll]": exports0["27"],
-          "[waitable-set-wait]": exports0["28"],
+          "[waitable-set-poll]": exports0["26"],
+          "[waitable-set-wait]": exports0["27"],
         },
         "[export]$root": {
           "[task-cancel]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline30), true), { _jcoMaySuspend: false }),
         },
         "[export]wasi:http/handler@0.3.0": {
-          "[task-return]handle": exports0["26"],
+          "[task-return]handle": exports0["28"],
         },
         env: {
           __wasm_get_stack_pointer: contextGet.bind(null, { componentIdx: 0, slot: 0 }),
@@ -36600,10 +36600,10 @@ const $init = (() => {
           "[method]response.get-headers": Object.assign(_guardTrap(0, trampoline11, false), { _jcoMaySuspend: false }),
           "[method]response.get-status-code": Object.assign(_guardTrap(0, trampoline9, false), { _jcoMaySuspend: false }),
           "[method]response.set-status-code": Object.assign(_guardTrap(0, trampoline10, false), { _jcoMaySuspend: false }),
-          "[resource-drop]fields": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline3), true), { _jcoMaySuspend: false }),
-          "[resource-drop]request": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline0), true), { _jcoMaySuspend: false }),
-          "[resource-drop]request-options": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline1), true), { _jcoMaySuspend: false }),
-          "[resource-drop]response": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline2), true), { _jcoMaySuspend: false }),
+          "[resource-drop]fields": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline0), true), { _jcoMaySuspend: false }),
+          "[resource-drop]request": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline1), true), { _jcoMaySuspend: false }),
+          "[resource-drop]request-options": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline4), true), { _jcoMaySuspend: false }),
+          "[resource-drop]response": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline3), true), { _jcoMaySuspend: false }),
           "[static]fields.from-list": exports0["11"],
           "[static]request.consume-body": exports0["5"],
           "[static]request.new": exports0["14"],
@@ -36655,8 +36655,8 @@ const $init = (() => {
           "24": Object.assign(_guardTrap(0, trampoline69, true), { _jcoMaySuspend: false }),
           "25": Object.assign(_guardTrap(0, trampoline70, true), { _jcoMaySuspend: false }),
           "26": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline71), true), { _jcoMaySuspend: false }),
-          "27": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline72), true), { _jcoMaySuspend: false }),
-          "28": trampoline73,
+          "27": trampoline72,
+          "28": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline73), true), { _jcoMaySuspend: false }),
           "29": Object.assign(_guardTrap(0, trampoline74, false), { _jcoMaySuspend: false }),
           "3": Object.assign(_guardTrap(0, trampoline48, false), { _jcoMaySuspend: false }),
           "30": Object.assign(_guardTrap(0, trampoline69, true), { _jcoMaySuspend: false }),

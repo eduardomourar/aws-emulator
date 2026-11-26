@@ -51,6 +51,8 @@ const AUTHORITY_BY_SERVICE: &[(&str, &str)] = &[
     ("appconfig", "127.0.0.1:9435"),
     ("athena", "127.0.0.1:9436"),
     ("sagemaker", "127.0.0.1:9437"),
+    ("rds", "127.0.0.1:9438"),
+    ("elasticache", "127.0.0.1:9439"),
 ];
 
 #[wstd::http_server]

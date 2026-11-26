@@ -730,6 +730,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aws-emulator-embedded-elasticache"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-elasticache-amazonelasticachev9",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
 name = "aws-emulator-embedded-elasticloadbalancingv2"
 version = "0.1.0"
 dependencies = [
@@ -848,6 +863,21 @@ dependencies = [
  "bytes",
  "http",
  "service-com-amazonaws-paymentcryptography-paymentcryptographycontrolplane",
+ "tokio",
+ "wstd",
+]
+
+[[package]]
+name = "aws-emulator-embedded-rds"
+version = "0.1.0"
+dependencies = [
+ "aws-emulator-embedded-console",
+ "aws-emulator-engine",
+ "aws-emulator-server",
+ "aws-emulator-smithy-server-runtime",
+ "bytes",
+ "http",
+ "service-com-amazonaws-rds-amazonrdsv19",
  "tokio",
  "wstd",
 ]
@@ -20044,7 +20074,7 @@ dependencies = [
  "chrono",
  "csv",
  "form_urlencoded",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "hex",
  "http",
  "md-5 0.10.6",

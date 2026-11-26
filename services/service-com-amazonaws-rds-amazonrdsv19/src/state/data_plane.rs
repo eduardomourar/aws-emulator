@@ -469,7 +469,7 @@ pub async fn captured_data_bytes(
     let Some(storage) = storage.cloned() else {
         return Ok(0);
     };
-    ::tokio::task::spawn_blocking(move || snapshot_data_bytes(Some(&storage)))
+    crate::state::cpu_bound::run(move || snapshot_data_bytes(Some(&storage)))
         .await
         .map_err(|error| format!("the size of the snapshot's data could not be read: {error}"))
 }
@@ -532,7 +532,7 @@ pub async fn capture_cluster_data(
     };
     let into = Arc::clone(&copy);
     let default_database = default_database.map(ToString::to_string);
-    let carried = ::tokio::task::spawn_blocking(move || {
+    let carried = crate::state::cpu_bound::run(move || {
         super::data_api_rows::carry_data_api_tables(&data_api, default_database.as_deref(), &into)
     })
     .await
@@ -577,7 +577,7 @@ pub async fn rewind_cluster_storage(
     else {
         return Ok(());
     };
-    ::tokio::task::spawn_blocking(move || live.load_from(&source))
+    crate::state::cpu_bound::run(move || live.load_from(&source))
         .await
         .map_err(|error| format!("the DB cluster's storage could not be rewound: {error}"))?
         .map_err(|error| {
@@ -604,7 +604,7 @@ async fn capture_storage(
     let Some(database) = database else {
         return Ok(None);
     };
-    let copied = ::tokio::task::spawn_blocking(move || database.capture())
+    let copied = crate::state::cpu_bound::run(move || database.capture())
         .await
         .map_err(|error| format!("the {resource}'s storage could not be copied: {error}"))?;
     copied.map(|copy| Some(Arc::new(copy))).map_err(|error| {

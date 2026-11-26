@@ -580,7 +580,18 @@ where
     F: FnOnce() -> Result<T, SqlError> + Send + 'static,
     T: Send + 'static,
 {
-    match tokio::time::timeout(REQUEST_TIME_BUDGET, tokio::task::spawn_blocking(work)).await {
+    // WASM-EMBEDDED EXPERIMENT: `spawn_blocking` has no real OS thread to hand this off to
+    // on wasm32 -- confirmed elsewhere in this effort panicking ("OS can't spawn worker
+    // thread") and aborting the whole shared component instance. There is no other async
+    // work in flight on this host to protect by moving the work off this task anyway, so
+    // it runs inline, wrapped in an already-resolved future so the outer timeout race
+    // below needs no change.
+    #[cfg(not(target_family = "wasm"))]
+    let blocking = tokio::task::spawn_blocking(work);
+    #[cfg(target_family = "wasm")]
+    let blocking = ::std::future::ready(Ok::<Result<T, SqlError>, ::std::convert::Infallible>(work()));
+
+    match tokio::time::timeout(REQUEST_TIME_BUDGET, blocking).await {
         Ok(Ok(outcome)) => outcome,
         Ok(Err(joined)) => Err(SqlError::Unavailable(format!(
             "the data plane did not finish this request: {joined}"

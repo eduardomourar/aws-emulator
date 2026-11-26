@@ -621,7 +621,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
                 let only = export_only.clone();
                 let under = prefix.clone();
                 let part = part_file.clone();
-                let read = ::tokio::task::spawn_blocking(move || {
+                let read = crate::state::cpu_bound::run(move || {
                     crate::state::exported_tables(&database, wire, &only, &under, &part)
                 })
                 .await;

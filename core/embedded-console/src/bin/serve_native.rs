@@ -72,6 +72,8 @@ const COMPONENTS: &[(&str, u16)] = &[
     ("appconfig", 9435),
     ("athena", 9436),
     ("sagemaker", 9437),
+    ("rds", 9438),
+    ("elasticache", 9439),
     ("router", 9397),
 ];
 

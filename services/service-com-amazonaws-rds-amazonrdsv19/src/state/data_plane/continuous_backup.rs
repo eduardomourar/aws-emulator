@@ -208,7 +208,7 @@ pub async fn record_committed_state(
         return;
     }
     let source = Arc::clone(storage);
-    let captured = ::tokio::task::spawn_blocking(move || source.capture()).await;
+    let captured = crate::state::cpu_bound::run(move || source.capture()).await;
     let copy = match captured {
         Ok(Ok(copy)) => Arc::new(copy),
         Ok(Err(error)) => {

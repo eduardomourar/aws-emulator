@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["io-util", "net", "time"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["io-util", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -32,7 +35,10 @@ sha2 = { workspace = true }
 # The KMS client a `KmsKeyId` is resolved to its key's ARN through, over the
 # in-process callback into this same emulator (src/state/kms_key.rs); no network
 # client feature is enabled, because the transport is the emulator's own.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for EC2, driven over the same in-process callback: the subnets a
 # cache subnet group or a serverless cache is placed in are EC2's resources, so
 # `src/state/ec2_subnets.rs` asks EC2 what the account has rather than deciding
@@ -44,13 +50,13 @@ aws-sdk-ec2 = { version = "1", default-features = false, features = ["behavior-v
 # serverless cache snapshot writes its data set into a bucket, and buckets and objects
 # belong to Amazon S3, so `src/state/s3_export.rs` writes it where that service holds
 # it. Only the generated client is needed — the emulator supplies the transport.
-aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The AWS SDK for Amazon SNS, driven over the same in-process callback: a cache
 # cluster's events are published to the topic its `NotificationConfiguration`
 # names, and topics and their subscriptions belong to Amazon SNS, so
 # `src/state/event_notifications.rs` publishes where that service holds them.
 # Only the generated client is needed — the emulator supplies the transport.
-aws-sdk-sns = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-sns = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `arn::region_label`: the ONE reading of a caller-supplied Region as a Region
 # LABEL, which is what the endpoint the EC2 call above is made at is built from.
 service-common = { path = "../common" }
@@ -83,6 +89,12 @@ service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true 
 # authorization gate reads the identifier its request addresses a resource by out of it
 # (`src/service/authorization.rs`).
 form_urlencoded = "1"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-sns = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -41,6 +41,7 @@
 use std::collections::HashMap;
 use std::env;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -126,6 +127,8 @@ const COMPONENTS: &[(&str, &str)] = &[
     ("aws-emulator-embedded-appconfig", "appconfig"),
     ("aws-emulator-embedded-athena", "athena"),
     ("aws-emulator-embedded-sagemaker", "sagemaker"),
+    ("aws-emulator-embedded-rds", "rds"),
+    ("aws-emulator-embedded-elasticache", "elasticache"),
 ];
 // `aws-emulator-embedded-router` is deliberately NOT built here: it's a wasi:http
 // SERVER that, to answer a request, makes an outgoing CLIENT call to the real
@@ -163,22 +166,51 @@ fn main() {
         )
     });
 
+    // ONE combined `cargo build -p A -p B ... -p Z`, not 39 separate invocations: Cargo's
+    // feature unification is computed per invocation, over exactly the packages named on
+    // that command line. 39 separate single-package invocations each unify features over a
+    // DIFFERENT one-package slice of the graph, so a shared dependency (tokio, hyper,
+    // aws-smithy-types, ...) can genuinely resolve to a different feature set from one
+    // invocation to the next even with nothing in `component_target_dir` or any source
+    // file touched — which invalidates that shared dependency's fingerprint and forces
+    // Cargo to recompile it again on the VERY NEXT component's invocation, cascading into
+    // rebuilding most of the graph on every single component, every single run (confirmed:
+    // editing one component's own wrapper-crate `src/lib.rs` — the only thing that can
+    // make this script rerun at all — was observed forcing 40-120 minute full rebuilds of
+    // all 39 components instead of just the one that changed). One combined invocation
+    // unifies features ONCE, over the same fixed 39-package set every time this script
+    // runs, so that per-dependency feature set is now STABLE across runs — only a package
+    // whose own inputs actually changed needs to recompile, and Cargo's ordinary
+    // fingerprinting (unrelated to `[profile.release]`'s own `incremental` setting, which
+    // stays off) already skips every other one correctly once the feature set stops moving
+    // under it.
+    let wasm_paths = build_components(&workspace_root, &component_target_dir, &wasi_sdk, COMPONENTS);
     for (package, short_name) in COMPONENTS {
-        let wasm_path = build_component(&workspace_root, &component_target_dir, &wasi_sdk, package);
-        transpile_component(&web_dir, &wasm_path, short_name);
+        let wasm_path = wasm_paths.get(*package).unwrap_or_else(|| panic!("no wasm path recorded for {package}"));
+        transpile_component(&web_dir, wasm_path, short_name);
     }
 }
 
-/// Builds `package` as a `wasm32-wasip3` component into `component_target_dir`
-/// and returns the path to the resulting `.wasm` — already a Component Model
-/// binary, linked by `wasm-component-ld`, with no separate componentize step.
-fn build_component(workspace_root: &Path, component_target_dir: &Path, wasi_sdk: &str, package: &str) -> PathBuf {
-    println!("cargo:warning=Building {package} for {WASM_TARGET}...");
+/// Builds every `(package, _)` in `components` as a `wasm32-wasip3` component, in ONE
+/// `cargo build` invocation naming all of them, into `component_target_dir` — see `main`'s
+/// own comment for why one combined invocation matters here, not just 39 separate calls to
+/// what this function used to be. Returns each package's resulting `.wasm` path — already a
+/// Component Model binary, linked by `wasm-component-ld`, with no separate componentize step.
+fn build_components(
+    workspace_root: &Path,
+    component_target_dir: &Path,
+    wasi_sdk: &str,
+    components: &[(&str, &str)],
+) -> HashMap<String, PathBuf> {
+    println!("cargo:warning=Building {} components for {WASM_TARGET}...", components.len());
 
     let cargo = env::var_os("CARGO").unwrap_or_else(|| "cargo".into());
     let mut cmd = Command::new(cargo);
-    cmd.args(["build", "--release", "--target", WASM_TARGET, "-p", package])
-        .current_dir(workspace_root)
+    cmd.args(["build", "--release", "--target", WASM_TARGET]);
+    for (package, _) in components {
+        cmd.args(["-p", package]);
+    }
+    cmd.current_dir(workspace_root)
         .env("CARGO_TARGET_DIR", component_target_dir)
         // Nested `cargo` invocation: never re-trigger this script on embedded-console's
         // own build inside this child, or every component rebuilds every other one.
@@ -206,28 +238,56 @@ fn build_component(workspace_root: &Path, component_target_dir: &Path, wasi_sdk:
     // it at the same SDK as everything else above fixes that.
     set_if_unset(&mut cmd, "WASI_SDK", wasi_sdk);
 
-    let status = cmd.status().unwrap_or_else(|err| panic!("`cargo build -p {package}` did not run: {err}"));
+    let status = cmd
+        .status()
+        .unwrap_or_else(|err| panic!("`cargo build --target {WASM_TARGET}` for {} components did not run: {err}", components.len()));
     if !status.success() {
-        panic!("`cargo build -p {package} --target {WASM_TARGET}` failed");
+        panic!("`cargo build --target {WASM_TARGET}` for {} components failed", components.len());
     }
 
-    let wasm_name = format!("{}.wasm", package.replace('-', "_"));
-    let wasm_path = component_target_dir.join(WASM_TARGET).join("release").join(&wasm_name);
-    if !wasm_path.exists() {
-        panic!("expected {} after a successful build, but it is missing", wasm_path.display());
-    }
-    wasm_path
+    components
+        .iter()
+        .map(|(package, _)| {
+            let wasm_name = format!("{}.wasm", package.replace('-', "_"));
+            let wasm_path = component_target_dir.join(WASM_TARGET).join("release").join(&wasm_name);
+            if !wasm_path.exists() {
+                panic!("expected {} after a successful build, but it is missing", wasm_path.display());
+            }
+            (package.to_string(), wasm_path)
+        })
+        .collect()
 }
 
-/// Transpiles the component at `wasm_path` into `web/jco-out-<short_name>/`.
+/// Transpiles the component at `wasm_path` into `web/jco-out-<short_name>/` — skipped
+/// entirely when `wasm_path`'s own CONTENT (not its mtime: Cargo re-copies a package's
+/// final artifact into the target dir on every build, bumping its mtime, even for a
+/// package its own fingerprinting decided needed no recompilation at all) hashes the same
+/// as what was transpiled last time, recorded alongside the output as a small marker file,
+/// `<module_name>.wasm.digest` — a `DefaultHasher` digest (8 bytes), not a second copy of
+/// the (multi-megabyte) component itself; `target/web-components` already holds that one.
+/// With 39 components built every run (`main`'s own comment covers why that's one combined
+/// invocation now), re-transpiling every one of them unconditionally every run — real
+/// work, done entirely in-process by `js_component_bindgen::transpile`, not free — was the
+/// dominant cost left once that combined invocation stopped most of them from recompiling
+/// at all.
 fn transpile_component(web_dir: &Path, wasm_path: &Path, short_name: &str) {
-    println!("cargo:warning=Transpiling {short_name}...");
-
     let module_name = format!("aws_emulator_embedded_{}", short_name.replace('-', "_"));
     let out_dir = web_dir.join(format!("jco-out-{short_name}"));
+    let digest_marker = out_dir.join(format!("{module_name}.wasm.digest"));
 
     let component_bytes = fs::read(wasm_path)
         .unwrap_or_else(|err| panic!("reading {} for {short_name}: {err}", wasm_path.display()));
+    let digest = {
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        component_bytes.hash(&mut hasher);
+        hasher.finish()
+    };
+
+    if fs::read_to_string(&digest_marker).is_ok_and(|cached| cached.trim() == digest.to_string()) {
+        return;
+    }
+
+    println!("cargo:warning=Transpiling {short_name}...");
 
     let opts = TranspileOpts {
         name: module_name,
@@ -251,6 +311,8 @@ fn transpile_component(web_dir: &Path, wasm_path: &Path, short_name: &str) {
         }
         fs::write(&path, contents).unwrap_or_else(|err| panic!("writing {}: {err}", path.display()));
     }
+    fs::write(&digest_marker, digest.to_string())
+        .unwrap_or_else(|err| panic!("writing {}: {err}", digest_marker.display()));
 }
 
 fn set_if_unset(cmd: &mut Command, key: &str, value: impl AsRef<std::ffi::OsStr>) {

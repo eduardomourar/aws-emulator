@@ -884,7 +884,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         // by the engine's own copy deadline, exactly as the capture that took it was.
         if let (Some(endpoint), Some(storage)) = (endpoint.as_ref(), source_storage) {
             let destination = endpoint.database();
-            ::tokio::task::spawn_blocking(move || destination.load_from(&storage))
+            crate::state::cpu_bound::run(move || destination.load_from(&storage))
                 .await
                 .map_err(|error| {
                     CreateDBInstanceReadReplicaError::internal_failure(format!(

@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["io-util", "net", "sync", "time"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["io-util", "rt", "sync", "time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -78,7 +81,9 @@ md-5 = "0.10"
 # `getrandom` draws the per-connection nonce that handshake challenges a client with from
 # the operating system's own entropy, so the proof the client answers with cannot be
 # replayed.
-getrandom = "0.3"
+# WASM-EMBEDDED EXPERIMENT: 0.3.4 (what "0.3" resolves to) has no wasm32-wasip3 support;
+# bumped to 0.4, which does.
+getrandom = "0.4"
 # The AWS SDK for EC2, driven over the in-process callback
 # (`OperationContext::callback`): the subnets a `CreateDBSubnetGroup` names are EC2's
 # resources, so `src/state/ec2_subnets.rs` asks EC2 which Availability Zone each one lies
@@ -101,10 +106,13 @@ service-common = { path = "../common" }
 # Amazon Web Services Secrets Manager: this is the Secrets Manager client the create and
 # the rotation of that secret go out over the in-process callback with
 # (`src/state/managed_master_secret.rs`).
-aws-sdk-secretsmanager = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-secretsmanager = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The same module reports WHICH KMS key that secret is encrypted under, resolved through
 # KMS so the key's own ARN is reported rather than an alias that may be re-targeted.
-aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # `state::new_request_id`'s digest: a maintained hash, so the per-response request id in
 # an awsQuery `<ErrorResponse>` envelope is shaped by library code rather than by hand.
 sha2 = { workspace = true }
@@ -169,6 +177,11 @@ parquet = { version = "60", default-features = false, features = ["flate2-rust_b
 csv = "1"
 form_urlencoded = "1"
 chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-secretsmanager = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+aws-sdk-kms = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]
 emulator-core-build-support = { workspace = true }

@@ -82,6 +82,8 @@ const SAGEMAKER_PREFIX = "/api/clouds/aws/services/sagemaker";
 const EVENTBRIDGEV2_PREFIX = "/api/clouds/aws/services/eventsv2";
 const NETWORKING_PREFIX = "/api/clouds/aws/services/networking";
 const DSQL_PREFIX = "/api/clouds/aws/services/dsql";
+const RDS_PREFIX = "/api/clouds/aws/services/database";
+const ELASTICACHE_PREFIX = "/api/clouds/aws/services/cache";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 
 export async function handleApiRequest(request) {
@@ -238,6 +240,14 @@ export async function handleApiRequest(request) {
   if (matchesPrefix(pathname, DSQL_PREFIX)) {
     const { handleDsqlRequest } = await import("./dsql.js");
     return handleDsqlRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, RDS_PREFIX)) {
+    const { handleRdsRequest } = await import("./rds.js");
+    return handleRdsRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
+  }
+  if (matchesPrefix(pathname, ELASTICACHE_PREFIX)) {
+    const { handleElastiCacheRequest } = await import("./elasticache.js");
+    return handleElastiCacheRequest(withStrippedPrefix(request, CLOUDS_PREFIX));
   }
 
   return new Response("Not Found", { status: 404 });

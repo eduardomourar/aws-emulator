@@ -583,7 +583,7 @@ async fn serve_query(
         let database = Arc::clone(database);
         let session = facts.clone();
         let statement = statement.clone();
-        tokio::task::spawn_blocking(move || {
+        crate::state::cpu_bound::run(move || {
             wire_session::run_statement(&database, &session, &statement, &[])
         })
         .await
@@ -686,7 +686,7 @@ async fn serve_s3_load(
         let database = Arc::clone(database);
         let session = facts.clone();
         let statement = statement.clone();
-        tokio::task::spawn_blocking(move || {
+        crate::state::cpu_bound::run(move || {
             super::mysql_s3_load::load(&database, &session, &statement, &objects)
         })
         .await

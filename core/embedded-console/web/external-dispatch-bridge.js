@@ -100,6 +100,8 @@ const AUTHORITY_BY_SERVICE = {
   athena: "athena.local.invalid",
   sagemaker: "sagemaker.local.invalid",
   dsql: "dsql.local.invalid",
+  rds: "rds.local.invalid",
+  elasticache: "elasticache.local.invalid",
 };
 
 const AUTHORITY_MODULES = {
@@ -144,6 +146,8 @@ const AUTHORITY_MODULES = {
   "athena.local.invalid": () => import("./jco-out-athena/aws_emulator_embedded_athena.js"),
   "sagemaker.local.invalid": () => import("./jco-out-sagemaker/aws_emulator_embedded_sagemaker.js"),
   "dsql.local.invalid": () => import("./jco-out-dsql/aws_emulator_embedded_dsql.js"),
+  "rds.local.invalid": () => import("./jco-out-rds/aws_emulator_embedded_rds.js"),
+  "elasticache.local.invalid": () => import("./jco-out-elasticache/aws_emulator_embedded_elasticache.js"),
 };
 
 const clientsByAuthority = new Map();

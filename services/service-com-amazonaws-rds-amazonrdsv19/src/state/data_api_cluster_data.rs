@@ -52,7 +52,7 @@ pub async fn capture_data_api_cluster_data<Eng: Send + Sync + 'static>(
         return Ok(None);
     };
     let cluster_arn = cluster_arn.to_string();
-    let captured = ::tokio::task::spawn_blocking(move || {
+    let captured = crate::state::cpu_bound::run(move || {
         store.lock().capture_cluster_data(&cluster_arn)
     })
     .await
@@ -85,7 +85,7 @@ pub async fn install_data_api_cluster_data<Eng: Send + Sync + 'static>(
         return Ok(());
     };
     let cluster_arn = cluster_arn.to_string();
-    let installed = ::tokio::task::spawn_blocking(move || {
+    let installed = crate::state::cpu_bound::run(move || {
         store
             .lock()
             .install_cluster_data(&cluster_arn, captured.as_deref())

@@ -16,7 +16,10 @@ emulator-server = { workspace = true }
 emulator-telemetry = { workspace = true }
 aws-smithy-runtime-api = { workspace = true }
 aws-smithy-types = { workspace = true }
-tokio = { workspace = true, features = ["time"] }
+# WASM-EMBEDDED EXPERIMENT: `workspace = true` ADDS to (not replaces) the workspace's base
+# tokio spec, which includes `rt-multi-thread` -- unsupported on wasm32 -- so this is split
+# the same way vendor/server's Cargo.toml is.
+tokio = { version = "1", features = ["time"] }
 bytes = { workspace = true }
 http = { workspace = true }
 serde_json = { workspace = true }
@@ -76,7 +79,10 @@ service-common = { path = "../common" }
 # that service: the AWS SDK driven over the emulator's own in-process transport, through
 # the operation callback, so this crate names no other service's crate and an emulator
 # assembled without Amazon RDS is told apart from one that holds no such cluster.
-aws-sdk-rds = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-rds = { version = "1", default-features = false, features = ["behavior-version-latest"] }
 # The identity a request speaks for and the policies in force on it: the IAM store maps
 # an access key id to the user that holds it and holds that user's documents, and the STS
 # store resolves a session credential. No API answers "whose key is this", which is why
@@ -86,6 +92,14 @@ service-com-amazonaws-sts-awssecuritytokenservicev20110615 = { workspace = true 
 # The SECRET a request names is Secrets Manager's resource, and its value is sealed under
 # the key the secret names — only its owner can open it. So it is RETRIEVED the way any
 # emulated service reaches another: the AWS SDK driven over the in-process callback.
+# WASM-EMBEDDED EXPERIMENT: "rt-tokio" unconditionally sets `tokio?/fs` (aws-smithy-types'
+# own feature definition, not ours to change), unsupported on wasm32; dropped here and
+# added back only for native below.
+aws-sdk-secretsmanager = { version = "1", default-features = false, features = ["behavior-version-latest"] }
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+tokio = { workspace = true }
+aws-sdk-rds = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 aws-sdk-secretsmanager = { version = "1", default-features = false, features = ["rt-tokio", "behavior-version-latest"] }
 
 [build-dependencies]

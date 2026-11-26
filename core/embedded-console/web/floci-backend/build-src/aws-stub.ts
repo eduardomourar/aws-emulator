@@ -15,6 +15,7 @@ export const dynamodb = undefined as never;
 export const apiGateway = undefined as never;
 export const lambda = undefined as never;
 export const cloudformation = undefined as never;
+export const rds = undefined as never;
 // `AwsDsqlAdapter`'s own `flociApiEndpoint` default parameter; never read since every
 // entry here passes its own client and endpoint explicitly.
 export const endpoint = undefined as never;
@@ -27,4 +28,5 @@ export const awsClients = {
   elbv2: undefined as never,
   dsql: undefined as never,
   sts: undefined as never,
+  rds: undefined as never,
 };

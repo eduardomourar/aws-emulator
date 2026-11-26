@@ -44,6 +44,8 @@ import { AthenaClient } from "@aws-sdk/client-athena";
 import { SageMakerClient } from "@aws-sdk/client-sagemaker";
 import { EventBridgeV2Client } from "@aws-sdk/client-eventbridgev2";
 import { DSQLClient } from "@aws-sdk/client-dsql";
+import { RDSClient } from "@aws-sdk/client-rds";
+import { ElastiCacheClient } from "@aws-sdk/client-elasticache";
 import { STSClient } from "@aws-sdk/client-sts";
 import { createCloudRoutes } from "../src/routes/clouds";
 import { CloudAdapterRegistry } from "../src/registry/CloudAdapterRegistry";
@@ -86,6 +88,9 @@ import { AwsSageMakerAdapter } from "../src/adapter-aws/AwsSageMakerAdapter";
 import { AwsEventBridgeV2Adapter } from "../src/adapter-aws/AwsEventBridgeV2Adapter";
 import { AwsNetworkingAdapter } from "../src/adapter-aws/AwsNetworkingAdapter";
 import { AwsDsqlAdapter } from "../src/adapter-aws/AwsDsqlAdapter";
+import { AwsDatabaseAdapter } from "../src/adapter-aws/AwsDatabaseAdapter";
+import { AwsElastiCacheAdapter } from "../src/adapter-aws/AwsElastiCacheAdapter";
+import { createRdsService } from "../src/services/rds";
 import { PostgresDataClient } from "./dsql-data-client-stub";
 // `AwsSecretsAdapter` isn't here for its resource operations — Secrets
 // Manager's real CRUD goes through `secretsmanager.js`'s dedicated legacy
@@ -158,6 +163,8 @@ const registry = new CloudAdapterRegistry([
     null,
     new PostgresDataClient(),
   ),
+  new AwsDatabaseAdapter(createRdsService(new RDSClient(clientConfig)), new RDSClient(clientConfig)),
+  new AwsElastiCacheAdapter(new ElastiCacheClient(clientConfig)),
 ]);
 const service = new CloudProxyService(
   registry,

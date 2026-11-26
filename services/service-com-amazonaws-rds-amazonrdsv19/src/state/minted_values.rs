@@ -69,7 +69,15 @@ pub fn mint_seed(label: &str, mint: u64) -> String {
     let nanos = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .map_or(0, |since_epoch| since_epoch.as_nanos());
+    // WASM-EMBEDDED EXPERIMENT: `std::process::id()` panics on wasm32 ("no pids on this
+    // platform") -- there is no OS process there to have one. This host's state is
+    // in-memory only and never survives a restart anyway, so cross-run distinguishing
+    // buys nothing there; the nonce plus the nanosecond clock already give strong
+    // collision resistance within one run, which is all that matters.
+    #[cfg(not(target_family = "wasm"))]
     let process = ::std::process::id();
+    #[cfg(target_family = "wasm")]
+    let process = 0u32;
     format!("{label}:{mint}:{nonce}:{process}:{nanos}")
 }
 

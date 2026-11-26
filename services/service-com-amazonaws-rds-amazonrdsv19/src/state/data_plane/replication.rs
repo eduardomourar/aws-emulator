@@ -104,7 +104,7 @@ pub async fn apply_to_read_replicas(
         return;
     }
     let source = Arc::clone(source);
-    let carried = ::tokio::task::spawn_blocking(move || {
+    let carried = crate::state::cpu_bound::run(move || {
         replicas
             .iter()
             .map(|replica| replica.load_from(&source))

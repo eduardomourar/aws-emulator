@@ -931,7 +931,7 @@ async fn serve_copy_in(
         let database = Arc::clone(database);
         let facts = facts.clone();
         let target = target.clone();
-        tokio::task::spawn_blocking(move || super::pg_copy::load(&database, &facts, &target, &data))
+        crate::state::cpu_bound::run(move || super::pg_copy::load(&database, &facts, &target, &data))
             .await
             .map_err(|error| std::io::Error::other(error.to_string()))?
     };
@@ -999,13 +999,13 @@ async fn run_statement(
     let answer = match super::pg_aws_s3::aws_s3_call(facts, &sql) {
         Some(call) => {
             let context = context.clone();
-            tokio::task::spawn_blocking(move || {
+            crate::state::cpu_bound::run(move || {
                 super::pg_aws_s3::serve(&context, &engine, &session, &call?)
             })
             .await
         }
         None => {
-            tokio::task::spawn_blocking(move || {
+            crate::state::cpu_bound::run(move || {
                 wire_session::run_statement(&engine, &session, &statement, &params)
             })
             .await
@@ -1146,7 +1146,7 @@ async fn describe_columns(
 ) -> Vec<ColumnInfo> {
     let database = Arc::clone(database);
     let facts = facts.clone();
-    tokio::task::spawn_blocking(move || {
+    crate::state::cpu_bound::run(move || {
         wire_session::describe_statement(&database, &facts, &sql, &params)
     })
     .await
@@ -1268,7 +1268,7 @@ async fn register_session(database: &Arc<InstanceDatabase>, facts: &SessionFacts
         .as_ref()
         .and_then(|tls| tls.protocol.clone());
     let cipher = facts.tls.as_ref().and_then(|tls| tls.cipher.clone());
-    let _ = tokio::task::spawn_blocking(move || {
+    let _ = crate::state::cpu_bound::run(move || {
         let _ = super::server_statements::open_extension_catalog(&database, &session);
         let _ = database.execute(&name, PG_STAT_SSL_SCHEMA, &[]);
         let _ = super::pg_server::ensure_catalogs(&database, &name);
