@@ -19,6 +19,9 @@ pub mod auth_metrics;
 pub mod lambda_triggers;
 /// The stored user pool itself: its record and the configuration it holds.
 mod user_pool;
+/// Runs the CPU-bound key-minting a pool create does off the async executor, on
+/// native and wasm32 both.
+pub(crate) mod cpu_bound;
 /// The resources a pool holds beside its users: hosted domains, replicas and app
 /// clients.
 mod pool_resources;

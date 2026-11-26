@@ -332,12 +332,11 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
             return Err(pool_limit_exceeded());
         }
         // Minting a pool's key pairs is milliseconds of CPU per key
-        // (`crate::state::PoolSigningKeys`), so it runs on the blocking pool with
-        // no state guard held: `spawn_blocking(..).await` is a real await point,
-        // so the keys of one create cannot starve the worker that serves health
-        // checks and every other request, and a shutdown or a timeout can land
-        // while they are generated. The same construct every other key-minting
-        // operation of this workspace mints through.
+        // (`crate::state::PoolSigningKeys`), so it runs off the async executor with
+        // no state guard held, through `crate::state::cpu_bound::run`: on native a
+        // real await point on the blocking pool, so the keys of one create cannot
+        // starve the worker that serves health checks and every other request; on
+        // wasm32, inline, since there is no OS thread to hand it to there.
         //
         // The key this emulator seals its refresh tokens under
         // (`crate::state::RefreshTokenKey`) is minted here too, on the FIRST pool
@@ -347,7 +346,7 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         // guard. Two creates racing for the first one generate two and keep
         // whichever is stored first; the other is dropped unused.
         let seal_refresh_tokens_with = state.lock().refresh_token_key.get().is_none();
-        let (signing_keys, refresh_token_key) = ::tokio::task::spawn_blocking(move || {
+        let (signing_keys, refresh_token_key) = crate::state::cpu_bound::run(move || {
             (
                 crate::state::PoolSigningKeys::generate(),
                 seal_refresh_tokens_with.then(crate::state::RefreshTokenKey::generate),

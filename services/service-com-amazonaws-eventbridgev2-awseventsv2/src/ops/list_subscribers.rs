@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 
 //! @op ListSubscribers
-//! SCAFFOLDED, NOT IMPLEMENTED: this operation answers HTTP 501 `NotImplemented` and
-//! asserts NOTHING about `ListSubscribers`'s real behaviour. Implement it here — this is
-//! the ONLY file to touch for this operation.
+//! Implemented: enumerates the stored subscribers, one page at a time, on the same terms
+//! as `ListEventBuses`.
 //!
 //! A 501 from this operation means "nobody has written it yet", never "the emulator is
 //! broken". Replace the `Err(..)` in [`ListSubscribers::handle`] with real behaviour and
@@ -147,18 +146,142 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
         input: Self::Input,
         ctx: &smithy_server_runtime::OperationContext<'_>,
     ) -> Result<Self::Output, Self::Error> {
-        // The engine is reachable from `&self` (constructor-injected); `ctx` carries
-        // request metadata. Both are bound here so an implementer has them in scope.
-        let _ = (&input, ctx, &self.engine);
-        // Implement `ListSubscribers` here, then delete the SCAFFOLDED marker at the top of
-        // this file. Return modeled failures as
-        // `Err(ListSubscribersErrorModeled::Variant(..).into())` — the `From` impl above lifts it.
-        //
-        // To refuse a bad request this operation models no error for, return
-        // `Err(crate::scaffolded::Scaffolded::validation("..."))` — a 400
-        // `ValidationException`. Do NOT answer 501 for it: 501 means "not written yet",
-        // not "bad request". Modeled constraints are already refused BEFORE this
-        // handler runs, so reaching here means the input satisfies every one of them.
-        Err(crate::scaffolded::Scaffolded::not_implemented("ListSubscribers"))
+        let Some(store) = crate::state::service_state(&*self.engine) else {
+            return Err(crate::scaffolded::Scaffolded::validation(
+                "the subscriber store is unavailable on this engine",
+            ));
+        };
+        // A subscriber lives in one region, and a request names the region it is
+        // addressing, so an enumeration reports the subscribers of THAT region only.
+        let region = crate::state::request_region(ctx);
+
+        let state = store.lock();
+
+        if let Some(event_bus_arn) = input.event_bus_arn.as_deref() {
+            if state.bus(event_bus_arn).is_none() {
+                return Err(ListSubscribersErrorModeled::ResourceNotFoundException(
+                    crate::state::event_bus_not_found(event_bus_arn),
+                )
+                .into());
+            }
+        }
+
+        let resume_after = input.next_token.as_deref().map(decode_next_token);
+        if let Some(None) = resume_after {
+            return Err(crate::scaffolded::Scaffolded::validation(
+                "NextToken is not a token this service issued",
+            ));
+        }
+        let resume_after = resume_after.flatten();
+
+        let page_size = crate::state::page_size(input.max_results);
+
+        // Ordered by name, the key `NamePrefix` filters on, with the ARN breaking ties
+        // so the order is total and a page boundary is stable.
+        let mut page_keys: Vec<PageKey> = state
+            .subscribers
+            .values()
+            .filter(|subscriber| subscriber.region == region)
+            .filter(|subscriber| {
+                input
+                    .event_bus_arn
+                    .as_deref()
+                    .is_none_or(|bus_arn| subscriber.event_bus_arn == bus_arn)
+            })
+            .filter(|subscriber| {
+                input
+                    .name_prefix
+                    .as_deref()
+                    .is_none_or(|prefix| subscriber.name.starts_with(prefix))
+            })
+            .map(|subscriber| PageKey {
+                name: subscriber.name.clone(),
+                arn: subscriber.arn.clone(),
+            })
+            .collect();
+        page_keys.sort();
+
+        let start = match &resume_after {
+            Some(cursor) => page_keys.partition_point(|key| key <= cursor),
+            None => 0,
+        };
+        let end = start.saturating_add(page_size).min(page_keys.len());
+        let page = &page_keys[start..end];
+
+        let subscribers: Vec<SubscriberSummary> = page
+            .iter()
+            .filter_map(|key| state.subscriber(&key.arn))
+            .map(|subscriber| SubscriberSummary {
+                subscriber_arn: Some(subscriber.arn.clone()),
+                name: Some(subscriber.name.clone()),
+                event_bus_arn: Some(subscriber.event_bus_arn.clone()),
+                target_arn: Some(subscriber.target_arn().to_string()),
+                r#type: Some(subscriber.ordering_type.clone()),
+                revoked: subscriber.revoked.then_some(true),
+                state: Some(subscriber.state.wire_value().to_string()),
+                creation_time: Some(crate::state::to_date_time(subscriber.creation_time)),
+                last_modified_time: Some(crate::state::to_date_time(subscriber.last_modified_time)),
+                subscriber_account_id: Some(subscriber.account_id.clone()),
+            })
+            .collect();
+
+        // A token only when subscribers remain after this page, so a caller stops
+        // paging exactly when the enumeration is exhausted.
+        let next_token = (end < page_keys.len())
+            .then(|| page.last().map(encode_next_token))
+            .flatten();
+
+        Ok(ListSubscribersOutput {
+            subscribers: Some(subscribers),
+            next_token,
+        })
+    }
+}
+
+/// The total order `ListSubscribers` enumerates in, and exactly what a `NextToken`
+/// carries: the name the list is ordered by, with the ARN breaking ties.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct PageKey {
+    name: String,
+    arn: String,
+}
+
+/// This operation's page cursor as the opaque `NextToken` the next request replays,
+/// rendered by the one page-token codec this service's List operations share
+/// ([`crate::state::encode_page_token`]).
+fn encode_next_token(key: &PageKey) -> String {
+    crate::state::encode_page_token(&[&key.name, &key.arn])
+}
+
+/// Read a cursor back out of a `NextToken`. `None` when the token is not one this
+/// service issued for this enumeration's cursor.
+fn decode_next_token(token: &str) -> Option<PageKey> {
+    let mut fields = crate::state::decode_page_token(token, 2)?.into_iter();
+    Some(PageKey {
+        name: fields.next()?,
+        arn: fields.next()?,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{decode_next_token, encode_next_token, PageKey};
+
+    /// A cursor survives the token it is rendered as, and nothing else is read as a
+    /// cursor: the token is this operation's own encoding, so its round-trip is
+    /// pinned here beside it.
+    #[test]
+    fn a_cursor_round_trips_through_its_token() {
+        let key = PageKey {
+            name: "demo-subscriber".to_string(),
+            arn: "arn:aws:events:us-east-1:000000000000:subscriber/demo-subscriber/abc"
+                .to_string(),
+        };
+        let token = encode_next_token(&key);
+        assert_eq!(decode_next_token(&token).as_ref(), Some(&key));
+
+        for token in ["not-a-token", "abc", "6162"] {
+            assert!(decode_next_token(token).is_none());
+        }
     }
 }

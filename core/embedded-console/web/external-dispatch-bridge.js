@@ -191,7 +191,11 @@ function callAuthority(authority, request) {
       // instance was still mid-response, hitting the exact same trap this
       // queue exists to prevent.
       const body = await response.arrayBuffer();
-      return new Response(body, { status: response.status, statusText: response.statusText, headers: response.headers });
+      // A null-body status (204/205/304) throws if `Response` is given a body at
+      // all, even a zero-length one: the constructor checks for `null`/`undefined`,
+      // not length.
+      const isNullBodyStatus = response.status === 204 || response.status === 205 || response.status === 304;
+      return new Response(isNullBodyStatus ? null : body, { status: response.status, statusText: response.statusText, headers: response.headers });
     });
   queueTailByAuthority.set(
     authority,

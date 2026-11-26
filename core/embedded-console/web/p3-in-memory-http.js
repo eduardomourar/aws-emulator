@@ -75,8 +75,13 @@ export class P3InMemoryHttpClient {
     for (const [name, value] of witResponse.getHeaders().copyAll()) {
       responseHeaders.append(name, new TextDecoder().decode(value));
     }
-    return new globalThis.Response(toNativeReadableStream(bodyStream), {
-      status: witResponse.getStatusCode(),
+    const status = witResponse.getStatusCode();
+    // A null-body status (204/205/304) throws if `Response` is given a body at all,
+    // even a stream that yields zero bytes: the constructor checks for `null`/`undefined`,
+    // not length.
+    const isNullBodyStatus = status === 204 || status === 205 || status === 304;
+    return new globalThis.Response(isNullBodyStatus ? null : toNativeReadableStream(bodyStream), {
+      status,
       headers: responseHeaders,
     });
   }

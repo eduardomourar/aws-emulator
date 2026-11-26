@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: CC0-1.0
 
 //! @op ListEndpointConfigs
-//! SCAFFOLDED, NOT IMPLEMENTED: this operation answers HTTP 501 `NotImplemented` and
-//! asserts NOTHING about `ListEndpointConfigs`'s real behaviour. Implement it here — this is
-//! the ONLY file to touch for this operation.
+//! IMPLEMENTED: filters, sorts and pages the endpoint configurations stored in
+//! `crate::state`, on the same terms as `ListEndpoints`. This is the ONLY file to touch
+//! for this operation.
 //!
 //! A 501 from this operation means "nobody has written it yet", never "the emulator is
 //! broken". Replace the `Err(..)` in [`ListEndpointConfigs::handle`] with real behaviour and
@@ -131,6 +131,11 @@ impl<Eng> ListEndpointConfigs<Eng> {
     }
 }
 
+/// `MaxResults`' documented default for this operation, shared with `ListEndpoints`'
+/// (both leave it undocumented beyond the field doc, so the same default — AWS's
+/// published default of 10 for every `List*` operation in this service — applies).
+const DEFAULT_MAX_RESULTS: i32 = 10;
+
 impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_runtime::Operation
     for ListEndpointConfigs<Eng>
 {
@@ -146,20 +151,111 @@ impl<Eng: ::std::marker::Send + ::std::marker::Sync + 'static> smithy_server_run
     async fn handle(
         &self,
         input: Self::Input,
-        ctx: &smithy_server_runtime::OperationContext<'_>,
+        _ctx: &smithy_server_runtime::OperationContext<'_>,
     ) -> Result<Self::Output, Self::Error> {
-        // The engine is reachable from `&self` (constructor-injected); `ctx` carries
-        // request metadata. Both are bound here so an implementer has them in scope.
-        let _ = (&input, ctx, &self.engine);
-        // Implement `ListEndpointConfigs` here, then delete the SCAFFOLDED marker at the top of
-        // this file. Return modeled failures as
-        // `Err(ListEndpointConfigsErrorModeled::Variant(..).into())` — the `From` impl above lifts it.
-        //
-        // To refuse a bad request this operation models no error for, return
-        // `Err(crate::scaffolded::Scaffolded::validation("..."))` — a 400
-        // `ValidationException`. Do NOT answer 501 for it: 501 means "not written yet",
-        // not "bad request". Modeled constraints are already refused BEFORE this
-        // handler runs, so reaching here means the input satisfies every one of them.
-        Err(crate::scaffolded::Scaffolded::not_implemented("ListEndpointConfigs"))
+        let state = crate::state::service_state(&*self.engine)
+            .ok_or_else(|| crate::scaffolded::Scaffolded::validation(crate::state::NO_STATE))?;
+
+        let sort_by = input
+            .sort_by
+            .as_deref()
+            .unwrap_or(crate::state::DEFAULT_SORT_BY);
+        if !ENDPOINT_CONFIG_SORT_KEY_VALUES.contains(&sort_by) {
+            return Err(crate::scaffolded::Scaffolded::validation(format!(
+                "SortBy must be one of {}; got \"{sort_by}\".",
+                ENDPOINT_CONFIG_SORT_KEY_VALUES.join(", ")
+            )));
+        }
+        let sort_order = input
+            .sort_order
+            .as_deref()
+            .unwrap_or(crate::state::DEFAULT_SORT_ORDER);
+        if !ORDER_KEY_VALUES.contains(&sort_order) {
+            return Err(crate::scaffolded::Scaffolded::validation(format!(
+                "SortOrder must be one of {}; got \"{sort_order}\".",
+                ORDER_KEY_VALUES.join(", ")
+            )));
+        }
+        let descending = sort_order == crate::state::ORDER_DESCENDING;
+
+        let created_after = input.creation_time_after.map(crate::state::timestamp_key);
+        let created_before = input.creation_time_before.map(crate::state::timestamp_key);
+
+        let store = state.lock();
+
+        let mut matching: Vec<&crate::state::EndpointConfig> = store
+            .endpoint_configs
+            .values()
+            .filter(|config| {
+                input
+                    .name_contains
+                    .as_deref()
+                    .is_none_or(|needle| config.name.contains(needle))
+            })
+            .filter(|config| {
+                let created =
+                    crate::state::timestamp_key(crate::state::timestamp(config.creation_time));
+                created_after.is_none_or(|bound| created >= bound)
+                    && created_before.is_none_or(|bound| created <= bound)
+            })
+            .collect();
+        // `SortOrder` reverses the SORT KEY only; the tie-break stays `EndpointConfigName`
+        // ascending in both directions, matching `ListEndpoints`.
+        matching.sort_by(|left, right| {
+            let by_key = match sort_by {
+                "Name" => left.name.cmp(&right.name),
+                _ => crate::state::timestamp_key(crate::state::timestamp(left.creation_time)).cmp(
+                    &crate::state::timestamp_key(crate::state::timestamp(right.creation_time)),
+                ),
+            };
+            let by_key = if descending { by_key.reverse() } else { by_key };
+            by_key.then_with(|| left.name.cmp(&right.name))
+        });
+
+        let start = match input.next_token.as_deref() {
+            None => 0,
+            Some(token) => {
+                let resumed_after = crate::state::decode_page_token(token)
+                    .and_then(|name| matching.iter().position(|config| config.name == name))
+                    .ok_or_else(|| {
+                        crate::scaffolded::Scaffolded::validation(
+                            "NextToken does not name a page boundary of this result set; \
+                             restart the listing without it.",
+                        )
+                    })?;
+                resumed_after + 1
+            }
+        };
+
+        let start = start.min(matching.len());
+        let page_size = input
+            .max_results
+            .map_or(DEFAULT_MAX_RESULTS, |max| {
+                max.clamp(1, crate::state::MAX_PAGE_SIZE)
+            })
+            .unsigned_abs() as usize;
+        let end = start.saturating_add(page_size).min(matching.len());
+        let page = &matching[start..end];
+
+        let next_token = match page.last() {
+            Some(last) if end < matching.len() => {
+                Some(crate::state::encode_page_token(&last.name))
+            }
+            _ => None,
+        };
+
+        let output = ListEndpointConfigsOutput {
+            endpoint_configs: page
+                .iter()
+                .map(|config| EndpointConfigSummary {
+                    endpoint_config_name: config.name.clone(),
+                    endpoint_config_arn: config.arn.clone(),
+                    creation_time: crate::state::timestamp(config.creation_time),
+                })
+                .collect(),
+            next_token,
+        };
+
+        Ok(output)
     }
 }
