@@ -6,41 +6,38 @@
     <meta name="description" content="Floci UI — Any Cloud. Locally. The local cloud console for Floci." />
     <title>Floci UI</title>
     <!--
-      Two distinct values, computed once from the page's OWN initial load path (never
-      from a later `history.pushState`, which Floci's client-side router uses to change
-      `location.pathname` without a real navigation), so the same `index.html` serves
-      correctly both locally (served at `/`) and as a GitHub Pages project site (served
-      at `/aws-emulator/`):
+      A literal, static tag — not one `document.write`d in from a `<script>` — because
+      the browser's speculative preload scanner reads these raw HTML bytes before any
+      script on the page runs at all: a `<base>` written in by JS doesn't exist yet from
+      the scanner's point of view, so it resolves every `<script src>`/`<link href>`
+      below against the page's OWN url instead, firing a real (if harmless — the
+      scanner's hits are speculative preload hints, never the actual module graph; see
+      `assets/react-vendor-*.js`'s own comment on the one place that distinction
+      actually matters) 404 for each one on a GitHub Pages project site. A literal tag
+      has no such gap. Every resource reference below is relative to it rather than
+      rooted at the origin — a rooted "/assets/..." reference 404s on a GitHub Pages
+      project site, since the origin's real root is one path segment above where this
+      site actually lives; per spec, `document.baseURI` otherwise tracks `location`,
+      which Floci's client-side router changes via `history.pushState` without a real
+      navigation, so a relative URL resolved with no `<base>` at all would drift right
+      along with it.
 
-      - An explicit `<base>`. Per spec, `document.baseURI` only tracks `location` when
-        no `<base>` element is present, so setting one here freezes it for the whole
-        session. Every resource reference below is relative to it rather than rooted at
-        the origin — a rooted "/assets/..." reference 404s on a GitHub Pages project
-        site, since the origin's real root is one path segment above where this site
-        actually lives. Checked once, here, before anything below resolves a single
-        relative URL against it (an import map's bare-specifier resolution in
-        particular happens at each `import`, against whatever `document.baseURI` is AT
-        THAT MOMENT — not frozen at page-parse time — which is exactly what made a
-        plain relative import-map value unsafe before this tag existed: it drifted with
-        `pushState` same as everything else did).
-      - `window.__ROUTER_BASENAME__`, read by a one-line patch in the vendored
-        `assets/react-vendor-*.js` (see its own comment) where Floci's router
-        component's `basename` prop defaults to the LITERAL `"/"`: Floci's own code
-        never passes a `basename` prop at all, so every `<Link>` click and
-        programmatic navigation lands on that default — unprefixed — regardless of
-        where the page itself was loaded from. The two values are NOT
-        interchangeable: `<base>`'s value needs the trailing slash a relative URL
-        resolves against; `basename` must NOT carry one — React Router strips
-        exactly the basename STRING as a prefix of `location.pathname`, so a trailing
-        slash there would leave a path that starts with "/" one segment short of
-        every route's own leading "/".
+      Fixed at "/aws-emulator/" rather than computed from the request, because both
+      places this is ever served from use that same path now: `serve.py`, for local
+      testing, mirrors it for exactly this reason (see its own comment).
     -->
+    <base href="/aws-emulator/">
     <script>
-      (function () {
-        var atGitHubPages = location.pathname.indexOf("/aws-emulator/") === 0;
-        document.write('<base href="' + (atGitHubPages ? "/aws-emulator/" : "/") + '">');
-        window.__ROUTER_BASENAME__ = atGitHubPages ? "/aws-emulator" : "/";
-      })();
+      // Read by a one-line patch in the vendored `assets/react-vendor-*.js` (see its
+      // own comment) where Floci's router component's `basename` prop defaults to the
+      // LITERAL "/": Floci's own code never passes a `basename` prop at all, so every
+      // `<Link>` click and programmatic navigation lands on that default — unprefixed.
+      // NOT interchangeable with the `<base>` tag above despite the same value: that
+      // one needs the trailing slash a relative URL resolves against; this one must NOT
+      // carry one — React Router strips exactly this STRING as a prefix of
+      // `location.pathname`, so a trailing slash here would leave a path that starts
+      // with "/" one segment short of every route's own leading "/".
+      window.__ROUTER_BASENAME__ = "/aws-emulator";
     </script>
     <script>
       (function () {
