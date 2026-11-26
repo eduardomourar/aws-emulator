@@ -6,27 +6,41 @@
     <meta name="description" content="Floci UI — Any Cloud. Locally. The local cloud console for Floci." />
     <title>Floci UI</title>
     <!--
-      An explicit `<base>`, computed once from the page's OWN initial load path (never
+      Two distinct values, computed once from the page's OWN initial load path (never
       from a later `history.pushState`, which Floci's client-side router uses to change
-      `location.pathname` without a real navigation): per spec, `document.baseURI` only
-      tracks `location` when no `<base>` element is present, so setting one here freezes
-      it for the whole session. Every resource reference below is relative to it rather
-      than rooted at the origin, so the same `index.html` serves correctly both locally
-      (served at `/`) and as a GitHub Pages project site (served at `/aws-emulator/`) —
-      a rooted "/assets/..." reference 404s on the latter, since the origin's real root
-      is one path segment above where this site actually lives. Checked once, here,
-      before anything below resolves a single relative URL against it (an import map's
-      bare-specifier resolution in particular happens at each `import`, against
-      whatever `document.baseURI` is AT THAT MOMENT — not frozen at page-parse time —
-      which is exactly what made a plain relative import-map value unsafe before this
-      tag existed: it drifted with `pushState` same as everything else did).
+      `location.pathname` without a real navigation), so the same `index.html` serves
+      correctly both locally (served at `/`) and as a GitHub Pages project site (served
+      at `/aws-emulator/`):
+
+      - An explicit `<base>`. Per spec, `document.baseURI` only tracks `location` when
+        no `<base>` element is present, so setting one here freezes it for the whole
+        session. Every resource reference below is relative to it rather than rooted at
+        the origin — a rooted "/assets/..." reference 404s on a GitHub Pages project
+        site, since the origin's real root is one path segment above where this site
+        actually lives. Checked once, here, before anything below resolves a single
+        relative URL against it (an import map's bare-specifier resolution in
+        particular happens at each `import`, against whatever `document.baseURI` is AT
+        THAT MOMENT — not frozen at page-parse time — which is exactly what made a
+        plain relative import-map value unsafe before this tag existed: it drifted with
+        `pushState` same as everything else did).
+      - `window.__ROUTER_BASENAME__`, read by a one-line patch in the vendored
+        `assets/react-vendor-*.js` (see its own comment) where Floci's router
+        component's `basename` prop defaults to the LITERAL `"/"`: Floci's own code
+        never passes a `basename` prop at all, so every `<Link>` click and
+        programmatic navigation lands on that default — unprefixed — regardless of
+        where the page itself was loaded from. The two values are NOT
+        interchangeable: `<base>`'s value needs the trailing slash a relative URL
+        resolves against; `basename` must NOT carry one — React Router strips
+        exactly the basename STRING as a prefix of `location.pathname`, so a trailing
+        slash there would leave a path that starts with "/" one segment short of
+        every route's own leading "/".
     -->
     <script>
-      document.write(
-        '<base href="' +
-          (location.pathname.indexOf("/aws-emulator/") === 0 ? "/aws-emulator/" : "/") +
-          '">',
-      );
+      (function () {
+        var atGitHubPages = location.pathname.indexOf("/aws-emulator/") === 0;
+        document.write('<base href="' + (atGitHubPages ? "/aws-emulator/" : "/") + '">');
+        window.__ROUTER_BASENAME__ = atGitHubPages ? "/aws-emulator" : "/";
+      })();
     </script>
     <script>
       (function () {
