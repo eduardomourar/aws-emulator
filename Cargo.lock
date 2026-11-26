@@ -625,6 +625,7 @@ dependencies = [
 name = "aws-emulator-embedded-console"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "bytes",
  "futures",
  "http",
@@ -633,6 +634,8 @@ dependencies = [
  "hyper-util",
  "js-component-bindgen",
  "tokio",
+ "wasm-encoder 0.259.0",
+ "wasmparser 0.259.0",
  "wasmtime",
  "wasmtime-wasi",
  "wasmtime-wasi-http",
@@ -25083,6 +25086,7 @@ dependencies = [
  "hashbrown 0.17.1",
  "indexmap 2.14.2",
  "semver",
+ "serde",
 ]
 
 [[package]]

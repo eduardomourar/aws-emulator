@@ -1,5 +1,5 @@
 /** @module Interface wasi:http/types@0.3.0 **/
-export type Headers = Fields;
+export type Trailers = Fields;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -145,7 +145,7 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type Trailers = Fields;
+export type Headers = Fields;
 export type StatusCode = number;
 export type FieldName = string;
 export type FieldValue = Uint8Array;

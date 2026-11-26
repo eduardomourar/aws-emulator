@@ -1,16 +1,5 @@
 /** @module Interface wasi:http/types@0.3.0 **/
-export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
-export interface SchemeHttp {
-  tag: 'HTTP',
-}
-export interface SchemeHttps {
-  tag: 'HTTPS',
-}
-export interface SchemeOther {
-  tag: 'other',
-  val: string,
-}
-export type Headers = Fields;
+export type Trailers = Fields;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -156,7 +145,18 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type Trailers = Fields;
+export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
+export interface SchemeHttp {
+  tag: 'HTTP',
+}
+export interface SchemeHttps {
+  tag: 'HTTPS',
+}
+export interface SchemeOther {
+  tag: 'other',
+  val: string,
+}
+export type Headers = Fields;
 export type Duration = import('./wasi-clocks-types.js').Duration;
 export type RequestOptionsError = RequestOptionsErrorNotSupported | RequestOptionsErrorImmutable | RequestOptionsErrorOther;
 export interface RequestOptionsErrorNotSupported {

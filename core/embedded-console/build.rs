@@ -187,8 +187,79 @@ fn main() {
     let wasm_paths = build_components(&workspace_root, &component_target_dir, &wasi_sdk, COMPONENTS);
     for (package, short_name) in COMPONENTS {
         let wasm_path = wasm_paths.get(*package).unwrap_or_else(|| panic!("no wasm path recorded for {package}"));
+        strip_component(wasm_path, package);
         transpile_component(&web_dir, wasm_path, short_name);
     }
+}
+
+/// The equivalent of `wasm-tools strip --all`, in place, via `wasmparser`/`wasm-encoder`
+/// directly rather than shelling out to the `wasm-tools` CLI (which this workspace does
+/// not otherwise depend on at all). Drops the custom sections `[profile.release]`'s own
+/// `strip = true` does not reach (`producers`, `wit-component`, `name` — measured at under
+/// 10 KiB on `aws-emulator-embedded-cognitoidentityprovider`, so this is a cheap finishing
+/// pass rather than where the size reduction actually comes from; that's `[profile.release]`
+/// itself, in the root `Cargo.toml`). Runs after [`build_components`], before
+/// [`transpile_component`] reads `wasm_path`'s bytes, so the transpiled JS glue and the
+/// digest cache both see the STRIPPED component.
+fn strip_component(wasm_path: &Path, package: &str) {
+    let input = fs::read(wasm_path).unwrap_or_else(|err| panic!("reading {} for {package}: {err}", wasm_path.display()));
+    let stripped = strip_all_custom_sections(&input)
+        .unwrap_or_else(|err| panic!("stripping custom sections from {} ({package}): {err}", wasm_path.display()));
+    fs::write(wasm_path, stripped).unwrap_or_else(|err| panic!("writing stripped {}: {err}", wasm_path.display()));
+}
+
+/// Re-encodes `input` (a module OR a component — this recurses into nested core modules
+/// and components the same way) with every custom section (`producers`, `name`,
+/// `wit-component`, anything else `wasmparser` doesn't recognise as a core section) left
+/// out. Ported from `wasm-metadata`'s own `rewrite_wasm` (the engine behind `wasm-tools
+/// metadata add`/`wasm-tools strip`'s actual section-copying loop), simplified down to
+/// "drop every custom section unconditionally" — `rewrite_wasm` itself keeps `producers`/
+/// `name` by default (only `wasm-tools strip --all` drops those too, which is the
+/// behaviour wanted here), so it is not reused as-is.
+///
+/// `Payload::as_section()`'s own docs are what make the final loop correct: every payload
+/// that denotes a WHOLE section's raw bytes (including `CodeSectionStart`, whose range
+/// already spans every function body in it) returns `Some`; a payload that is part of one
+/// (`Version`, `CodeSectionEntry`, `End`) returns `None` and is a no-op in that copy, which
+/// is why those three are handled separately above rather than falling into it.
+fn strip_all_custom_sections(input: &[u8]) -> anyhow::Result<Vec<u8>> {
+    use wasm_encoder::{ComponentSectionId, Encode, RawSection, Section};
+    use wasmparser::Payload::*;
+    use wasmparser::{Encoding, Parser};
+
+    let mut stack: Vec<Vec<u8>> = Vec::new();
+    let mut output = Vec::new();
+    for payload in Parser::new(0).parse_all(input) {
+        match payload? {
+            Version { encoding, .. } => {
+                output.extend_from_slice(match encoding {
+                    Encoding::Component => &wasm_encoder::Component::HEADER,
+                    Encoding::Module => &wasm_encoder::Module::HEADER,
+                });
+            }
+            ModuleSection { .. } | ComponentSection { .. } => {
+                stack.push(std::mem::take(&mut output));
+                continue;
+            }
+            End { .. } => {
+                let Some(mut parent) = stack.pop() else { break };
+                parent.push(if output.starts_with(&wasm_encoder::Component::HEADER) {
+                    ComponentSectionId::Component as u8
+                } else {
+                    ComponentSectionId::CoreModule as u8
+                });
+                output.encode(&mut parent);
+                output = parent;
+            }
+            CustomSection(_) => continue,
+            other => {
+                if let Some((id, range)) = other.as_section() {
+                    RawSection { id, data: &input[range.start as usize..range.end as usize] }.append_to(&mut output);
+                }
+            }
+        }
+    }
+    Ok(output)
 }
 
 /// Builds every `(package, _)` in `components` as a `wasm32-wasip3` component, in ONE

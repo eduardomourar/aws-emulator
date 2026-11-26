@@ -79,3 +79,10 @@ required-features = ["native-serve"]
 # `build.rs` for why that matters (the bare `jco` package on npm is an unrelated
 # dependency-confusion placeholder; nothing here resolves it by name at all now).
 js-component-bindgen = "2"
+# Strips every custom section from a built component in-process (`build.rs`'s
+# `strip_all_custom_sections`) instead of shelling out to the `wasm-tools` CLI — pinned
+# to the exact versions `js-component-bindgen` itself already pulls in above, so this
+# adds no second copy of either at a different semver.
+wasmparser = "=0.259.0"
+wasm-encoder = "=0.259.0"
+anyhow = "1"

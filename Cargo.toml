@@ -507,6 +507,27 @@ split-debuginfo = "unpacked"
 [profile.dev.package."*"]
 debug = false
 
+# The only `--release` build in this workspace today is `core/embedded-console/build.rs`'s
+# nested `cargo build --target wasm32-wasip3` for the browser-embedded components (every
+# native build and test run stays on `profile.dev` above) — so these settings are sized
+# for THAT: `strip` drops the debug/symbol sections `profile.dev.package."*"` already keeps
+# off native builds, `lto = "fat"` and `codegen-units = 1` let the linker actually discard
+# the large fraction of each component's statically-linked AWS SDK service crate (hundreds
+# of generated operations, most unused by any one embedded component) that `lto = false` and
+# the default 16 codegen units leave in, and `panic = "abort"` drops Rust's unwind machinery,
+# which a wasm32 guest has no host frame to unwind into anyway. Measured on one component
+# (`aws-emulator-embedded-cognitoidentityprovider`): 24.4 MiB -> 14.9 MiB, 38.9% smaller.
+#
+# `panic = "abort"` matters if this profile is EVER used for a native build too: the server
+# answers a panic as a 500 `InternalFailure` (`vendor/engine/src/lib.rs`'s own module docs),
+# which relies on catching an unwinding panic — `abort` would take the whole process down on
+# the first one instead. Revisit this if a native `--release` build is ever added.
+[profile.release]
+strip = true
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
 [workspace.lints.rust]
 unsafe_code = "forbid"
 
