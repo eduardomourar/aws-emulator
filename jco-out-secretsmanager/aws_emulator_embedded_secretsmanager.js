@@ -10950,17 +10950,6 @@ const _trampoline5 = function() {
 }
 _trampoline5.fnName = 'wasi:random/random@0.3.0#getRandomU64';
 
-const handleTable1 = [T_FLAG, 0];
-handleTable1._createdReps = new Set();
-handleTable1._componentIdx = 0;
-
-
-const captureTable1= new Map();
-let captureCnt1= 0;
-
-STORE_TRAP.resourceTables.push({ handles: handleTable1, captures: captureTable1 });
-HANDLE_TABLES[1] = handleTable1;
-
 const handleTable2 = [T_FLAG, 0];
 handleTable2._createdReps = new Set();
 handleTable2._componentIdx = 0;
@@ -10972,11 +10961,22 @@ let captureCnt2= 0;
 STORE_TRAP.resourceTables.push({ handles: handleTable2, captures: captureTable2 });
 HANDLE_TABLES[2] = handleTable2;
 
-const _trampoline6 = function(arg0) {
+const handleTable0 = [T_FLAG, 0];
+handleTable0._createdReps = new Set();
+handleTable0._componentIdx = 0;
+
+
+const captureTable0= new Map();
+let captureCnt0= 0;
+
+STORE_TRAP.resourceTables.push({ handles: handleTable0, captures: captureTable0 });
+HANDLE_TABLES[0] = handleTable0;
+
+const _trampoline8 = function(arg0) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11072,9 +11072,9 @@ const _trampoline6 = function(arg0) {
   
   var handle3 = ret[symbolRscHandle];
   if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt2) >>> 0;
-    captureTable2.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable2, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
+    captureTable0.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable0, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-headers"][Instruction::Return]', {
@@ -11087,7 +11087,7 @@ const _trampoline6 = function(arg0) {
   task.exit();
   return handle3;
 }
-_trampoline6.fnName = 'wasi:http/types@0.3.0#getHeaders';
+_trampoline8.fnName = 'wasi:http/types@0.3.0#getHeaders';
 
 const handleTable3 = [T_FLAG, 0];
 handleTable3._createdReps = new Set();
@@ -11100,19 +11100,8 @@ let captureCnt3= 0;
 STORE_TRAP.resourceTables.push({ handles: handleTable3, captures: captureTable3 });
 HANDLE_TABLES[3] = handleTable3;
 
-const _trampoline7 = function(arg0) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Response.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]response.get-headers"] [Instruction::CallInterface] (sync, @ enter)');
+const _trampoline9 = function() {
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"] [Instruction::CallInterface] (sync, @ enter)');
   const hostProvided = true;
   
   let parentTask;
@@ -11124,7 +11113,7 @@ const _trampoline7 = function(arg0) {
     ({ task, threadID } = createNewCurrentImplicitThread({
       componentIdx: -1,
       isAsync: false,
-      entryFnName: 'getHeaders',
+      entryFnName: 'new RequestOptions',
       getCallbackFn: () => null,
       callbackFnName: null,
       errHandling: 'none',
@@ -11163,7 +11152,7 @@ const _trampoline7 = function(arg0) {
       componentIdx: task.componentIdx(),
       taskID: task.id(),
       threadID,
-      fn: () => _trackHostOperation(() => rsc0.getHeaders()),
+      fn: () => _trackHostOperation(() => new RequestOptions()),
     })
     ;
   } catch (err) {
@@ -11182,57 +11171,36 @@ const _trampoline7 = function(arg0) {
   }
   
   getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
   
-  if (!(ret instanceof Fields)) {
-    throw new TypeError('Resource error: Not a valid \"Headers\" resource.');
+  if (!(ret instanceof RequestOptions)) {
+    throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
   }
   
   
-  var handle3 = ret[symbolRscHandle];
-  if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt2) >>> 0;
-    captureTable2.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable2, rep);
+  var handle0 = ret[symbolRscHandle];
+  if (!handle0) {
+    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
+    captureTable3.set(rep, ret);
+    handle0 = rscTableCreateOwn(handleTable3, rep);
   }
   
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]response.get-headers"][Instruction::Return]', {
-    funcName: '[method]response.get-headers',
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"][Instruction::Return]', {
+    funcName: '[constructor]request-options',
     paramCount: 1,
     async: false,
     postReturn: false
   });
-  task.resolve([handle3]);
+  task.resolve([handle0]);
   task.exit();
-  return handle3;
+  return handle0;
 }
-_trampoline7.fnName = 'wasi:http/types@0.3.0#getHeaders';
+_trampoline9.fnName = 'wasi:http/types@0.3.0#new RequestOptions';
 
-const handleTable0 = [T_FLAG, 0];
-handleTable0._createdReps = new Set();
-handleTable0._componentIdx = 0;
-
-
-const captureTable0= new Map();
-let captureCnt0= 0;
-
-STORE_TRAP.resourceTables.push({ handles: handleTable0, captures: captureTable0 });
-HANDLE_TABLES[0] = handleTable0;
-
-const _trampoline8 = function(arg0) {
+const _trampoline10 = function(arg0) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11328,9 +11296,9 @@ const _trampoline8 = function(arg0) {
   
   var handle3 = ret[symbolRscHandle];
   if (!handle3) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
-    captureTable0.set(rep, ret);
-    handle3 = rscTableCreateOwn(handleTable0, rep);
+    const rep = (ret[symbolRscRep] ?? ++captureCnt3) >>> 0;
+    captureTable3.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable3, rep);
   }
   
   _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request-options.clone"][Instruction::Return]', {
@@ -11343,13 +11311,24 @@ const _trampoline8 = function(arg0) {
   task.exit();
   return handle3;
 }
-_trampoline8.fnName = 'wasi:http/types@0.3.0#clone';
+_trampoline10.fnName = 'wasi:http/types@0.3.0#clone';
 
-const _trampoline19 = function(arg0) {
+const handleTable1 = [T_FLAG, 0];
+handleTable1._createdReps = new Set();
+handleTable1._componentIdx = 0;
+
+
+const captureTable1= new Map();
+let captureCnt1= 0;
+
+STORE_TRAP.resourceTables.push({ handles: handleTable1, captures: captureTable1 });
+HANDLE_TABLES[1] = handleTable1;
+
+const _trampoline11 = function(arg0) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Response.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11447,109 +11426,13 @@ const _trampoline19 = function(arg0) {
   task.exit();
   return toUint16(ret);
 }
-_trampoline19.fnName = 'wasi:http/types@0.3.0#getStatusCode';
+_trampoline11.fnName = 'wasi:http/types@0.3.0#getStatusCode';
 
-const _trampoline25 = function() {
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'new RequestOptions',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => new RequestOptions()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  
-  if (!(ret instanceof RequestOptions)) {
-    throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
-  }
-  
-  
-  var handle0 = ret[symbolRscHandle];
-  if (!handle0) {
-    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
-    captureTable0.set(rep, ret);
-    handle0 = rscTableCreateOwn(handleTable0, rep);
-  }
-  
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[constructor]request-options"][Instruction::Return]', {
-    funcName: '[constructor]request-options',
-    paramCount: 1,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([handle0]);
-  task.exit();
-  return handle0;
-}
-_trampoline25.fnName = 'wasi:http/types@0.3.0#new RequestOptions';
-
-const _trampoline26 = function(arg0, arg1) {
+const _trampoline12 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Response.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -11659,7 +11542,124 @@ const _trampoline26 = function(arg0, arg1) {
   task.exit();
   return variant4_0;
 }
-_trampoline26.fnName = 'wasi:http/types@0.3.0#setStatusCode';
+_trampoline12.fnName = 'wasi:http/types@0.3.0#setStatusCode';
+
+const _trampoline13 = function(arg0) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Response.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]response.get-headers"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getHeaders',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getHeaders()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  
+  if (!(ret instanceof Fields)) {
+    throw new TypeError('Resource error: Not a valid \"Headers\" resource.');
+  }
+  
+  
+  var handle3 = ret[symbolRscHandle];
+  if (!handle3) {
+    const rep = (ret[symbolRscRep] ?? ++captureCnt0) >>> 0;
+    captureTable0.set(rep, ret);
+    handle3 = rscTableCreateOwn(handleTable0, rep);
+  }
+  
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]response.get-headers"][Instruction::Return]', {
+    funcName: '[method]response.get-headers',
+    paramCount: 1,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([handle3]);
+  task.exit();
+  return handle3;
+}
+_trampoline13.fnName = 'wasi:http/types@0.3.0#getHeaders';
 
 const _trampoline37 = function(arg0) {
   let variant0;
@@ -13103,758 +13103,11 @@ let memory0;
 let realloc0;
 let realloc0Async;
 
-const _trampoline50 = function(arg0, arg1) {
+const _trampoline46 = function(arg0, arg1, arg2, arg3, arg4) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Request.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-scheme"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'getScheme',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => rsc0.getScheme()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
-  var variant5 = ret;
-  if (variant5 === null || variant5=== undefined) {
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
-  } else {
-    const e = variant5;
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
-    var variant4 = e;
-    switch (variant4.tag) {
-      case 'HTTP': {
-        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 0, true);
-        break;
-      }
-      case 'HTTPS': {
-        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 1, true);
-        break;
-      }
-      case 'other': {
-        const e = variant4.val;
-        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 2, true);
-        
-        var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
-          const state = getOrCreateAsyncState(0);
-          const previousMayLeave = state.mayLeave;
-          const meta = _getGlobalCurrentThreadMeta(0);
-          const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-          const previousStorage = thread?.storage;
-          if (thread) { thread.storage = [0, 0]; }
-          state.mayLeave = false;
-          const restore = () => {
-            state.mayLeave = previousMayLeave;
-            if (thread) { thread.storage = previousStorage; }
-          };
-          let result;
-          try {
-            result = realloc0(...args);
-          } catch (err) {
-            restore();
-            throw err;
-          }
-          if (result && typeof result.then === 'function') {
-            return Promise.resolve(result).finally(restore);
-          }
-          restore();
-          return result;
-        }), memory0);
-        var ptr3= encodeRes.ptr;
-        var len3 = encodeRes.len;
-        
-        dataView(memory0).setUint32(((arg1 >>> 0)) + 12, len3, true);
-        dataView(memory0).setUint32(((arg1 >>> 0)) + 8, ptr3, true);
-        break;
-      }
-      default: {
-        throw new TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Scheme\``);
-      }
-    }
-  }
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-scheme"][Instruction::Return]', {
-    funcName: '[method]request.get-scheme',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline50.fnName = 'wasi:http/types@0.3.0#getScheme';
-
-const _trampoline51 = function(arg0, arg1) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Request.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-authority"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'getAuthority',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => rsc0.getAuthority()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
-  var variant4 = ret;
-  if (variant4 === null || variant4=== undefined) {
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
-  } else {
-    const e = variant4;
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
-    
-    var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
-      const state = getOrCreateAsyncState(0);
-      const previousMayLeave = state.mayLeave;
-      const meta = _getGlobalCurrentThreadMeta(0);
-      const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-      const previousStorage = thread?.storage;
-      if (thread) { thread.storage = [0, 0]; }
-      state.mayLeave = false;
-      const restore = () => {
-        state.mayLeave = previousMayLeave;
-        if (thread) { thread.storage = previousStorage; }
-      };
-      let result;
-      try {
-        result = realloc0(...args);
-      } catch (err) {
-        restore();
-        throw err;
-      }
-      if (result && typeof result.then === 'function') {
-        return Promise.resolve(result).finally(restore);
-      }
-      restore();
-      return result;
-    }), memory0);
-    var ptr3= encodeRes.ptr;
-    var len3 = encodeRes.len;
-    
-    dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
-    dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
-  }
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-authority"][Instruction::Return]', {
-    funcName: '[method]request.get-authority',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline51.fnName = 'wasi:http/types@0.3.0#getAuthority';
-
-const _trampoline52 = function(arg0, arg1) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Request.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-path-with-query"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'getPathWithQuery',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => rsc0.getPathWithQuery()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
-  var variant4 = ret;
-  if (variant4 === null || variant4=== undefined) {
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
-  } else {
-    const e = variant4;
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
-    
-    var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
-      const state = getOrCreateAsyncState(0);
-      const previousMayLeave = state.mayLeave;
-      const meta = _getGlobalCurrentThreadMeta(0);
-      const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-      const previousStorage = thread?.storage;
-      if (thread) { thread.storage = [0, 0]; }
-      state.mayLeave = false;
-      const restore = () => {
-        state.mayLeave = previousMayLeave;
-        if (thread) { thread.storage = previousStorage; }
-      };
-      let result;
-      try {
-        result = realloc0(...args);
-      } catch (err) {
-        restore();
-        throw err;
-      }
-      if (result && typeof result.then === 'function') {
-        return Promise.resolve(result).finally(restore);
-      }
-      restore();
-      return result;
-    }), memory0);
-    var ptr3= encodeRes.ptr;
-    var len3 = encodeRes.len;
-    
-    dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
-    dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
-  }
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-path-with-query"][Instruction::Return]', {
-    funcName: '[method]request.get-path-with-query',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline52.fnName = 'wasi:http/types@0.3.0#getPathWithQuery';
-
-const _trampoline53 = function(arg0, arg1) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Request.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-method"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'getMethod',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => rsc0.getMethod()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
-  var variant4 = ret;
-  switch (variant4.tag) {
-    case 'get': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
-      break;
-    }
-    case 'head': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
-      break;
-    }
-    case 'post': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 2, true);
-      break;
-    }
-    case 'put': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 3, true);
-      break;
-    }
-    case 'delete': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 4, true);
-      break;
-    }
-    case 'connect': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 5, true);
-      break;
-    }
-    case 'options': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 6, true);
-      break;
-    }
-    case 'trace': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 7, true);
-      break;
-    }
-    case 'patch': {
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 8, true);
-      break;
-    }
-    case 'other': {
-      const e = variant4.val;
-      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 9, true);
-      
-      var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
-        const state = getOrCreateAsyncState(0);
-        const previousMayLeave = state.mayLeave;
-        const meta = _getGlobalCurrentThreadMeta(0);
-        const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
-        const previousStorage = thread?.storage;
-        if (thread) { thread.storage = [0, 0]; }
-        state.mayLeave = false;
-        const restore = () => {
-          state.mayLeave = previousMayLeave;
-          if (thread) { thread.storage = previousStorage; }
-        };
-        let result;
-        try {
-          result = realloc0(...args);
-        } catch (err) {
-          restore();
-          throw err;
-        }
-        if (result && typeof result.then === 'function') {
-          return Promise.resolve(result).finally(restore);
-        }
-        restore();
-        return result;
-      }), memory0);
-      var ptr3= encodeRes.ptr;
-      var len3 = encodeRes.len;
-      
-      dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
-      dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
-      break;
-    }
-    default: {
-      throw new TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Method\``);
-    }
-  }
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-method"][Instruction::Return]', {
-    funcName: '[method]request.get-method',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline53.fnName = 'wasi:http/types@0.3.0#getMethod';
-
-const _trampoline54 = function(arg0, arg1) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
-  if (!rsc0) {
-    rsc0 = Object.create(Request.prototype);
-    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
-    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
-  }
-  
-  curResourceBorrows.push(rsc0);
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-options"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'getOptions',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => rsc0.getOptions()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  for (const entry of curResourceBorrows) {
-    const rsc = entry.rsc ?? entry;
-    if (entry.drop) {
-      if (rsc[symbolRscHandle]) {
-        entry.drop(rsc[symbolRscHandle]);
-      }
-    }
-    rsc[symbolRscHandle] = undefined;
-  }
-  curResourceBorrows = [];
-  var variant4 = ret;
-  if (variant4 === null || variant4=== undefined) {
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
-  } else {
-    const e = variant4;
-    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
-    
-    if (!(e instanceof RequestOptions)) {
-      throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
-    }
-    
-    
-    var handle3 = e[symbolRscHandle];
-    if (!handle3) {
-      const rep = (e[symbolRscRep] ?? ++captureCnt0) >>> 0;
-      captureTable0.set(rep, e);
-      handle3 = rscTableCreateOwn(handleTable0, rep);
-    }
-    
-    dataView(memory0).setInt32(((arg1 >>> 0)) + 4, handle3, true);
-  }
-  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-options"][Instruction::Return]', {
-    funcName: '[method]request.get-options',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline54.fnName = 'wasi:http/types@0.3.0#getOptions';
-
-const _trampoline57 = function(arg0, arg1, arg2, arg3, arg4) {
-  var handle1 = arg0;
-  
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -14011,13 +13264,154 @@ const _trampoline57 = function(arg0, arg1, arg2, arg3, arg4) {
   task.exit();
   return variant7_0;
 }
-_trampoline57.fnName = 'wasi:http/types@0.3.0#setScheme';
+_trampoline46.fnName = 'wasi:http/types@0.3.0#setScheme';
 
-const _trampoline58 = function(arg0, arg1, arg2, arg3) {
+const _trampoline47 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Request.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-authority"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getAuthority',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getAuthority()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  var variant4 = ret;
+  if (variant4 === null || variant4=== undefined) {
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
+  } else {
+    const e = variant4;
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
+    
+    var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
+      const state = getOrCreateAsyncState(0);
+      const previousMayLeave = state.mayLeave;
+      const meta = _getGlobalCurrentThreadMeta(0);
+      const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+      const previousStorage = thread?.storage;
+      if (thread) { thread.storage = [0, 0]; }
+      state.mayLeave = false;
+      const restore = () => {
+        state.mayLeave = previousMayLeave;
+        if (thread) { thread.storage = previousStorage; }
+      };
+      let result;
+      try {
+        result = realloc0(...args);
+      } catch (err) {
+        restore();
+        throw err;
+      }
+      if (result && typeof result.then === 'function') {
+        return Promise.resolve(result).finally(restore);
+      }
+      restore();
+      return result;
+    }), memory0);
+    var ptr3= encodeRes.ptr;
+    var len3 = encodeRes.len;
+    
+    dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
+    dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
+  }
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-authority"][Instruction::Return]', {
+    funcName: '[method]request.get-authority',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline47.fnName = 'wasi:http/types@0.3.0#getAuthority';
+
+const _trampoline48 = function(arg0, arg1, arg2, arg3) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -14149,13 +13543,137 @@ const _trampoline58 = function(arg0, arg1, arg2, arg3) {
   task.exit();
   return variant6_0;
 }
-_trampoline58.fnName = 'wasi:http/types@0.3.0#setAuthority';
+_trampoline48.fnName = 'wasi:http/types@0.3.0#setAuthority';
 
-const _trampoline59 = function(arg0, arg1, arg2) {
+const _trampoline49 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Request.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-options"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getOptions',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getOptions()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  var variant4 = ret;
+  if (variant4 === null || variant4=== undefined) {
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
+  } else {
+    const e = variant4;
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
+    
+    if (!(e instanceof RequestOptions)) {
+      throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
+    }
+    
+    
+    var handle3 = e[symbolRscHandle];
+    if (!handle3) {
+      const rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
+      captureTable3.set(rep, e);
+      handle3 = rscTableCreateOwn(handleTable3, rep);
+    }
+    
+    dataView(memory0).setInt32(((arg1 >>> 0)) + 4, handle3, true);
+  }
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-options"][Instruction::Return]', {
+    funcName: '[method]request.get-options',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline49.fnName = 'wasi:http/types@0.3.0#getOptions';
+
+const _trampoline50 = function(arg0, arg1, arg2) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -14163,9 +13681,9 @@ const _trampoline59 = function(arg0, arg1, arg2) {
   }
   
   else {
-    captureTable1.delete(rep2);
+    captureTable2.delete(rep2);
   }
-  rscTableRemove(handleTable1, handle1);
+  rscTableRemove(handleTable2, handle1);
   
   const futureResult3 = futureNewFromLift({
     componentIdx: 0,
@@ -14914,20 +14432,20 @@ const _trampoline59 = function(arg0, arg1, arg2) {
             ['none', null, 0, 0, 0, [] ],
             ['some', _liftFlatOwn({
               componentIdx: 0,
-              tableIdx: 2,
+              tableIdx: 0,
               classNameFn: () => Fields,
               createResourceFn: 
               (handle) => {
-                const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-                let resourceObj = captureTable2.get(rep);
+                const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+                let resourceObj = captureTable0.get(rep);
                 if (!resourceObj) {
                   resourceObj = Object.create(Fields.prototype);
                   Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                   Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
                 } else {
-                  captureTable2.delete(rep);
+                  captureTable0.delete(rep);
                 }
-                rscTableRemove(handleTable2, handle);
+                rscTableRemove(handleTable0, handle);
                 return resourceObj;
               }
               ,
@@ -15251,7 +14769,7 @@ const _trampoline59 = function(arg0, arg1, arg2) {
             [ 'none', null, 0, 0, 0 ],
             [ 'some', _lowerFlatOwn({
               componentIdx: 0,
-              tableIdx: 2,
+              tableIdx: 0,
               lowerFn: 
               function lowerImportedOwnedHost_Fields(obj) {
                 if (!(obj instanceof Fields)) {
@@ -15259,9 +14777,9 @@ const _trampoline59 = function(arg0, arg1, arg2) {
                 }
                 let handle = obj[symbolRscHandle];
                 if (!handle) {
-                  const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-                  captureTable2.set(rep, obj);
-                  handle = rscTableCreateOwn(handleTable2, rep);
+                  const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                  captureTable0.set(rep, obj);
+                  handle = rscTableCreateOwn(handleTable0, rep);
                 }
                 return handle;
               }
@@ -15623,13 +15141,13 @@ const _trampoline59 = function(arg0, arg1, arg2) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline59.fnName = 'wasi:http/types@0.3.0#Request.consumeBody';
+_trampoline50.fnName = 'wasi:http/types@0.3.0#Request.consumeBody';
 
-const _trampoline60 = function(arg0, arg1, arg2, arg3) {
+const _trampoline51 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15808,13 +15326,13 @@ const _trampoline60 = function(arg0, arg1, arg2, arg3) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline60.fnName = 'wasi:http/types@0.3.0#setConnectTimeout';
+_trampoline51.fnName = 'wasi:http/types@0.3.0#setConnectTimeout';
 
-const _trampoline61 = function(arg0, arg1, arg2, arg3) {
+const _trampoline52 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -15993,13 +15511,13 @@ const _trampoline61 = function(arg0, arg1, arg2, arg3) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline61.fnName = 'wasi:http/types@0.3.0#setFirstByteTimeout';
+_trampoline52.fnName = 'wasi:http/types@0.3.0#setFirstByteTimeout';
 
-const _trampoline62 = function(arg0, arg1, arg2, arg3) {
+const _trampoline53 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable0.get(rep2);
+  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable3.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(RequestOptions.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -16178,13 +15696,13 @@ const _trampoline62 = function(arg0, arg1, arg2, arg3) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline62.fnName = 'wasi:http/types@0.3.0#setBetweenBytesTimeout';
+_trampoline53.fnName = 'wasi:http/types@0.3.0#setBetweenBytesTimeout';
 
-const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
+const _trampoline54 = function(arg0, arg1, arg2, arg3, arg4) {
   var handle1 = arg0;
   
-  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable2.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -16192,9 +15710,9 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
   }
   
   else {
-    captureTable2.delete(rep2);
+    captureTable0.delete(rep2);
   }
-  rscTableRemove(handleTable2, handle1);
+  rscTableRemove(handleTable0, handle1);
   let variant4;
   switch (arg1) {
     case 0: {
@@ -16233,20 +15751,20 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 2,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable2.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable2.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable2, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -16570,7 +16088,7 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 2,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -16578,9 +16096,9 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-              captureTable2.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable2, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -16955,9 +16473,9 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
   
   var handle7 = tuple6_0[symbolRscHandle];
   if (!handle7) {
-    const rep = (tuple6_0[symbolRscRep] ?? ++captureCnt3) >>> 0;
-    captureTable3.set(rep, tuple6_0);
-    handle7 = rscTableCreateOwn(handleTable3, rep);
+    const rep = (tuple6_0[symbolRscRep] ?? ++captureCnt1) >>> 0;
+    captureTable1.set(rep, tuple6_0);
+    handle7 = rscTableCreateOwn(handleTable1, rep);
   }
   
   dataView(memory0).setInt32(((arg4 >>> 0)) + 0, handle7, true);
@@ -17648,13 +17166,13 @@ const _trampoline63 = function(arg0, arg1, arg2, arg3, arg4) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline63.fnName = 'wasi:http/types@0.3.0#Response.new';
+_trampoline54.fnName = 'wasi:http/types@0.3.0#Response.new';
 
-const _trampoline64 = function(arg0, arg1, arg2) {
+const _trampoline55 = function(arg0, arg1, arg2) {
   var handle1 = arg0;
   
-  var rep2 = handleTable3[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable3.get(rep2);
+  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable1.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Response.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -17662,9 +17180,9 @@ const _trampoline64 = function(arg0, arg1, arg2) {
   }
   
   else {
-    captureTable3.delete(rep2);
+    captureTable1.delete(rep2);
   }
-  rscTableRemove(handleTable3, handle1);
+  rscTableRemove(handleTable1, handle1);
   
   const futureResult3 = futureNewFromLift({
     componentIdx: 0,
@@ -18413,20 +17931,20 @@ const _trampoline64 = function(arg0, arg1, arg2) {
             ['none', null, 0, 0, 0, [] ],
             ['some', _liftFlatOwn({
               componentIdx: 0,
-              tableIdx: 2,
+              tableIdx: 0,
               classNameFn: () => Fields,
               createResourceFn: 
               (handle) => {
-                const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-                let resourceObj = captureTable2.get(rep);
+                const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+                let resourceObj = captureTable0.get(rep);
                 if (!resourceObj) {
                   resourceObj = Object.create(Fields.prototype);
                   Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                   Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
                 } else {
-                  captureTable2.delete(rep);
+                  captureTable0.delete(rep);
                 }
-                rscTableRemove(handleTable2, handle);
+                rscTableRemove(handleTable0, handle);
                 return resourceObj;
               }
               ,
@@ -18750,7 +18268,7 @@ const _trampoline64 = function(arg0, arg1, arg2) {
             [ 'none', null, 0, 0, 0 ],
             [ 'some', _lowerFlatOwn({
               componentIdx: 0,
-              tableIdx: 2,
+              tableIdx: 0,
               lowerFn: 
               function lowerImportedOwnedHost_Fields(obj) {
                 if (!(obj instanceof Fields)) {
@@ -18758,9 +18276,9 @@ const _trampoline64 = function(arg0, arg1, arg2) {
                 }
                 let handle = obj[symbolRscHandle];
                 if (!handle) {
-                  const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-                  captureTable2.set(rep, obj);
-                  handle = rscTableCreateOwn(handleTable2, rep);
+                  const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                  captureTable0.set(rep, obj);
+                  handle = rscTableCreateOwn(handleTable0, rep);
                 }
                 return handle;
               }
@@ -19122,9 +18640,9 @@ const _trampoline64 = function(arg0, arg1, arg2) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline64.fnName = 'wasi:http/types@0.3.0#Response.consumeBody';
+_trampoline55.fnName = 'wasi:http/types@0.3.0#Response.consumeBody';
 
-const _trampoline65 = function(arg0, arg1, arg2) {
+const _trampoline56 = function(arg0, arg1, arg2) {
   var len2 = arg1;
   var base2 = (arg0 >>> 0) >>> 0;
   if (base2 < 0 || len2 < 0 || len2 > 16777215 || base2 > memory0.buffer.byteLength || len2 > Math.floor((memory0.buffer.byteLength - base2) / 16)) throw new WebAssemblyRuntimeError('wasm trap: out of bounds memory access');
@@ -19222,9 +18740,9 @@ const _trampoline65 = function(arg0, arg1, arg2) {
       
       var handle4 = e[symbolRscHandle];
       if (!handle4) {
-        const rep = (e[symbolRscRep] ?? ++captureCnt2) >>> 0;
-        captureTable2.set(rep, e);
-        handle4 = rscTableCreateOwn(handleTable2, rep);
+        const rep = (e[symbolRscRep] ?? ++captureCnt0) >>> 0;
+        captureTable0.set(rep, e);
+        handle4 = rscTableCreateOwn(handleTable0, rep);
       }
       
       dataView(memory0).setInt32(((arg2 >>> 0)) + 4, handle4, true);
@@ -19316,13 +18834,13 @@ const _trampoline65 = function(arg0, arg1, arg2) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline65.fnName = 'wasi:http/types@0.3.0#Fields.fromList';
+_trampoline56.fnName = 'wasi:http/types@0.3.0#Fields.fromList';
 
-const _trampoline66 = function(arg0, arg1, arg2, arg3) {
+const _trampoline57 = function(arg0, arg1, arg2, arg3) {
   var handle1 = arg0;
   
-  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable2.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19522,13 +19040,13 @@ const _trampoline66 = function(arg0, arg1, arg2, arg3) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline66.fnName = 'wasi:http/types@0.3.0#get';
+_trampoline57.fnName = 'wasi:http/types@0.3.0#get';
 
-const _trampoline67 = function(arg0, arg1) {
+const _trampoline58 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable2.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19752,13 +19270,13 @@ const _trampoline67 = function(arg0, arg1) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline67.fnName = 'wasi:http/types@0.3.0#copyAll';
+_trampoline58.fnName = 'wasi:http/types@0.3.0#copyAll';
 
-const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+const _trampoline59 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   var handle1 = arg0;
   
-  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable2.get(rep2);
+  var rep2 = handleTable0[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable0.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Fields.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -19766,9 +19284,9 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   }
   
   else {
-    captureTable2.delete(rep2);
+    captureTable0.delete(rep2);
   }
-  rscTableRemove(handleTable2, handle1);
+  rscTableRemove(handleTable0, handle1);
   let variant4;
   switch (arg1) {
     case 0: {
@@ -19807,20 +19325,20 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         ['none', null, 0, 0, 0, [] ],
         ['some', _liftFlatOwn({
           componentIdx: 0,
-          tableIdx: 2,
+          tableIdx: 0,
           classNameFn: () => Fields,
           createResourceFn: 
           (handle) => {
-            const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable2.get(rep);
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
             if (!resourceObj) {
               resourceObj = Object.create(Fields.prototype);
               Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
               Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
             } else {
-              captureTable2.delete(rep);
+              captureTable0.delete(rep);
             }
-            rscTableRemove(handleTable2, handle);
+            rscTableRemove(handleTable0, handle);
             return resourceObj;
           }
           ,
@@ -20144,7 +19662,7 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
         [ 'none', null, 0, 0, 0 ],
         [ 'some', _lowerFlatOwn({
           componentIdx: 0,
-          tableIdx: 2,
+          tableIdx: 0,
           lowerFn: 
           function lowerImportedOwnedHost_Fields(obj) {
             if (!(obj instanceof Fields)) {
@@ -20152,9 +19670,9 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
             }
             let handle = obj[symbolRscHandle];
             if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-              captureTable2.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable2, rep);
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
             }
             return handle;
           }
@@ -20459,8 +19977,8 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
     case 1: {
       var handle7 = arg5;
       
-      var rep8 = handleTable0[(handle7 << 1) + 1] % T_OWN;
-      var rsc6 = captureTable0.get(rep8);
+      var rep8 = handleTable3[(handle7 << 1) + 1] % T_OWN;
+      var rsc6 = captureTable3.get(rep8);
       if (!rsc6) {
         rsc6 = Object.create(RequestOptions.prototype);
         Object.defineProperty(rsc6, symbolRscHandle, { writable: true, value: handle7});
@@ -20468,9 +19986,9 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
       }
       
       else {
-        captureTable0.delete(rep8);
+        captureTable3.delete(rep8);
       }
-      rscTableRemove(handleTable0, handle7);
+      rscTableRemove(handleTable3, handle7);
       variant9 = rsc6;
       break;
     }
@@ -20557,9 +20075,9 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   
   var handle11 = tuple10_0[symbolRscHandle];
   if (!handle11) {
-    const rep = (tuple10_0[symbolRscRep] ?? ++captureCnt1) >>> 0;
-    captureTable1.set(rep, tuple10_0);
-    handle11 = rscTableCreateOwn(handleTable1, rep);
+    const rep = (tuple10_0[symbolRscRep] ?? ++captureCnt2) >>> 0;
+    captureTable2.set(rep, tuple10_0);
+    handle11 = rscTableCreateOwn(handleTable2, rep);
   }
   
   dataView(memory0).setInt32(((arg6 >>> 0)) + 0, handle11, true);
@@ -21250,13 +20768,194 @@ const _trampoline68 = function(arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
   task.resolve([ret]);
   task.exit();
 }
-_trampoline68.fnName = 'wasi:http/types@0.3.0#Request.new';
+_trampoline59.fnName = 'wasi:http/types@0.3.0#Request.new';
 
-const _trampoline69 = function(arg0, arg1, arg2, arg3) {
+const _trampoline60 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Request.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-method"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getMethod',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getMethod()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  var variant4 = ret;
+  switch (variant4.tag) {
+    case 'get': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
+      break;
+    }
+    case 'head': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
+      break;
+    }
+    case 'post': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 2, true);
+      break;
+    }
+    case 'put': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 3, true);
+      break;
+    }
+    case 'delete': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 4, true);
+      break;
+    }
+    case 'connect': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 5, true);
+      break;
+    }
+    case 'options': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 6, true);
+      break;
+    }
+    case 'trace': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 7, true);
+      break;
+    }
+    case 'patch': {
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 8, true);
+      break;
+    }
+    case 'other': {
+      const e = variant4.val;
+      dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 9, true);
+      
+      var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
+        const state = getOrCreateAsyncState(0);
+        const previousMayLeave = state.mayLeave;
+        const meta = _getGlobalCurrentThreadMeta(0);
+        const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+        const previousStorage = thread?.storage;
+        if (thread) { thread.storage = [0, 0]; }
+        state.mayLeave = false;
+        const restore = () => {
+          state.mayLeave = previousMayLeave;
+          if (thread) { thread.storage = previousStorage; }
+        };
+        let result;
+        try {
+          result = realloc0(...args);
+        } catch (err) {
+          restore();
+          throw err;
+        }
+        if (result && typeof result.then === 'function') {
+          return Promise.resolve(result).finally(restore);
+        }
+        restore();
+        return result;
+      }), memory0);
+      var ptr3= encodeRes.ptr;
+      var len3 = encodeRes.len;
+      
+      dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
+      dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
+      break;
+    }
+    default: {
+      throw new TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Method\``);
+    }
+  }
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-method"][Instruction::Return]', {
+    funcName: '[method]request.get-method',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline60.fnName = 'wasi:http/types@0.3.0#getMethod';
+
+const _trampoline61 = function(arg0, arg1, arg2, arg3) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21441,13 +21140,154 @@ const _trampoline69 = function(arg0, arg1, arg2, arg3) {
   task.exit();
   return variant6_0;
 }
-_trampoline69.fnName = 'wasi:http/types@0.3.0#setMethod';
+_trampoline61.fnName = 'wasi:http/types@0.3.0#setMethod';
 
-const _trampoline70 = function(arg0, arg1, arg2, arg3) {
+const _trampoline62 = function(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Request.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-path-with-query"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getPathWithQuery',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getPathWithQuery()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  var variant4 = ret;
+  if (variant4 === null || variant4=== undefined) {
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
+  } else {
+    const e = variant4;
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
+    
+    var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
+      const state = getOrCreateAsyncState(0);
+      const previousMayLeave = state.mayLeave;
+      const meta = _getGlobalCurrentThreadMeta(0);
+      const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+      const previousStorage = thread?.storage;
+      if (thread) { thread.storage = [0, 0]; }
+      state.mayLeave = false;
+      const restore = () => {
+        state.mayLeave = previousMayLeave;
+        if (thread) { thread.storage = previousStorage; }
+      };
+      let result;
+      try {
+        result = realloc0(...args);
+      } catch (err) {
+        restore();
+        throw err;
+      }
+      if (result && typeof result.then === 'function') {
+        return Promise.resolve(result).finally(restore);
+      }
+      restore();
+      return result;
+    }), memory0);
+    var ptr3= encodeRes.ptr;
+    var len3 = encodeRes.len;
+    
+    dataView(memory0).setUint32(((arg1 >>> 0)) + 8, len3, true);
+    dataView(memory0).setUint32(((arg1 >>> 0)) + 4, ptr3, true);
+  }
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-path-with-query"][Instruction::Return]', {
+    funcName: '[method]request.get-path-with-query',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline62.fnName = 'wasi:http/types@0.3.0#getPathWithQuery';
+
+const _trampoline63 = function(arg0, arg1, arg2, arg3) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21579,7 +21419,167 @@ const _trampoline70 = function(arg0, arg1, arg2, arg3) {
   task.exit();
   return variant6_0;
 }
-_trampoline70.fnName = 'wasi:http/types@0.3.0#setPathWithQuery';
+_trampoline63.fnName = 'wasi:http/types@0.3.0#setPathWithQuery';
+
+const _trampoline64 = function(arg0, arg1) {
+  var handle1 = arg0;
+  
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
+  if (!rsc0) {
+    rsc0 = Object.create(Request.prototype);
+    Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
+    Object.defineProperty(rsc0, symbolRscRep, { writable: true, value: rep2});
+  }
+  
+  curResourceBorrows.push(rsc0);
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-scheme"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'getScheme',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => rsc0.getScheme()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  for (const entry of curResourceBorrows) {
+    const rsc = entry.rsc ?? entry;
+    if (entry.drop) {
+      if (rsc[symbolRscHandle]) {
+        entry.drop(rsc[symbolRscHandle]);
+      }
+    }
+    rsc[symbolRscHandle] = undefined;
+  }
+  curResourceBorrows = [];
+  var variant5 = ret;
+  if (variant5 === null || variant5=== undefined) {
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 0, true);
+  } else {
+    const e = variant5;
+    dataView(memory0).setInt8(((arg1 >>> 0)) + 0, 1, true);
+    var variant4 = e;
+    switch (variant4.tag) {
+      case 'HTTP': {
+        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 0, true);
+        break;
+      }
+      case 'HTTPS': {
+        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 1, true);
+        break;
+      }
+      case 'other': {
+        const e = variant4.val;
+        dataView(memory0).setInt8(((arg1 >>> 0)) + 4, 2, true);
+        
+        var encodeRes = _utf8AllocateAndEncode(e, ((...args) => {
+          const state = getOrCreateAsyncState(0);
+          const previousMayLeave = state.mayLeave;
+          const meta = _getGlobalCurrentThreadMeta(0);
+          const thread = meta && getCurrentThread(meta.componentIdx, meta.threadID, meta.taskID)?.thread;
+          const previousStorage = thread?.storage;
+          if (thread) { thread.storage = [0, 0]; }
+          state.mayLeave = false;
+          const restore = () => {
+            state.mayLeave = previousMayLeave;
+            if (thread) { thread.storage = previousStorage; }
+          };
+          let result;
+          try {
+            result = realloc0(...args);
+          } catch (err) {
+            restore();
+            throw err;
+          }
+          if (result && typeof result.then === 'function') {
+            return Promise.resolve(result).finally(restore);
+          }
+          restore();
+          return result;
+        }), memory0);
+        var ptr3= encodeRes.ptr;
+        var len3 = encodeRes.len;
+        
+        dataView(memory0).setUint32(((arg1 >>> 0)) + 12, len3, true);
+        dataView(memory0).setUint32(((arg1 >>> 0)) + 8, ptr3, true);
+        break;
+      }
+      default: {
+        throw new TypeError(`invalid variant tag value \`${JSON.stringify(variant4.tag)}\` (received \`${variant4}\`) specified for \`Scheme\``);
+      }
+    }
+  }
+  _debugLog('[iface="wasi:http/types@0.3.0", function="[method]request.get-scheme"][Instruction::Return]', {
+    funcName: '[method]request.get-scheme',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline64.fnName = 'wasi:http/types@0.3.0#getScheme';
 
 const _trampoline74 = function(arg0, arg1) {
   _debugLog('[iface="wasi:random/random@0.3.0", function="get-random-bytes"] [Instruction::CallInterface] (sync, @ enter)');
@@ -21718,11 +21718,268 @@ const _trampoline74 = function(arg0, arg1) {
 }
 _trampoline74.fnName = 'wasi:random/random@0.3.0#getRandomBytes';
 
-const _trampoline75 = _maybeSyncGenerator(function*(arg0, arg1) {
+const _trampoline76 = function(arg0) {
+  _debugLog('[iface="wasi:cli/stdin@0.3.0", function="read-via-stream"] [Instruction::CallInterface] (sync, @ enter)');
+  const hostProvided = true;
+  
+  let parentTask;
+  let task;
+  let threadID;
+  let subtask;
+  
+  const createTask = () => {
+    ({ task, threadID } = createNewCurrentImplicitThread({
+      componentIdx: -1,
+      isAsync: false,
+      entryFnName: 'readViaStream',
+      getCallbackFn: () => null,
+      callbackFnName: null,
+      errHandling: 'none',
+      callingWasmExport: false,
+    }));
+  };
+  
+  taskCreation: {
+    parentTask = getCurrentTask(
+    0,
+    _getGlobalCurrentThreadMeta(0)?.taskID,
+    )?.task;
+    
+    if (!parentTask) {
+      createTask();
+      break taskCreation;
+    }
+    
+    createTask();
+    
+    if (hostProvided) {
+      subtask = parentTask.getLatestSubtask();
+      if (!subtask) {
+        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
+      }
+      task.setParentSubtask(subtask);
+    }
+  }
+  
+  const started = task.enterSync();
+  let ret;
+  
+  
+  try {
+    ret = _withGlobalCurrentThreadMeta({
+      componentIdx: task.componentIdx(),
+      taskID: task.id(),
+      threadID,
+      fn: () => _trackHostOperation(() => readViaStream()),
+    })
+    ;
+  } catch (err) {
+    
+    _debugLog('[Instruction::CallInterface] error during sync call', {
+      taskID: task.id(),
+      subtaskID: task.getParentSubtask()?.id(),
+      err,
+    });
+    getOrCreateAsyncState(0).markTrapped(err);
+    task.setErrored(err);
+    task.reject(err);
+    task.exit();
+    throw err;
+    
+  }
+  
+  getOrCreateAsyncState(0).throwIfInterrupted();
+  var [tuple0_0, tuple0_1] = ret;
+  
+  if (!(symbolAsyncIterator in tuple0_0)
+  && !(symbolIterator in tuple0_0)
+  && !(tuple0_0 instanceof _PlatformReadableStream)) {
+    _debugLog('[Instruction::StreamLower] object with no supported stream protocol', { tuple0_0});
+    throw new Error('unrecognized stream object (no supported stream protocol)');
+  }
+  
+  const cstate1 = getOrCreateAsyncState(0);
+  if (!cstate1) { throw new Error(`missing component state for component [0]`); }
+  
+  const { writeEnd: hostWriteEnd1, readEnd: readEnd1 } = createStream(cstate1, {
+    tableIdx: 0,
+    elemMeta: {
+      liftFn: _liftFlatU8,
+      lowerFn: _lowerFlatU8,
+      payloadTypeName: 'U8',
+      isNone: false,
+      isNumeric: true,
+      isBorrowed: false,
+      isAsyncValue: false,
+      flatCount: 1,
+      align32: 1,
+      size32: 1,
+      // TODO(feat): facilitate non utf8 string encoding for lowered streams
+      stringEncoding: 'utf8',
+      getReallocFn: undefined,
+    },
+  });
+  
+  const readFn1 = _genReadFnFromLowerableStream(tuple0_0);
+  
+  const hostInjectFn1 = _genStreamHostInjectFn({
+    readFn: readFn1,
+    hostWriteEnd: hostWriteEnd1,
+    readEnd: readEnd1,
+  });
+  readEnd1.setHostInjectFn(hostInjectFn1);
+  readEnd1.setHostDropFn(readFn1.drop);
+  
+  const streamWaitableIdx1 = readEnd1.waitableIdx();
+  
+  dataView(memory0).setInt32(((arg0 >>> 0)) + 0, streamWaitableIdx1, true);
+  
+  if (!_isFutureLowerableObject(tuple0_1)) {
+    _debugLog('[Instruction::FutureLower] object is not a Promise/Thenable', { tuple0_1});
+    throw new Error('unrecognized future object (not Promise/Thenable)');
+  }
+  
+  const cstate2 = getOrCreateAsyncState(0);
+  if (!cstate2) {
+    throw new Error(`missing component state for component [0]`);
+  }
+  
+  // TODO(feat): facilitate non utf8 string encoding for lowered futures
+  const stringEncoding2= 'utf8';
+  
+  let outermostReadEnd2;
+  let futuresList2= [];
+  let future2 = tuple0_1;
+  let nextFuture2;
+  let openedCount2= -1;
+  // Lower exactly this future layer. If its payload is another
+  // future, elemMeta.lowerFn recursively creates that endpoint.
+  let futureNestingLevel2= 0;
+  
+  while (futureNestingLevel2>= 0) {
+    const {
+      writeEnd,
+      writeEndWaitableIdx,
+      readEnd,
+      readEndWaitableIdx
+    } = createFuture(cstate2, {
+      tableIdx: 0,
+      elemMeta: {
+        liftFn: 
+        _liftFlatResult({
+          caseMetas: [['ok', null, 0, 0, 0, []],['err', 
+          _liftFlatEnum({
+            caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+            variantSize32: 1,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 1,
+          })
+          , 1, 1, 1, ['i32']],],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+        })
+        ,
+        lowerFn: 
+        _lowerFlatResult({
+          caseMetas: [
+          [ 'ok', null, 2, 1, 1 ],
+          [ 'err', 
+          _lowerFlatEnum({
+            caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+            variantSize32: 1,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 1,
+          })
+          , 2, 1, 1 ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+        })
+        ,
+        payloadTypeName: 'Result(TypeResultIndex(0))',
+        isNone: false,
+        isNumeric: false,
+        isBorrowed: false,
+        isAsyncValue: false,
+        flatCount: 2,
+        align32: 1,
+        size32: 2,
+        stringEncoding: stringEncoding2,
+        getReallocFn: undefined,
+      }
+    });
+    
+    const hostInjectFn2 = _genFutureHostInjectFn({
+      promise: future2,
+      stringEncoding: stringEncoding2,
+      hostWriteEnd: writeEnd,
+    });
+    readEnd.setHostInjectFn(hostInjectFn2);
+    
+    const meta2= {
+      isInnermost: futureNestingLevel2 === 0,
+      level: futureNestingLevel2,
+    };
+    
+    const innerFuture = future2;
+    future2= { };
+    future2[NESTED_FUTURE_SYMBOL] = meta2;
+    future2.readEndWaitableIdx = readEndWaitableIdx;
+    future2.writeEndWaitableIdx = writeEndWaitableIdx;
+    future2.futureTableIdx = 0;
+    future2.componentIdx = 0;
+    future2.then = async (resolve, reject) => {
+      let p;
+      if (openedCount2 === 0) {
+        p = innerFuture;
+      } else {
+        openedCount2++;
+        p = futuresList2[futuresList2.length - (openedCount2+ 1)];
+      }
+      
+      try {
+        resolve(await p);
+      } catch (err) {
+        reject(err);
+      }
+    };
+    
+    outermostReadEnd2= readEnd;
+    
+    futuresList2.push(future2);
+    futureNestingLevel2--;
+  }
+  
+  const readEnd2 = outermostReadEnd2;
+  
+  // TODO: need to *lower* the internal future???
+  
+  const futureWaitableIdx2 = readEnd2.waitableIdx();
+  
+  dataView(memory0).setInt32(((arg0 >>> 0)) + 4, futureWaitableIdx2, true);
+  _debugLog('[iface="wasi:cli/stdin@0.3.0", function="read-via-stream"][Instruction::Return]', {
+    funcName: 'read-via-stream',
+    paramCount: 0,
+    async: false,
+    postReturn: false
+  });
+  task.resolve([ret]);
+  task.exit();
+}
+_trampoline76.fnName = 'wasi:cli/stdin@0.3.0#readViaStream';
+
+const _trampoline77 = _maybeSyncGenerator(function*(arg0, arg1) {
   var handle1 = arg0;
   
-  var rep2 = handleTable1[(handle1 << 1) + 1] % T_OWN;
-  var rsc0 = captureTable1.get(rep2);
+  var rep2 = handleTable2[(handle1 << 1) + 1] % T_OWN;
+  var rsc0 = captureTable2.get(rep2);
   if (!rsc0) {
     rsc0 = Object.create(Request.prototype);
     Object.defineProperty(rsc0, symbolRscHandle, { writable: true, value: handle1});
@@ -21730,9 +21987,9 @@ const _trampoline75 = _maybeSyncGenerator(function*(arg0, arg1) {
   }
   
   else {
-    captureTable1.delete(rep2);
+    captureTable2.delete(rep2);
   }
-  rscTableRemove(handleTable1, handle1);
+  rscTableRemove(handleTable2, handle1);
   _debugLog('[iface="wasi:http/client@0.3.0", function="send"] [Instruction::CallInterface] (async, @ enter)');
   const hostProvided = true;
   
@@ -21822,9 +22079,9 @@ const _trampoline75 = _maybeSyncGenerator(function*(arg0, arg1) {
       
       var handle4 = e[symbolRscHandle];
       if (!handle4) {
-        const rep = (e[symbolRscRep] ?? ++captureCnt3) >>> 0;
-        captureTable3.set(rep, e);
-        handle4 = rscTableCreateOwn(handleTable3, rep);
+        const rep = (e[symbolRscRep] ?? ++captureCnt1) >>> 0;
+        captureTable1.set(rep, e);
+        handle4 = rscTableCreateOwn(handleTable1, rep);
       }
       
       dataView(memory0).setInt32(((arg1 >>> 0)) + 8, handle4, true);
@@ -22472,264 +22729,7 @@ const _trampoline75 = _maybeSyncGenerator(function*(arg0, arg1) {
   }
   task.resolve([ret]); task.exit(); return ret;
 });
-_trampoline75.fnName = 'wasi:http/client@0.3.0#send';
-
-const _trampoline77 = function(arg0) {
-  _debugLog('[iface="wasi:cli/stdin@0.3.0", function="read-via-stream"] [Instruction::CallInterface] (sync, @ enter)');
-  const hostProvided = true;
-  
-  let parentTask;
-  let task;
-  let threadID;
-  let subtask;
-  
-  const createTask = () => {
-    ({ task, threadID } = createNewCurrentImplicitThread({
-      componentIdx: -1,
-      isAsync: false,
-      entryFnName: 'readViaStream',
-      getCallbackFn: () => null,
-      callbackFnName: null,
-      errHandling: 'none',
-      callingWasmExport: false,
-    }));
-  };
-  
-  taskCreation: {
-    parentTask = getCurrentTask(
-    0,
-    _getGlobalCurrentThreadMeta(0)?.taskID,
-    )?.task;
-    
-    if (!parentTask) {
-      createTask();
-      break taskCreation;
-    }
-    
-    createTask();
-    
-    if (hostProvided) {
-      subtask = parentTask.getLatestSubtask();
-      if (!subtask) {
-        throw new Error(`Missing subtask (in parent task [${parentTask.id()}]) for host import, has the import been lowered? (ensure asyncImports are set properly)`);
-      }
-      task.setParentSubtask(subtask);
-    }
-  }
-  
-  const started = task.enterSync();
-  let ret;
-  
-  
-  try {
-    ret = _withGlobalCurrentThreadMeta({
-      componentIdx: task.componentIdx(),
-      taskID: task.id(),
-      threadID,
-      fn: () => _trackHostOperation(() => readViaStream()),
-    })
-    ;
-  } catch (err) {
-    
-    _debugLog('[Instruction::CallInterface] error during sync call', {
-      taskID: task.id(),
-      subtaskID: task.getParentSubtask()?.id(),
-      err,
-    });
-    getOrCreateAsyncState(0).markTrapped(err);
-    task.setErrored(err);
-    task.reject(err);
-    task.exit();
-    throw err;
-    
-  }
-  
-  getOrCreateAsyncState(0).throwIfInterrupted();
-  var [tuple0_0, tuple0_1] = ret;
-  
-  if (!(symbolAsyncIterator in tuple0_0)
-  && !(symbolIterator in tuple0_0)
-  && !(tuple0_0 instanceof _PlatformReadableStream)) {
-    _debugLog('[Instruction::StreamLower] object with no supported stream protocol', { tuple0_0});
-    throw new Error('unrecognized stream object (no supported stream protocol)');
-  }
-  
-  const cstate1 = getOrCreateAsyncState(0);
-  if (!cstate1) { throw new Error(`missing component state for component [0]`); }
-  
-  const { writeEnd: hostWriteEnd1, readEnd: readEnd1 } = createStream(cstate1, {
-    tableIdx: 0,
-    elemMeta: {
-      liftFn: _liftFlatU8,
-      lowerFn: _lowerFlatU8,
-      payloadTypeName: 'U8',
-      isNone: false,
-      isNumeric: true,
-      isBorrowed: false,
-      isAsyncValue: false,
-      flatCount: 1,
-      align32: 1,
-      size32: 1,
-      // TODO(feat): facilitate non utf8 string encoding for lowered streams
-      stringEncoding: 'utf8',
-      getReallocFn: undefined,
-    },
-  });
-  
-  const readFn1 = _genReadFnFromLowerableStream(tuple0_0);
-  
-  const hostInjectFn1 = _genStreamHostInjectFn({
-    readFn: readFn1,
-    hostWriteEnd: hostWriteEnd1,
-    readEnd: readEnd1,
-  });
-  readEnd1.setHostInjectFn(hostInjectFn1);
-  readEnd1.setHostDropFn(readFn1.drop);
-  
-  const streamWaitableIdx1 = readEnd1.waitableIdx();
-  
-  dataView(memory0).setInt32(((arg0 >>> 0)) + 0, streamWaitableIdx1, true);
-  
-  if (!_isFutureLowerableObject(tuple0_1)) {
-    _debugLog('[Instruction::FutureLower] object is not a Promise/Thenable', { tuple0_1});
-    throw new Error('unrecognized future object (not Promise/Thenable)');
-  }
-  
-  const cstate2 = getOrCreateAsyncState(0);
-  if (!cstate2) {
-    throw new Error(`missing component state for component [0]`);
-  }
-  
-  // TODO(feat): facilitate non utf8 string encoding for lowered futures
-  const stringEncoding2= 'utf8';
-  
-  let outermostReadEnd2;
-  let futuresList2= [];
-  let future2 = tuple0_1;
-  let nextFuture2;
-  let openedCount2= -1;
-  // Lower exactly this future layer. If its payload is another
-  // future, elemMeta.lowerFn recursively creates that endpoint.
-  let futureNestingLevel2= 0;
-  
-  while (futureNestingLevel2>= 0) {
-    const {
-      writeEnd,
-      writeEndWaitableIdx,
-      readEnd,
-      readEndWaitableIdx
-    } = createFuture(cstate2, {
-      tableIdx: 0,
-      elemMeta: {
-        liftFn: 
-        _liftFlatResult({
-          caseMetas: [['ok', null, 0, 0, 0, []],['err', 
-          _liftFlatEnum({
-            caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-            variantSize32: 1,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 1,
-          })
-          , 1, 1, 1, ['i32']],],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-        })
-        ,
-        lowerFn: 
-        _lowerFlatResult({
-          caseMetas: [
-          [ 'ok', null, 2, 1, 1 ],
-          [ 'err', 
-          _lowerFlatEnum({
-            caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-            variantSize32: 1,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 1,
-          })
-          , 2, 1, 1 ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-        })
-        ,
-        payloadTypeName: 'Result(TypeResultIndex(0))',
-        isNone: false,
-        isNumeric: false,
-        isBorrowed: false,
-        isAsyncValue: false,
-        flatCount: 2,
-        align32: 1,
-        size32: 2,
-        stringEncoding: stringEncoding2,
-        getReallocFn: undefined,
-      }
-    });
-    
-    const hostInjectFn2 = _genFutureHostInjectFn({
-      promise: future2,
-      stringEncoding: stringEncoding2,
-      hostWriteEnd: writeEnd,
-    });
-    readEnd.setHostInjectFn(hostInjectFn2);
-    
-    const meta2= {
-      isInnermost: futureNestingLevel2 === 0,
-      level: futureNestingLevel2,
-    };
-    
-    const innerFuture = future2;
-    future2= { };
-    future2[NESTED_FUTURE_SYMBOL] = meta2;
-    future2.readEndWaitableIdx = readEndWaitableIdx;
-    future2.writeEndWaitableIdx = writeEndWaitableIdx;
-    future2.futureTableIdx = 0;
-    future2.componentIdx = 0;
-    future2.then = async (resolve, reject) => {
-      let p;
-      if (openedCount2 === 0) {
-        p = innerFuture;
-      } else {
-        openedCount2++;
-        p = futuresList2[futuresList2.length - (openedCount2+ 1)];
-      }
-      
-      try {
-        resolve(await p);
-      } catch (err) {
-        reject(err);
-      }
-    };
-    
-    outermostReadEnd2= readEnd;
-    
-    futuresList2.push(future2);
-    futureNestingLevel2--;
-  }
-  
-  const readEnd2 = outermostReadEnd2;
-  
-  // TODO: need to *lower* the internal future???
-  
-  const futureWaitableIdx2 = readEnd2.waitableIdx();
-  
-  dataView(memory0).setInt32(((arg0 >>> 0)) + 4, futureWaitableIdx2, true);
-  _debugLog('[iface="wasi:cli/stdin@0.3.0", function="read-via-stream"][Instruction::Return]', {
-    funcName: 'read-via-stream',
-    paramCount: 0,
-    async: false,
-    postReturn: false
-  });
-  task.resolve([ret]);
-  task.exit();
-}
-_trampoline77.fnName = 'wasi:cli/stdin@0.3.0#readViaStream';
+_trampoline77.fnName = 'wasi:http/client@0.3.0#send';
 
 const _trampoline78 = function(arg0) {
   _debugLog('[iface="wasi:random/insecure-seed@0.3.0", function="get-insecure-seed"] [Instruction::CallInterface] (sync, @ enter)');
@@ -26226,14 +26226,14 @@ const handleTable7 = [T_FLAG, 0];
 handleTable7._createdReps = new Set();
 handleTable7._componentIdx = 1;
 
-STORE_TRAP.resourceTables.push({ handles: handleTable7, captures: captureTable1 });
+STORE_TRAP.resourceTables.push({ handles: handleTable7, captures: captureTable2 });
 HANDLE_TABLES[7] = handleTable7;
 
 const handleTable8 = [T_FLAG, 0];
 handleTable8._createdReps = new Set();
 handleTable8._componentIdx = 1;
 
-STORE_TRAP.resourceTables.push({ handles: handleTable8, captures: captureTable3 });
+STORE_TRAP.resourceTables.push({ handles: handleTable8, captures: captureTable1 });
 HANDLE_TABLES[8] = handleTable8;
 let exports2Hook0;
 
@@ -26312,9 +26312,9 @@ async function handle(arg0) {
         
         var handle0 = arg0[symbolRscHandle];
         if (!handle0) {
-          const rep = (arg0[symbolRscRep] ?? ++captureCnt1) >>> 0;
-          captureTable1.set(rep, arg0);
-          handle0 = rscTableCreateOwn(handleTable1, rep);
+          const rep = (arg0[symbolRscRep] ?? ++captureCnt2) >>> 0;
+          captureTable2.set(rep, arg0);
+          handle0 = rscTableCreateOwn(handleTable2, rep);
         }
         
         _debugLog('[iface="wasi:http/handler@0.3.0", function="handle"][Instruction::CallWasm] enter', {
@@ -26453,12 +26453,19 @@ function trampoline0(handle) {
       captureTable0.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (RequestOptions[symbolCabiDispose]) {
-      RequestOptions[symbolCabiDispose](handleEntry.rep);
+    } else if (Fields[symbolCabiDispose]) {
+      Fields[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
-function trampoline1(handle) {
+
+const trampoline1Cancel = subtaskCancel.bind(null, 0, false);
+const trampoline1 = _conditionalSuspending1I32ToI32(
+_guardTrap(0, trampoline1Cancel, true),
+_suspendingImport(0, (subtaskRep) => trampoline1Cancel(subtaskRep, true)),
+);
+
+function trampoline2(handle) {
   const handleEntry = rscTableRemove(handleTable1, handle);
   if (handleEntry.own) {
     
@@ -26467,12 +26474,12 @@ function trampoline1(handle) {
       captureTable1.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (Request[symbolCabiDispose]) {
-      Request[symbolCabiDispose](handleEntry.rep);
+    } else if (Response[symbolCabiDispose]) {
+      Response[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
-function trampoline2(handle) {
+function trampoline3(handle) {
   const handleEntry = rscTableRemove(handleTable2, handle);
   if (handleEntry.own) {
     
@@ -26481,18 +26488,11 @@ function trampoline2(handle) {
       captureTable2.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (Fields[symbolCabiDispose]) {
-      Fields[symbolCabiDispose](handleEntry.rep);
+    } else if (Request[symbolCabiDispose]) {
+      Request[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
-
-const trampoline3Cancel = subtaskCancel.bind(null, 0, false);
-const trampoline3 = _conditionalSuspending1I32ToI32(
-_guardTrap(0, trampoline3Cancel, true),
-_suspendingImport(0, (subtaskRep) => trampoline3Cancel(subtaskRep, true)),
-);
-
 function trampoline4(handle) {
   const handleEntry = rscTableRemove(handleTable3, handle);
   if (handleEntry.own) {
@@ -26502,8 +26502,8 @@ function trampoline4(handle) {
       captureTable3.delete(handleEntry.rep);
       STORE_TRAP.disposed.add(rsc);
       if (rsc[symbolDispose]) rsc[symbolDispose]();
-    } else if (Response[symbolCabiDispose]) {
-      Response[symbolCabiDispose](handleEntry.rep);
+    } else if (RequestOptions[symbolCabiDispose]) {
+      RequestOptions[symbolCabiDispose](handleEntry.rep);
     }
   }
 }
@@ -26525,89 +26525,701 @@ let trampoline5 = _lowerImportBackwardsCompat.bind(null, {
   getReallocFn: undefined,
   importFn: _trampoline5,
 });
-let trampoline6 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 6,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline6.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [_lowerFlatOwn({
-    componentIdx: 0,
-    tableIdx: 2,
-    lowerFn: 
-    function lowerImportedOwnedHost_Fields(obj) {
-      if (!(obj instanceof Fields)) {
-        throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-      }
-      let handle = obj[symbolRscHandle];
-      if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-        captureTable2.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable2, rep);
-      }
-      return handle;
-    }
-    ,
-  })],
-  hasResultPointer: false,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: null,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => null,
-  getReallocFn: undefined,
-  importFn: _trampoline6,
+const trampoline6 = streamNew.bind(null, {
+  streamTableIdx: 0,
+  callerComponentIdx: 0,
+  elemMeta: {
+    liftFn: _liftFlatU8,
+    lowerFn: _lowerFlatU8,
+    payloadTypeName: 'U8',
+    isNone: false,
+    isNumeric: true,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: Uint8Array,
+    flatCount: 1,
+    align32: 1,
+    size32: 1,
+  },
 });
-let trampoline7 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 7,
+
+
+const trampoline7 = futureNew.bind(null, {
   componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline7.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
-  resultLowerFns: [_lowerFlatOwn({
-    componentIdx: 0,
-    tableIdx: 2,
-    lowerFn: 
-    function lowerImportedOwnedHost_Fields(obj) {
-      if (!(obj instanceof Fields)) {
-        throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-      }
-      let handle = obj[symbolRscHandle];
-      if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-        captureTable2.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable2, rep);
-      }
-      return handle;
-    }
+  futureTableIdx: 1,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', 
+      _liftFlatOption({
+        caseMetas: [
+        ['none', null, 0, 0, 0, [] ],
+        ['some', _liftFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          classNameFn: () => Fields,
+          createResourceFn: 
+          (handle) => {
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
+            if (!resourceObj) {
+              resourceObj = Object.create(Fields.prototype);
+              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+            } else {
+              captureTable0.delete(rep);
+            }
+            rscTableRemove(handleTable0, handle);
+            return resourceObj;
+          }
+          ,
+        })
+        , 4, 4, 1, ['i32'] ],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        variantPayloadFlatTypes: ['i32'],
+        payloadMaybeNull: false,
+      })
+      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
+        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['infoCode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 2, 1],['alertMessage', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+    })
     ,
-  })],
-  hasResultPointer: false,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: null,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => null,
-  getReallocFn: undefined,
-  importFn: _trampoline7,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', 
+      _lowerFlatOption({
+        caseMetas: [
+        [ 'none', null, 0, 0, 0 ],
+        [ 'some', _lowerFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          lowerFn: 
+          function lowerImportedOwnedHost_Fields(obj) {
+            if (!(obj instanceof Fields)) {
+              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+            }
+            let handle = obj[symbolRscHandle];
+            if (!handle) {
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
+            }
+            return handle;
+          }
+          ,
+        }), 4, 4, 1],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        payloadMaybeNull: false,
+      })
+      , 40, 8, 8 ],
+      [ 'err', _lowerFlatVariant({
+        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['infoCode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU16, 2, 2, 1],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU8, 1, 1, 1],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 2, 1 ],['alertMessage', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-header-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+      } ), 40, 8, 8 ],
+      ],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(2))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 8,
+    align32: 8,
+    size32: 40,
+  },
 });
+
 let trampoline8 = _lowerImportBackwardsCompat.bind(null, {
   trampolineIdx: 8,
   componentIdx: 0,
   isAsync: false,
   isManualAsync: _trampoline8.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
   resultLowerFns: [_lowerFlatOwn({
     componentIdx: 0,
     tableIdx: 0,
     lowerFn: 
-    function lowerImportedOwnedHost_RequestOptions(obj) {
-      if (!(obj instanceof RequestOptions)) {
-        throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
+    function lowerImportedOwnedHost_Fields(obj) {
+      if (!(obj instanceof Fields)) {
+        throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
@@ -26630,32 +27242,228 @@ let trampoline8 = _lowerImportBackwardsCompat.bind(null, {
   getReallocFn: undefined,
   importFn: _trampoline8,
 });
-const trampoline9 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelWrite.bind(null, {
+let trampoline9 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 9,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline9.manuallyAsync,
+  paramLiftFns: [],
+  resultLowerFns: [_lowerFlatOwn({
+    componentIdx: 0,
+    tableIdx: 3,
+    lowerFn: 
+    function lowerImportedOwnedHost_RequestOptions(obj) {
+      if (!(obj instanceof RequestOptions)) {
+        throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
+      }
+      let handle = obj[symbolRscHandle];
+      if (!handle) {
+        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+        captureTable3.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable3, rep);
+      }
+      return handle;
+    }
+    ,
+  })],
+  hasResultPointer: false,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: null,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => null,
+  getReallocFn: undefined,
+  importFn: _trampoline9,
+});
+let trampoline10 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 10,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline10.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
+  resultLowerFns: [_lowerFlatOwn({
+    componentIdx: 0,
+    tableIdx: 3,
+    lowerFn: 
+    function lowerImportedOwnedHost_RequestOptions(obj) {
+      if (!(obj instanceof RequestOptions)) {
+        throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
+      }
+      let handle = obj[symbolRscHandle];
+      if (!handle) {
+        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+        captureTable3.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable3, rep);
+      }
+      return handle;
+    }
+    ,
+  })],
+  hasResultPointer: false,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: null,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => null,
+  getReallocFn: undefined,
+  importFn: _trampoline10,
+});
+let trampoline11 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 11,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline11.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
+  resultLowerFns: [_lowerFlatU16],
+  hasResultPointer: false,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: null,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => null,
+  getReallocFn: undefined,
+  importFn: _trampoline11,
+});
+let trampoline12 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 12,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline12.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1),_liftFlatU16],
+  resultLowerFns: [
+  _lowerFlatResult({
+    caseMetas: [
+    [ 'ok', null, 1, 1, 1 ],
+    [ 'err', null, 1, 1, 1 ],
+    ],
+    variantSize32: 1,
+    variantAlign32: 1,
+    variantPayloadOffset32: 1,
+    variantFlatCount: 1,
+  })
+  ],
+  hasResultPointer: false,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: null,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => null,
+  getReallocFn: undefined,
+  importFn: _trampoline12,
+});
+let trampoline13 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 13,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline13.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
+  resultLowerFns: [_lowerFlatOwn({
+    componentIdx: 0,
+    tableIdx: 0,
+    lowerFn: 
+    function lowerImportedOwnedHost_Fields(obj) {
+      if (!(obj instanceof Fields)) {
+        throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+      }
+      let handle = obj[symbolRscHandle];
+      if (!handle) {
+        const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+        captureTable0.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable0, rep);
+      }
+      return handle;
+    }
+    ,
+  })],
+  hasResultPointer: false,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: null,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => null,
+  getReallocFn: undefined,
+  importFn: _trampoline13,
+});
+const trampoline14 = new WebAssembly.Suspending(_suspendingImport(0, streamCancelWrite.bind(null, {
+  streamTableIdx: 0,
+  isAsync: false,
+  componentIdx: 0,
+})));
+const trampoline15 = new WebAssembly.Suspending(_suspendingImport(0, streamCancelRead.bind(null, {
+  streamTableIdx: 0,
+  isAsync: false,
+  componentIdx: 0,
+})));
+const trampoline16 = streamDropWritable.bind(null, {
+  streamTableIdx: 0,
+  componentIdx: 0,
+});
+
+const trampoline17 = streamDropReadable.bind(null, {
+  streamTableIdx: 0,
+  componentIdx: 0,
+});
+
+const trampoline18 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelWrite.bind(null, {
+  futureTableIdx: 1,
+  componentIdx: 0,
+  isAsync: false,
+})));
+const trampoline19 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelRead.bind(null, {
+  futureTableIdx: 1,
+  componentIdx: 0,
+  isAsync: false,
+})));
+
+const trampoline20 = futureDropWritable.bind(null, {
+  futureTableIdx: 1,
+  componentIdx: 0,
+},
+);
+
+
+const trampoline21 = futureDropReadable.bind(null, {
+  futureTableIdx: 1,
+  componentIdx: 0,
+},
+);
+
+const trampoline22 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelWrite.bind(null, {
   futureTableIdx: 2,
   componentIdx: 0,
   isAsync: false,
 })));
-const trampoline10 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelRead.bind(null, {
+const trampoline23 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelRead.bind(null, {
   futureTableIdx: 2,
   componentIdx: 0,
   isAsync: false,
 })));
 
-const trampoline11 = futureDropWritable.bind(null, {
+const trampoline24 = futureDropWritable.bind(null, {
   futureTableIdx: 2,
   componentIdx: 0,
 },
 );
 
 
-const trampoline12 = futureDropReadable.bind(null, {
+const trampoline25 = futureDropReadable.bind(null, {
   futureTableIdx: 2,
   componentIdx: 0,
 },
 );
 
 
-const trampoline13 = futureNew.bind(null, {
+const trampoline26 = futureNew.bind(null, {
   componentIdx: 0,
   futureTableIdx: 2,
   elemMeta: {
@@ -27256,814 +28064,6 @@ const trampoline13 = futureNew.bind(null, {
   },
 });
 
-const trampoline14 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelWrite.bind(null, {
-  futureTableIdx: 1,
-  componentIdx: 0,
-  isAsync: false,
-})));
-const trampoline15 = new WebAssembly.Suspending(_suspendingImport(0, futureCancelRead.bind(null, {
-  futureTableIdx: 1,
-  componentIdx: 0,
-  isAsync: false,
-})));
-
-const trampoline16 = futureDropWritable.bind(null, {
-  futureTableIdx: 1,
-  componentIdx: 0,
-},
-);
-
-
-const trampoline17 = futureDropReadable.bind(null, {
-  futureTableIdx: 1,
-  componentIdx: 0,
-},
-);
-
-
-const trampoline18 = futureNew.bind(null, {
-  componentIdx: 0,
-  futureTableIdx: 1,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', 
-      _liftFlatOption({
-        caseMetas: [
-        ['none', null, 0, 0, 0, [] ],
-        ['some', _liftFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          classNameFn: () => Fields,
-          createResourceFn: 
-          (handle) => {
-            const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable2.get(rep);
-            if (!resourceObj) {
-              resourceObj = Object.create(Fields.prototype);
-              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-            } else {
-              captureTable2.delete(rep);
-            }
-            rscTableRemove(handleTable2, handle);
-            return resourceObj;
-          }
-          ,
-        })
-        , 4, 4, 1, ['i32'] ],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        variantPayloadFlatTypes: ['i32'],
-        payloadMaybeNull: false,
-      })
-      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
-        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['infoCode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 2, 1],['alertMessage', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', 
-      _lowerFlatOption({
-        caseMetas: [
-        [ 'none', null, 0, 0, 0 ],
-        [ 'some', _lowerFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          lowerFn: 
-          function lowerImportedOwnedHost_Fields(obj) {
-            if (!(obj instanceof Fields)) {
-              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-            }
-            let handle = obj[symbolRscHandle];
-            if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-              captureTable2.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable2, rep);
-            }
-            return handle;
-          }
-          ,
-        }), 4, 4, 1],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        payloadMaybeNull: false,
-      })
-      , 40, 8, 8 ],
-      [ 'err', _lowerFlatVariant({
-        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['infoCode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU16, 2, 2, 1],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU8, 1, 1, 1],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 2, 1 ],['alertMessage', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-header-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-      } ), 40, 8, 8 ],
-      ],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(2))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 8,
-    align32: 8,
-    size32: 40,
-  },
-});
-
-let trampoline19 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 19,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline19.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 3)],
-  resultLowerFns: [_lowerFlatU16],
-  hasResultPointer: false,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: null,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => null,
-  getReallocFn: undefined,
-  importFn: _trampoline19,
-});
-const trampoline20 = new WebAssembly.Suspending(_suspendingImport(0, streamCancelWrite.bind(null, {
-  streamTableIdx: 0,
-  isAsync: false,
-  componentIdx: 0,
-})));
-const trampoline21 = new WebAssembly.Suspending(_suspendingImport(0, streamCancelRead.bind(null, {
-  streamTableIdx: 0,
-  isAsync: false,
-  componentIdx: 0,
-})));
-const trampoline22 = streamDropWritable.bind(null, {
-  streamTableIdx: 0,
-  componentIdx: 0,
-});
-
-const trampoline23 = streamDropReadable.bind(null, {
-  streamTableIdx: 0,
-  componentIdx: 0,
-});
-
-const trampoline24 = streamNew.bind(null, {
-  streamTableIdx: 0,
-  callerComponentIdx: 0,
-  elemMeta: {
-    liftFn: _liftFlatU8,
-    lowerFn: _lowerFlatU8,
-    payloadTypeName: 'U8',
-    isNone: false,
-    isNumeric: true,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: Uint8Array,
-    flatCount: 1,
-    align32: 1,
-    size32: 1,
-  },
-});
-
-let trampoline25 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 25,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline25.manuallyAsync,
-  paramLiftFns: [],
-  resultLowerFns: [_lowerFlatOwn({
-    componentIdx: 0,
-    tableIdx: 0,
-    lowerFn: 
-    function lowerImportedOwnedHost_RequestOptions(obj) {
-      if (!(obj instanceof RequestOptions)) {
-        throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
-      }
-      let handle = obj[symbolRscHandle];
-      if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
-        captureTable0.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable0, rep);
-      }
-      return handle;
-    }
-    ,
-  })],
-  hasResultPointer: false,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: null,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => null,
-  getReallocFn: undefined,
-  importFn: _trampoline25,
-});
-let trampoline26 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 26,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline26.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 3),_liftFlatU16],
-  resultLowerFns: [
-  _lowerFlatResult({
-    caseMetas: [
-    [ 'ok', null, 1, 1, 1 ],
-    [ 'err', null, 1, 1, 1 ],
-    ],
-    variantSize32: 1,
-    variantAlign32: 1,
-    variantPayloadOffset32: 1,
-    variantFlatCount: 1,
-  })
-  ],
-  hasResultPointer: false,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: null,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => null,
-  getReallocFn: undefined,
-  importFn: _trampoline26,
-});
 const trampoline27 = waitableSetNew.bind(null, 0);
 
 const trampoline28 = waitableJoin.bind(null, 0);
@@ -28556,2773 +28556,12 @@ let trampoline45 = _lowerImportBackwardsCompat.bind(null, {
   getReallocFn: undefined,
   importFn: _trampoline45,
 });
-const trampoline46 = futureWrite.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: undefined,
-  getReallocFn: undefined,
-  stringEncoding: 'utf8',
-  futureTableIdx: 2,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
-        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['infoCode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 2, 1],['alertMessage', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', null, 40, 8, 8 ],
-      [ 'err', _lowerFlatVariant({
-        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['infoCode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU16, 2, 2, 1],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU8, 1, 1, 1],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 2, 1 ],['alertMessage', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-header-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-      } ), 40, 8, 8 ],
-      ],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(3))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 8,
-    align32: 8,
-    size32: 40,
-  },
-  isAsync: true,
-});
-const trampoline47 = futureRead.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: 0,
-  getReallocFn: () => realloc0,
-  stringEncoding: 'utf8',
-  futureTableIdx: 2,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
-        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['infoCode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 2, 1],['alertMessage', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', null, 40, 8, 8 ],
-      [ 'err', _lowerFlatVariant({
-        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['infoCode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU16, 2, 2, 1],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU8, 1, 1, 1],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 2, 1 ],['alertMessage', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-header-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-      } ), 40, 8, 8 ],
-      ],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(3))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 8,
-    align32: 8,
-    size32: 40,
-  },
-  isAsync: true,
-});
-const trampoline48 = futureWrite.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: undefined,
-  getReallocFn: undefined,
-  stringEncoding: 'utf8',
-  futureTableIdx: 1,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', 
-      _liftFlatOption({
-        caseMetas: [
-        ['none', null, 0, 0, 0, [] ],
-        ['some', _liftFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          classNameFn: () => Fields,
-          createResourceFn: 
-          (handle) => {
-            const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable2.get(rep);
-            if (!resourceObj) {
-              resourceObj = Object.create(Fields.prototype);
-              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-            } else {
-              captureTable2.delete(rep);
-            }
-            rscTableRemove(handleTable2, handle);
-            return resourceObj;
-          }
-          ,
-        })
-        , 4, 4, 1, ['i32'] ],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        variantPayloadFlatTypes: ['i32'],
-        payloadMaybeNull: false,
-      })
-      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
-        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['infoCode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 2, 1],['alertMessage', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', 
-      _lowerFlatOption({
-        caseMetas: [
-        [ 'none', null, 0, 0, 0 ],
-        [ 'some', _lowerFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          lowerFn: 
-          function lowerImportedOwnedHost_Fields(obj) {
-            if (!(obj instanceof Fields)) {
-              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-            }
-            let handle = obj[symbolRscHandle];
-            if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-              captureTable2.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable2, rep);
-            }
-            return handle;
-          }
-          ,
-        }), 4, 4, 1],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        payloadMaybeNull: false,
-      })
-      , 40, 8, 8 ],
-      [ 'err', _lowerFlatVariant({
-        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['infoCode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU16, 2, 2, 1],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU8, 1, 1, 1],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 2, 1 ],['alertMessage', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-header-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-      } ), 40, 8, 8 ],
-      ],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(2))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 8,
-    align32: 8,
-    size32: 40,
-  },
-  isAsync: true,
-});
-const trampoline49 = futureRead.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: 0,
-  getReallocFn: () => realloc0,
-  stringEncoding: 'utf8',
-  futureTableIdx: 1,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', 
-      _liftFlatOption({
-        caseMetas: [
-        ['none', null, 0, 0, 0, [] ],
-        ['some', _liftFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          classNameFn: () => Fields,
-          createResourceFn: 
-          (handle) => {
-            const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-            let resourceObj = captureTable2.get(rep);
-            if (!resourceObj) {
-              resourceObj = Object.create(Fields.prototype);
-              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-            } else {
-              captureTable2.delete(rep);
-            }
-            rscTableRemove(handleTable2, handle);
-            return resourceObj;
-          }
-          ,
-        })
-        , 4, 4, 1, ['i32'] ],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        variantPayloadFlatTypes: ['i32'],
-        payloadMaybeNull: false,
-      })
-      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
-        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['infoCode', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 2, 1],['alertMessage', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i64'],
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4],['fieldSize', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          variantPayloadFlatTypes: ['i32','i32'],
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3, ['i32','i32','i32']],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', 
-      _lowerFlatOption({
-        caseMetas: [
-        [ 'none', null, 0, 0, 0 ],
-        [ 'some', _lowerFlatOwn({
-          componentIdx: 0,
-          tableIdx: 2,
-          lowerFn: 
-          function lowerImportedOwnedHost_Fields(obj) {
-            if (!(obj instanceof Fields)) {
-              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-            }
-            let handle = obj[symbolRscHandle];
-            if (!handle) {
-              const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-              captureTable2.set(rep, obj);
-              handle = rscTableCreateOwn(handleTable2, rep);
-            }
-            return handle;
-          }
-          ,
-        }), 4, 4, 1],
-        ],
-        variantSize32: 8,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 2,
-        payloadMaybeNull: false,
-      })
-      , 40, 8, 8 ],
-      [ 'err', _lowerFlatVariant({
-        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['infoCode', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU16, 2, 2, 1],
-          ],
-          variantSize32: 4,
-          variantAlign32: 2,
-          variantPayloadOffset32: 2,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU8, 1, 1, 1],
-          ],
-          variantSize32: 2,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 2, 1 ],['alertMessage', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-header-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-          ],
-          variantSize32: 24,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 6,
-          payloadMaybeNull: false,
-        })
-        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU64, 8, 8, 1],
-          ],
-          variantSize32: 16,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4 ],['fieldSize', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatU32, 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatStringAny, 8, 4, 2],
-          ],
-          variantSize32: 12,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 3,
-          payloadMaybeNull: false,
-        })
-        , 12, 4, 3 ],],
-        variantSize32: 32,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 7,
-      } ), 40, 8, 8 ],
-      ],
-      variantSize32: 40,
-      variantAlign32: 8,
-      variantPayloadOffset32: 8,
-      variantFlatCount: 8,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(2))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 8,
-    align32: 8,
-    size32: 40,
-  },
-  isAsync: true,
-});
-let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 50,
+let trampoline46 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 46,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline50.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [
-  _lowerFlatOption({
-    caseMetas: [
-    [ 'none', null, 0, 0, 0 ],
-    [ 'some', _lowerFlatVariant({
-      caseMetas: [[ "HTTP", null, 0, 0, 0 ],[ "HTTPS", null, 0, 0, 0 ],[ "other", _lowerFlatStringAny, 8, 4, 2 ],],
-      variantSize32: 12,
-      variantAlign32: 4,
-      variantPayloadOffset32: 4,
-      variantFlatCount: 3,
-    } ), 12, 4, 3],
-    ],
-    variantSize32: 16,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 4,
-    payloadMaybeNull: false,
-  })
-  ],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline50,
-});
-let trampoline51 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 51,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline51.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [
-  _lowerFlatOption({
-    caseMetas: [
-    [ 'none', null, 0, 0, 0 ],
-    [ 'some', _lowerFlatStringAny, 8, 4, 2],
-    ],
-    variantSize32: 12,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 3,
-    payloadMaybeNull: false,
-  })
-  ],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline51,
-});
-let trampoline52 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 52,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline52.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [
-  _lowerFlatOption({
-    caseMetas: [
-    [ 'none', null, 0, 0, 0 ],
-    [ 'some', _lowerFlatStringAny, 8, 4, 2],
-    ],
-    variantSize32: 12,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 3,
-    payloadMaybeNull: false,
-  })
-  ],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline52,
-});
-let trampoline53 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 53,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline53.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [_lowerFlatVariant({
-    caseMetas: [[ "get", null, 0, 0, 0 ],[ "head", null, 0, 0, 0 ],[ "post", null, 0, 0, 0 ],[ "put", null, 0, 0, 0 ],[ "delete", null, 0, 0, 0 ],[ "connect", null, 0, 0, 0 ],[ "options", null, 0, 0, 0 ],[ "trace", null, 0, 0, 0 ],[ "patch", null, 0, 0, 0 ],[ "other", _lowerFlatStringAny, 8, 4, 2 ],],
-    variantSize32: 12,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 3,
-  } )],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline53,
-});
-let trampoline54 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 54,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline54.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1)],
-  resultLowerFns: [
-  _lowerFlatOption({
-    caseMetas: [
-    [ 'none', null, 0, 0, 0 ],
-    [ 'some', _lowerFlatOwn({
-      componentIdx: 0,
-      tableIdx: 0,
-      lowerFn: 
-      function lowerImportedOwnedHost_RequestOptions(obj) {
-        if (!(obj instanceof RequestOptions)) {
-          throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
-        }
-        let handle = obj[symbolRscHandle];
-        if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
-          captureTable0.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable0, rep);
-        }
-        return handle;
-      }
-      ,
-    }), 4, 4, 1],
-    ],
-    variantSize32: 8,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 2,
-    payloadMaybeNull: false,
-  })
-  ],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: undefined,
-  importFn: _trampoline54,
-});
-const trampoline55 = streamWrite.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: undefined,
-  getReallocFn: undefined,
-  stringEncoding: 'utf8',
-  isAsync: true,
-  streamTableIdx: 0,
-  elemMeta: {
-    liftFn: _liftFlatU8,
-    lowerFn: _lowerFlatU8,
-    payloadTypeName: 'U8',
-    isNone: false,
-    isNumeric: true,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: Uint8Array,
-    flatCount: 1,
-    align32: 1,
-    size32: 1,
-  },
-});
-const trampoline56 = streamRead.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: undefined,
-  getReallocFn: undefined,
-  stringEncoding: 'utf8',
-  isAsync: true,
-  streamTableIdx: 0,
-  elemMeta: {
-    liftFn: _liftFlatU8,
-    lowerFn: _lowerFlatU8,
-    payloadTypeName: 'U8',
-    isNone: false,
-    isNumeric: true,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: Uint8Array,
-    flatCount: 1,
-    align32: 1,
-    size32: 1,
-  },
-});
-let trampoline57 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 57,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline57.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  isManualAsync: _trampoline46.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -31364,14 +28603,44 @@ let trampoline57 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline57,
+  importFn: _trampoline46,
 });
-let trampoline58 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 58,
+let trampoline47 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 47,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline58.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  isManualAsync: _trampoline47.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
+  resultLowerFns: [
+  _lowerFlatOption({
+    caseMetas: [
+    [ 'none', null, 0, 0, 0 ],
+    [ 'some', _lowerFlatStringAny, 8, 4, 2],
+    ],
+    variantSize32: 12,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 3,
+    payloadMaybeNull: false,
+  })
+  ],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline47,
+});
+let trampoline48 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 48,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline48.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -31406,29 +28675,76 @@ let trampoline58 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline58,
+  importFn: _trampoline48,
 });
-let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 59,
+let trampoline49 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 49,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline59.manuallyAsync,
+  isManualAsync: _trampoline49.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
+  resultLowerFns: [
+  _lowerFlatOption({
+    caseMetas: [
+    [ 'none', null, 0, 0, 0 ],
+    [ 'some', _lowerFlatOwn({
+      componentIdx: 0,
+      tableIdx: 3,
+      lowerFn: 
+      function lowerImportedOwnedHost_RequestOptions(obj) {
+        if (!(obj instanceof RequestOptions)) {
+          throw new TypeError('Resource error: Not a valid \"RequestOptions\" resource.');
+        }
+        let handle = obj[symbolRscHandle];
+        if (!handle) {
+          const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
+          captureTable3.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable3, rep);
+        }
+        return handle;
+      }
+      ,
+    }), 4, 4, 1],
+    ],
+    variantSize32: 8,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 2,
+    payloadMaybeNull: false,
+  })
+  ],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: undefined,
+  importFn: _trampoline49,
+});
+let trampoline50 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 50,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline50.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 1,
+    tableIdx: 2,
     classNameFn: () => Request,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable1[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable1.get(rep);
+      const rep = handleTable2[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable2.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Request.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable1.delete(rep);
+        captureTable2.delete(rep);
       }
-      rscTableRemove(handleTable1, handle);
+      rscTableRemove(handleTable2, handle);
       return resourceObj;
     }
     ,
@@ -31464,20 +28780,20 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
           ['none', null, 0, 0, 0, [] ],
           ['some', _liftFlatOwn({
             componentIdx: 0,
-            tableIdx: 2,
+            tableIdx: 0,
             classNameFn: () => Fields,
             createResourceFn: 
             (handle) => {
-              const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-              let resourceObj = captureTable2.get(rep);
+              const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+              let resourceObj = captureTable0.get(rep);
               if (!resourceObj) {
                 resourceObj = Object.create(Fields.prototype);
                 Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
                 Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
               } else {
-                captureTable2.delete(rep);
+                captureTable0.delete(rep);
               }
-              rscTableRemove(handleTable2, handle);
+              rscTableRemove(handleTable0, handle);
               return resourceObj;
             }
             ,
@@ -31801,7 +29117,7 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
           [ 'none', null, 0, 0, 0 ],
           [ 'some', _lowerFlatOwn({
             componentIdx: 0,
-            tableIdx: 2,
+            tableIdx: 0,
             lowerFn: 
             function lowerImportedOwnedHost_Fields(obj) {
               if (!(obj instanceof Fields)) {
@@ -31809,9 +29125,9 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
               }
               let handle = obj[symbolRscHandle];
               if (!handle) {
-                const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-                captureTable2.set(rep, obj);
-                handle = rscTableCreateOwn(handleTable2, rep);
+                const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                captureTable0.set(rep, obj);
+                handle = rscTableCreateOwn(handleTable0, rep);
               }
               return handle;
             }
@@ -32123,14 +29439,14 @@ let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline59,
+  importFn: _trampoline50,
 });
-let trampoline60 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 60,
+let trampoline51 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 51,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline60.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  isManualAsync: _trampoline51.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -32183,14 +29499,14 @@ let trampoline60 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: () => realloc0,
-  importFn: _trampoline60,
+  importFn: _trampoline51,
 });
-let trampoline61 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 61,
+let trampoline52 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 52,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline61.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  isManualAsync: _trampoline52.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -32243,14 +29559,14 @@ let trampoline61 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: () => realloc0,
-  importFn: _trampoline61,
+  importFn: _trampoline52,
 });
-let trampoline62 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 62,
+let trampoline53 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 53,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline62.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 0),
+  isManualAsync: _trampoline53.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 3),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -32303,29 +29619,29 @@ let trampoline62 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: () => realloc0,
-  importFn: _trampoline62,
+  importFn: _trampoline53,
 });
-let trampoline63 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 63,
+let trampoline54 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 54,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline63.manuallyAsync,
+  isManualAsync: _trampoline54.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 2,
+    tableIdx: 0,
     classNameFn: () => Fields,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable2.get(rep);
+      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable0.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Fields.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable2.delete(rep);
+        captureTable0.delete(rep);
       }
-      rscTableRemove(handleTable2, handle);
+      rscTableRemove(handleTable0, handle);
       return resourceObj;
     }
     ,
@@ -32346,1559 +29662,11 @@ let trampoline63 = _lowerImportBackwardsCompat.bind(null, {
   ,_liftFlatFuture({ futureTableIdx: 1, componentIdx: 0 })],
   resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatOwn({
     componentIdx: 0,
-    tableIdx: 3,
+    tableIdx: 1,
     lowerFn: 
     function lowerImportedOwnedHost_Response(obj) {
       if (!(obj instanceof Response)) {
         throw new TypeError('Resource error: Not a valid \"Response\" resource.');
-      }
-      let handle = obj[symbolRscHandle];
-      if (!handle) {
-        const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-        captureTable3.set(rep, obj);
-        handle = rscTableCreateOwn(handleTable3, rep);
-      }
-      return handle;
-    }
-    ,
-  }), 4, 4],[_lowerFlatFuture({
-    futureTableIdx: 2,
-    futureNestingLevel: 0,
-    componentIdx: 0,
-    elemMeta: {
-      liftFn: 
-      _liftFlatResult({
-        caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
-          caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['infoCode', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-            ],
-            variantSize32: 4,
-            variantAlign32: 2,
-            variantPayloadOffset32: 2,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-            ],
-            variantSize32: 2,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 2, 1],['alertMessage', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i64'],
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-            _liftFlatOption({
-              caseMetas: [
-              ['none', null, 0, 0, 0, [] ],
-              ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-              ],
-              variantSize32: 12,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 3,
-              variantPayloadFlatTypes: ['i32','i32'],
-              payloadMaybeNull: false,
-            })
-            , 12, 4],['fieldSize', 
-            _liftFlatOption({
-              caseMetas: [
-              ['none', null, 0, 0, 0, [] ],
-              ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-              ],
-              variantSize32: 8,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 2,
-              variantPayloadFlatTypes: ['i32'],
-              payloadMaybeNull: false,
-            })
-            , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-            ],
-            variantSize32: 24,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 6,
-            variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i64'],
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],],
-          variantSize32: 32,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 7,
-          variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-        } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-        variantSize32: 40,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 8,
-        variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-      })
-      ,
-      lowerFn: 
-      _lowerFlatResult({
-        caseMetas: [
-        [ 'ok', null, 40, 8, 8 ],
-        [ 'err', _lowerFlatVariant({
-          caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['infoCode', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU16, 2, 2, 1],
-            ],
-            variantSize32: 4,
-            variantAlign32: 2,
-            variantPayloadOffset32: 2,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU8, 1, 1, 1],
-            ],
-            variantSize32: 2,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 2, 1 ],['alertMessage', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU64, 8, 8, 1],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-request-header-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-            _lowerFlatOption({
-              caseMetas: [
-              [ 'none', null, 0, 0, 0 ],
-              [ 'some', _lowerFlatStringAny, 8, 4, 2],
-              ],
-              variantSize32: 12,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 3,
-              payloadMaybeNull: false,
-            })
-            , 12, 4 ],['fieldSize', 
-            _lowerFlatOption({
-              caseMetas: [
-              [ 'none', null, 0, 0, 0 ],
-              [ 'some', _lowerFlatU32, 4, 4, 1],
-              ],
-              variantSize32: 8,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 2,
-              payloadMaybeNull: false,
-            })
-            , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-            ],
-            variantSize32: 24,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 6,
-            payloadMaybeNull: false,
-          })
-          , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU64, 8, 8, 1],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],],
-          variantSize32: 32,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 7,
-        } ), 40, 8, 8 ],
-        ],
-        variantSize32: 40,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 8,
-      })
-      ,
-      payloadTypeName: 'Result(TypeResultIndex(3))',
-      isNone: false,
-      isNumeric: false,
-      isBorrowed: false,
-      isAsyncValue: false,
-      flatCount: 8,
-      align32: 8,
-      size32: 40,
-    },
-  })
-  , 4, 4],], size32: 8, align32: 4 })],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: undefined,
-  importFn: _trampoline63,
-});
-let trampoline64 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 64,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline64.manuallyAsync,
-  paramLiftFns: [_liftFlatOwn({
-    componentIdx: 0,
-    tableIdx: 3,
-    classNameFn: () => Response,
-    createResourceFn: 
-    (handle) => {
-      const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable3.get(rep);
-      if (!resourceObj) {
-        resourceObj = Object.create(Response.prototype);
-        Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-        Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-      } else {
-        captureTable3.delete(rep);
-      }
-      rscTableRemove(handleTable3, handle);
-      return resourceObj;
-    }
-    ,
-  })
-  ,_liftFlatFuture({ futureTableIdx: 2, componentIdx: 0 })],
-  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStream({
-    streamTableIdx: 0,
-    componentIdx: 0,
-    elemMeta: {
-      liftFn: _liftFlatU8,
-      lowerFn: _lowerFlatU8,
-      payloadTypeName: 'U8',
-      isNone: false,
-      isNumeric: true,
-      isBorrowed: false,
-      isAsyncValue: false,
-      typedArray: Uint8Array,
-      flatCount: 1,
-      align32: 1,
-      size32: 1,
-    },
-  })
-  , 4, 4],[_lowerFlatFuture({
-    futureTableIdx: 1,
-    futureNestingLevel: 0,
-    componentIdx: 0,
-    elemMeta: {
-      liftFn: 
-      _liftFlatResult({
-        caseMetas: [['ok', 
-        _liftFlatOption({
-          caseMetas: [
-          ['none', null, 0, 0, 0, [] ],
-          ['some', _liftFlatOwn({
-            componentIdx: 0,
-            tableIdx: 2,
-            classNameFn: () => Fields,
-            createResourceFn: 
-            (handle) => {
-              const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-              let resourceObj = captureTable2.get(rep);
-              if (!resourceObj) {
-                resourceObj = Object.create(Fields.prototype);
-                Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-                Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-              } else {
-                captureTable2.delete(rep);
-              }
-              rscTableRemove(handleTable2, handle);
-              return resourceObj;
-            }
-            ,
-          })
-          , 4, 4, 1, ['i32'] ],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          variantPayloadFlatTypes: ['i32'],
-          payloadMaybeNull: false,
-        })
-        , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
-          caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['infoCode', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
-            ],
-            variantSize32: 4,
-            variantAlign32: 2,
-            variantPayloadOffset32: 2,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
-            ],
-            variantSize32: 2,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 2, 1],['alertMessage', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i64'],
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
-            _liftFlatOption({
-              caseMetas: [
-              ['none', null, 0, 0, 0, [] ],
-              ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-              ],
-              variantSize32: 12,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 3,
-              variantPayloadFlatTypes: ['i32','i32'],
-              payloadMaybeNull: false,
-            })
-            , 12, 4],['fieldSize', 
-            _liftFlatOption({
-              caseMetas: [
-              ['none', null, 0, 0, 0, [] ],
-              ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-              ],
-              variantSize32: 8,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 2,
-              variantPayloadFlatTypes: ['i32'],
-              payloadMaybeNull: false,
-            })
-            , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
-            ],
-            variantSize32: 24,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 6,
-            variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i64'],
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4],['fieldSize', 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            variantPayloadFlatTypes: ['i32'],
-            payloadMaybeNull: false,
-          })
-          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
-          _liftFlatOption({
-            caseMetas: [
-            ['none', null, 0, 0, 0, [] ],
-            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            variantPayloadFlatTypes: ['i32','i32'],
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3, ['i32','i32','i32']],],
-          variantSize32: 32,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 7,
-          variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
-        } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
-        variantSize32: 40,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 8,
-        variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
-      })
-      ,
-      lowerFn: 
-      _lowerFlatResult({
-        caseMetas: [
-        [ 'ok', 
-        _lowerFlatOption({
-          caseMetas: [
-          [ 'none', null, 0, 0, 0 ],
-          [ 'some', _lowerFlatOwn({
-            componentIdx: 0,
-            tableIdx: 2,
-            lowerFn: 
-            function lowerImportedOwnedHost_Fields(obj) {
-              if (!(obj instanceof Fields)) {
-                throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-              }
-              let handle = obj[symbolRscHandle];
-              if (!handle) {
-                const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-                captureTable2.set(rep, obj);
-                handle = rscTableCreateOwn(handleTable2, rep);
-              }
-              return handle;
-            }
-            ,
-          }), 4, 4, 1],
-          ],
-          variantSize32: 8,
-          variantAlign32: 4,
-          variantPayloadOffset32: 4,
-          variantFlatCount: 2,
-          payloadMaybeNull: false,
-        })
-        , 40, 8, 8 ],
-        [ 'err', _lowerFlatVariant({
-          caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['infoCode', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU16, 2, 2, 1],
-            ],
-            variantSize32: 4,
-            variantAlign32: 2,
-            variantPayloadOffset32: 2,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU8, 1, 1, 1],
-            ],
-            variantSize32: 2,
-            variantAlign32: 1,
-            variantPayloadOffset32: 1,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 2, 1 ],['alertMessage', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU64, 8, 8, 1],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-request-header-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
-            _lowerFlatOption({
-              caseMetas: [
-              [ 'none', null, 0, 0, 0 ],
-              [ 'some', _lowerFlatStringAny, 8, 4, 2],
-              ],
-              variantSize32: 12,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 3,
-              payloadMaybeNull: false,
-            })
-            , 12, 4 ],['fieldSize', 
-            _lowerFlatOption({
-              caseMetas: [
-              [ 'none', null, 0, 0, 0 ],
-              [ 'some', _lowerFlatU32, 4, 4, 1],
-              ],
-              variantSize32: 8,
-              variantAlign32: 4,
-              variantPayloadOffset32: 4,
-              variantFlatCount: 2,
-              payloadMaybeNull: false,
-            })
-            , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
-            ],
-            variantSize32: 24,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 6,
-            payloadMaybeNull: false,
-          })
-          , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU64, 8, 8, 1],
-            ],
-            variantSize32: 16,
-            variantAlign32: 8,
-            variantPayloadOffset32: 8,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4 ],['fieldSize', 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatU32, 4, 4, 1],
-            ],
-            variantSize32: 8,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 2,
-            payloadMaybeNull: false,
-          })
-          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],[ "HTTP-response-content-coding", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
-          _lowerFlatOption({
-            caseMetas: [
-            [ 'none', null, 0, 0, 0 ],
-            [ 'some', _lowerFlatStringAny, 8, 4, 2],
-            ],
-            variantSize32: 12,
-            variantAlign32: 4,
-            variantPayloadOffset32: 4,
-            variantFlatCount: 3,
-            payloadMaybeNull: false,
-          })
-          , 12, 4, 3 ],],
-          variantSize32: 32,
-          variantAlign32: 8,
-          variantPayloadOffset32: 8,
-          variantFlatCount: 7,
-        } ), 40, 8, 8 ],
-        ],
-        variantSize32: 40,
-        variantAlign32: 8,
-        variantPayloadOffset32: 8,
-        variantFlatCount: 8,
-      })
-      ,
-      payloadTypeName: 'Result(TypeResultIndex(2))',
-      isNone: false,
-      isNumeric: false,
-      isBorrowed: false,
-      isAsyncValue: false,
-      flatCount: 8,
-      align32: 8,
-      size32: 40,
-    },
-  })
-  , 4, 4],], size32: 8, align32: 4 })],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: undefined,
-  importFn: _trampoline64,
-});
-let trampoline65 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 65,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline65.manuallyAsync,
-  paramLiftFns: [_liftFlatList({
-    elemLiftFn: _liftFlatTuple({ elemLiftFns: [[_liftFlatStringAny, 8, 4],[_liftFlatList({
-      elemLiftFn: _liftFlatU8,
-      elemAlign32: 1,
-      elemSize32: 1,
-      typedArray: Uint8Array,
-    }), 8, 4],], size32: 16, align32: 4 }),
-    elemAlign32: 4,
-    elemSize32: 16,
-    typedArray: undefined,
-  })],
-  resultLowerFns: [
-  _lowerFlatResult({
-    caseMetas: [
-    [ 'ok', _lowerFlatOwn({
-      componentIdx: 0,
-      tableIdx: 2,
-      lowerFn: 
-      function lowerImportedOwnedHost_Fields(obj) {
-        if (!(obj instanceof Fields)) {
-          throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
-        }
-        let handle = obj[symbolRscHandle];
-        if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
-          captureTable2.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable2, rep);
-        }
-        return handle;
-      }
-      ,
-    }), 20, 4, 4 ],
-    [ 'err', _lowerFlatVariant({
-      caseMetas: [[ "invalid-syntax", null, 0, 0, 0 ],[ "forbidden", null, 0, 0, 0 ],[ "immutable", null, 0, 0, 0 ],[ "size-exceeded", null, 0, 0, 0 ],[ "other", 
-      _lowerFlatOption({
-        caseMetas: [
-        [ 'none', null, 0, 0, 0 ],
-        [ 'some', _lowerFlatStringAny, 8, 4, 2],
-        ],
-        variantSize32: 12,
-        variantAlign32: 4,
-        variantPayloadOffset32: 4,
-        variantFlatCount: 3,
-        payloadMaybeNull: false,
-      })
-      , 12, 4, 3 ],],
-      variantSize32: 16,
-      variantAlign32: 4,
-      variantPayloadOffset32: 4,
-      variantFlatCount: 4,
-    } ), 20, 4, 4 ],
-    ],
-    variantSize32: 20,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 5,
-  })
-  ],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline65,
-});
-let trampoline66 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 66,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline66.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 2),_liftFlatStringAny],
-  resultLowerFns: [_lowerFlatList({
-    elemLowerFn: _lowerFlatList({
-      elemLowerFn: _lowerFlatU8,
-      elemSize32: 1,
-      elemAlign32: 1,
-      typedArray: Uint8Array,
-    }),
-    elemSize32: 8,
-    elemAlign32: 4,
-    typedArray: undefined,
-  })],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline66,
-});
-let trampoline67 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 67,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline67.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
-  resultLowerFns: [_lowerFlatList({
-    elemLowerFn: _lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStringAny, 8, 4],[_lowerFlatList({
-      elemLowerFn: _lowerFlatU8,
-      elemSize32: 1,
-      elemAlign32: 1,
-      typedArray: Uint8Array,
-    }), 8, 4],], size32: 16, align32: 4 }),
-    elemSize32: 16,
-    elemAlign32: 4,
-    typedArray: undefined,
-  })],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: () => realloc0,
-  importFn: _trampoline67,
-});
-let trampoline68 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 68,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline68.manuallyAsync,
-  paramLiftFns: [_liftFlatOwn({
-    componentIdx: 0,
-    tableIdx: 2,
-    classNameFn: () => Fields,
-    createResourceFn: 
-    (handle) => {
-      const rep = handleTable2[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable2.get(rep);
-      if (!resourceObj) {
-        resourceObj = Object.create(Fields.prototype);
-        Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-        Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-      } else {
-        captureTable2.delete(rep);
-      }
-      rscTableRemove(handleTable2, handle);
-      return resourceObj;
-    }
-    ,
-  })
-  ,
-  _liftFlatOption({
-    caseMetas: [
-    ['none', null, 0, 0, 0, [] ],
-    ['some', _liftFlatStream({ streamTableIdx: 0, componentIdx: 0 }), 4, 4, 1, ['i32'] ],
-    ],
-    variantSize32: 8,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 2,
-    variantPayloadFlatTypes: ['i32'],
-    payloadMaybeNull: false,
-  })
-  ,_liftFlatFuture({ futureTableIdx: 1, componentIdx: 0 }),
-  _liftFlatOption({
-    caseMetas: [
-    ['none', null, 0, 0, 0, [] ],
-    ['some', _liftFlatOwn({
-      componentIdx: 0,
-      tableIdx: 0,
-      classNameFn: () => RequestOptions,
-      createResourceFn: 
-      (handle) => {
-        const rep = handleTable0[(handle << 1) + 1] % T_OWN;
-        let resourceObj = captureTable0.get(rep);
-        if (!resourceObj) {
-          resourceObj = Object.create(RequestOptions.prototype);
-          Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
-          Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
-        } else {
-          captureTable0.delete(rep);
-        }
-        rscTableRemove(handleTable0, handle);
-        return resourceObj;
-      }
-      ,
-    })
-    , 4, 4, 1, ['i32'] ],
-    ],
-    variantSize32: 8,
-    variantAlign32: 4,
-    variantPayloadOffset32: 4,
-    variantFlatCount: 2,
-    variantPayloadFlatTypes: ['i32'],
-    payloadMaybeNull: false,
-  })
-  ],
-  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatOwn({
-    componentIdx: 0,
-    tableIdx: 1,
-    lowerFn: 
-    function lowerImportedOwnedHost_Request(obj) {
-      if (!(obj instanceof Request)) {
-        throw new TypeError('Resource error: Not a valid \"Request\" resource.');
       }
       let handle = obj[symbolRscHandle];
       if (!handle) {
@@ -34519,14 +30287,1586 @@ let trampoline68 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline68,
+  importFn: _trampoline54,
 });
-let trampoline69 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 69,
+let trampoline55 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 55,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline69.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),_liftFlatVariant({
+  isManualAsync: _trampoline55.manuallyAsync,
+  paramLiftFns: [_liftFlatOwn({
+    componentIdx: 0,
+    tableIdx: 1,
+    classNameFn: () => Response,
+    createResourceFn: 
+    (handle) => {
+      const rep = handleTable1[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable1.get(rep);
+      if (!resourceObj) {
+        resourceObj = Object.create(Response.prototype);
+        Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+        Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+      } else {
+        captureTable1.delete(rep);
+      }
+      rscTableRemove(handleTable1, handle);
+      return resourceObj;
+    }
+    ,
+  })
+  ,_liftFlatFuture({ futureTableIdx: 2, componentIdx: 0 })],
+  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStream({
+    streamTableIdx: 0,
+    componentIdx: 0,
+    elemMeta: {
+      liftFn: _liftFlatU8,
+      lowerFn: _lowerFlatU8,
+      payloadTypeName: 'U8',
+      isNone: false,
+      isNumeric: true,
+      isBorrowed: false,
+      isAsyncValue: false,
+      typedArray: Uint8Array,
+      flatCount: 1,
+      align32: 1,
+      size32: 1,
+    },
+  })
+  , 4, 4],[_lowerFlatFuture({
+    futureTableIdx: 1,
+    futureNestingLevel: 0,
+    componentIdx: 0,
+    elemMeta: {
+      liftFn: 
+      _liftFlatResult({
+        caseMetas: [['ok', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatOwn({
+            componentIdx: 0,
+            tableIdx: 0,
+            classNameFn: () => Fields,
+            createResourceFn: 
+            (handle) => {
+              const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+              let resourceObj = captureTable0.get(rep);
+              if (!resourceObj) {
+                resourceObj = Object.create(Fields.prototype);
+                Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+                Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+              } else {
+                captureTable0.delete(rep);
+              }
+              rscTableRemove(handleTable0, handle);
+              return resourceObj;
+            }
+            ,
+          })
+          , 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
+          caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['infoCode', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+            ],
+            variantSize32: 4,
+            variantAlign32: 2,
+            variantPayloadOffset32: 2,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+            ],
+            variantSize32: 2,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 2, 1],['alertMessage', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i64'],
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+            _liftFlatOption({
+              caseMetas: [
+              ['none', null, 0, 0, 0, [] ],
+              ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+              ],
+              variantSize32: 12,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 3,
+              variantPayloadFlatTypes: ['i32','i32'],
+              payloadMaybeNull: false,
+            })
+            , 12, 4],['fieldSize', 
+            _liftFlatOption({
+              caseMetas: [
+              ['none', null, 0, 0, 0, [] ],
+              ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+              ],
+              variantSize32: 8,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 2,
+              variantPayloadFlatTypes: ['i32'],
+              payloadMaybeNull: false,
+            })
+            , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+            ],
+            variantSize32: 24,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 6,
+            variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i64'],
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],],
+          variantSize32: 32,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 7,
+          variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+        } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+        variantSize32: 40,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 8,
+        variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+      })
+      ,
+      lowerFn: 
+      _lowerFlatResult({
+        caseMetas: [
+        [ 'ok', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatOwn({
+            componentIdx: 0,
+            tableIdx: 0,
+            lowerFn: 
+            function lowerImportedOwnedHost_Fields(obj) {
+              if (!(obj instanceof Fields)) {
+                throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+              }
+              let handle = obj[symbolRscHandle];
+              if (!handle) {
+                const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+                captureTable0.set(rep, obj);
+                handle = rscTableCreateOwn(handleTable0, rep);
+              }
+              return handle;
+            }
+            ,
+          }), 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 40, 8, 8 ],
+        [ 'err', _lowerFlatVariant({
+          caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['infoCode', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU16, 2, 2, 1],
+            ],
+            variantSize32: 4,
+            variantAlign32: 2,
+            variantPayloadOffset32: 2,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU8, 1, 1, 1],
+            ],
+            variantSize32: 2,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 2, 1 ],['alertMessage', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU64, 8, 8, 1],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-request-header-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+            _lowerFlatOption({
+              caseMetas: [
+              [ 'none', null, 0, 0, 0 ],
+              [ 'some', _lowerFlatStringAny, 8, 4, 2],
+              ],
+              variantSize32: 12,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 3,
+              payloadMaybeNull: false,
+            })
+            , 12, 4 ],['fieldSize', 
+            _lowerFlatOption({
+              caseMetas: [
+              [ 'none', null, 0, 0, 0 ],
+              [ 'some', _lowerFlatU32, 4, 4, 1],
+              ],
+              variantSize32: 8,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 2,
+              payloadMaybeNull: false,
+            })
+            , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+            ],
+            variantSize32: 24,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 6,
+            payloadMaybeNull: false,
+          })
+          , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU64, 8, 8, 1],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],],
+          variantSize32: 32,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 7,
+        } ), 40, 8, 8 ],
+        ],
+        variantSize32: 40,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 8,
+      })
+      ,
+      payloadTypeName: 'Result(TypeResultIndex(2))',
+      isNone: false,
+      isNumeric: false,
+      isBorrowed: false,
+      isAsyncValue: false,
+      flatCount: 8,
+      align32: 8,
+      size32: 40,
+    },
+  })
+  , 4, 4],], size32: 8, align32: 4 })],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: undefined,
+  importFn: _trampoline55,
+});
+let trampoline56 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 56,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline56.manuallyAsync,
+  paramLiftFns: [_liftFlatList({
+    elemLiftFn: _liftFlatTuple({ elemLiftFns: [[_liftFlatStringAny, 8, 4],[_liftFlatList({
+      elemLiftFn: _liftFlatU8,
+      elemAlign32: 1,
+      elemSize32: 1,
+      typedArray: Uint8Array,
+    }), 8, 4],], size32: 16, align32: 4 }),
+    elemAlign32: 4,
+    elemSize32: 16,
+    typedArray: undefined,
+  })],
+  resultLowerFns: [
+  _lowerFlatResult({
+    caseMetas: [
+    [ 'ok', _lowerFlatOwn({
+      componentIdx: 0,
+      tableIdx: 0,
+      lowerFn: 
+      function lowerImportedOwnedHost_Fields(obj) {
+        if (!(obj instanceof Fields)) {
+          throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+        }
+        let handle = obj[symbolRscHandle];
+        if (!handle) {
+          const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+          captureTable0.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable0, rep);
+        }
+        return handle;
+      }
+      ,
+    }), 20, 4, 4 ],
+    [ 'err', _lowerFlatVariant({
+      caseMetas: [[ "invalid-syntax", null, 0, 0, 0 ],[ "forbidden", null, 0, 0, 0 ],[ "immutable", null, 0, 0, 0 ],[ "size-exceeded", null, 0, 0, 0 ],[ "other", 
+      _lowerFlatOption({
+        caseMetas: [
+        [ 'none', null, 0, 0, 0 ],
+        [ 'some', _lowerFlatStringAny, 8, 4, 2],
+        ],
+        variantSize32: 12,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 3,
+        payloadMaybeNull: false,
+      })
+      , 12, 4, 3 ],],
+      variantSize32: 16,
+      variantAlign32: 4,
+      variantPayloadOffset32: 4,
+      variantFlatCount: 4,
+    } ), 20, 4, 4 ],
+    ],
+    variantSize32: 20,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 5,
+  })
+  ],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline56,
+});
+let trampoline57 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 57,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline57.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 0),_liftFlatStringAny],
+  resultLowerFns: [_lowerFlatList({
+    elemLowerFn: _lowerFlatList({
+      elemLowerFn: _lowerFlatU8,
+      elemSize32: 1,
+      elemAlign32: 1,
+      typedArray: Uint8Array,
+    }),
+    elemSize32: 8,
+    elemAlign32: 4,
+    typedArray: undefined,
+  })],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline57,
+});
+let trampoline58 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 58,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline58.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 0)],
+  resultLowerFns: [_lowerFlatList({
+    elemLowerFn: _lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStringAny, 8, 4],[_lowerFlatList({
+      elemLowerFn: _lowerFlatU8,
+      elemSize32: 1,
+      elemAlign32: 1,
+      typedArray: Uint8Array,
+    }), 8, 4],], size32: 16, align32: 4 }),
+    elemSize32: 16,
+    elemAlign32: 4,
+    typedArray: undefined,
+  })],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline58,
+});
+let trampoline59 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 59,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline59.manuallyAsync,
+  paramLiftFns: [_liftFlatOwn({
+    componentIdx: 0,
+    tableIdx: 0,
+    classNameFn: () => Fields,
+    createResourceFn: 
+    (handle) => {
+      const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable0.get(rep);
+      if (!resourceObj) {
+        resourceObj = Object.create(Fields.prototype);
+        Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+        Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+      } else {
+        captureTable0.delete(rep);
+      }
+      rscTableRemove(handleTable0, handle);
+      return resourceObj;
+    }
+    ,
+  })
+  ,
+  _liftFlatOption({
+    caseMetas: [
+    ['none', null, 0, 0, 0, [] ],
+    ['some', _liftFlatStream({ streamTableIdx: 0, componentIdx: 0 }), 4, 4, 1, ['i32'] ],
+    ],
+    variantSize32: 8,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 2,
+    variantPayloadFlatTypes: ['i32'],
+    payloadMaybeNull: false,
+  })
+  ,_liftFlatFuture({ futureTableIdx: 1, componentIdx: 0 }),
+  _liftFlatOption({
+    caseMetas: [
+    ['none', null, 0, 0, 0, [] ],
+    ['some', _liftFlatOwn({
+      componentIdx: 0,
+      tableIdx: 3,
+      classNameFn: () => RequestOptions,
+      createResourceFn: 
+      (handle) => {
+        const rep = handleTable3[(handle << 1) + 1] % T_OWN;
+        let resourceObj = captureTable3.get(rep);
+        if (!resourceObj) {
+          resourceObj = Object.create(RequestOptions.prototype);
+          Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+          Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+        } else {
+          captureTable3.delete(rep);
+        }
+        rscTableRemove(handleTable3, handle);
+        return resourceObj;
+      }
+      ,
+    })
+    , 4, 4, 1, ['i32'] ],
+    ],
+    variantSize32: 8,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 2,
+    variantPayloadFlatTypes: ['i32'],
+    payloadMaybeNull: false,
+  })
+  ],
+  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatOwn({
+    componentIdx: 0,
+    tableIdx: 2,
+    lowerFn: 
+    function lowerImportedOwnedHost_Request(obj) {
+      if (!(obj instanceof Request)) {
+        throw new TypeError('Resource error: Not a valid \"Request\" resource.');
+      }
+      let handle = obj[symbolRscHandle];
+      if (!handle) {
+        const rep = (obj[symbolRscRep] ?? ++captureCnt2) >>> 0;
+        captureTable2.set(rep, obj);
+        handle = rscTableCreateOwn(handleTable2, rep);
+      }
+      return handle;
+    }
+    ,
+  }), 4, 4],[_lowerFlatFuture({
+    futureTableIdx: 2,
+    futureNestingLevel: 0,
+    componentIdx: 0,
+    elemMeta: {
+      liftFn: 
+      _liftFlatResult({
+        caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
+          caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['infoCode', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+            ],
+            variantSize32: 4,
+            variantAlign32: 2,
+            variantPayloadOffset32: 2,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+            ],
+            variantSize32: 2,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 2, 1],['alertMessage', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i64'],
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+            _liftFlatOption({
+              caseMetas: [
+              ['none', null, 0, 0, 0, [] ],
+              ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+              ],
+              variantSize32: 12,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 3,
+              variantPayloadFlatTypes: ['i32','i32'],
+              payloadMaybeNull: false,
+            })
+            , 12, 4],['fieldSize', 
+            _liftFlatOption({
+              caseMetas: [
+              ['none', null, 0, 0, 0, [] ],
+              ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+              ],
+              variantSize32: 8,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 2,
+              variantPayloadFlatTypes: ['i32'],
+              payloadMaybeNull: false,
+            })
+            , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+            ],
+            variantSize32: 24,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 6,
+            variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i64'],
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3, ['i32','i32','i32']],],
+          variantSize32: 32,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 7,
+          variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+        } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+        variantSize32: 40,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 8,
+        variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+      })
+      ,
+      lowerFn: 
+      _lowerFlatResult({
+        caseMetas: [
+        [ 'ok', null, 40, 8, 8 ],
+        [ 'err', _lowerFlatVariant({
+          caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['infoCode', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU16, 2, 2, 1],
+            ],
+            variantSize32: 4,
+            variantAlign32: 2,
+            variantPayloadOffset32: 2,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU8, 1, 1, 1],
+            ],
+            variantSize32: 2,
+            variantAlign32: 1,
+            variantPayloadOffset32: 1,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 2, 1 ],['alertMessage', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU64, 8, 8, 1],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-request-header-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+            _lowerFlatOption({
+              caseMetas: [
+              [ 'none', null, 0, 0, 0 ],
+              [ 'some', _lowerFlatStringAny, 8, 4, 2],
+              ],
+              variantSize32: 12,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 3,
+              payloadMaybeNull: false,
+            })
+            , 12, 4 ],['fieldSize', 
+            _lowerFlatOption({
+              caseMetas: [
+              [ 'none', null, 0, 0, 0 ],
+              [ 'some', _lowerFlatU32, 4, 4, 1],
+              ],
+              variantSize32: 8,
+              variantAlign32: 4,
+              variantPayloadOffset32: 4,
+              variantFlatCount: 2,
+              payloadMaybeNull: false,
+            })
+            , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+            ],
+            variantSize32: 24,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 6,
+            payloadMaybeNull: false,
+          })
+          , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU64, 8, 8, 1],
+            ],
+            variantSize32: 16,
+            variantAlign32: 8,
+            variantPayloadOffset32: 8,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4, 3 ],],
+          variantSize32: 32,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 7,
+        } ), 40, 8, 8 ],
+        ],
+        variantSize32: 40,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 8,
+      })
+      ,
+      payloadTypeName: 'Result(TypeResultIndex(3))',
+      isNone: false,
+      isNumeric: false,
+      isBorrowed: false,
+      isAsyncValue: false,
+      flatCount: 8,
+      align32: 8,
+      size32: 40,
+    },
+  })
+  , 4, 4],], size32: 8, align32: 4 })],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: undefined,
+  importFn: _trampoline59,
+});
+let trampoline60 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 60,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline60.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
+  resultLowerFns: [_lowerFlatVariant({
+    caseMetas: [[ "get", null, 0, 0, 0 ],[ "head", null, 0, 0, 0 ],[ "post", null, 0, 0, 0 ],[ "put", null, 0, 0, 0 ],[ "delete", null, 0, 0, 0 ],[ "connect", null, 0, 0, 0 ],[ "options", null, 0, 0, 0 ],[ "trace", null, 0, 0, 0 ],[ "patch", null, 0, 0, 0 ],[ "other", _lowerFlatStringAny, 8, 4, 2 ],],
+    variantSize32: 12,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 3,
+  } )],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline60,
+});
+let trampoline61 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 61,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline61.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2),_liftFlatVariant({
     caseMetas: [["get", null, 0, 0, 0, []],["head", null, 0, 0, 0, []],["post", null, 0, 0, 0, []],["put", null, 0, 0, 0, []],["delete", null, 0, 0, 0, []],["connect", null, 0, 0, 0, []],["options", null, 0, 0, 0, []],["trace", null, 0, 0, 0, []],["patch", null, 0, 0, 0, []],["other", _liftFlatStringAny, 8, 4, 2, ['i32','i32']],],
     variantSize32: 12,
     variantAlign32: 4,
@@ -34555,14 +31895,44 @@ let trampoline69 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline69,
+  importFn: _trampoline61,
 });
-let trampoline70 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 70,
+let trampoline62 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 62,
   componentIdx: 0,
   isAsync: false,
-  isManualAsync: _trampoline70.manuallyAsync,
-  paramLiftFns: [_liftFlatBorrow.bind(null, 1),
+  isManualAsync: _trampoline62.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
+  resultLowerFns: [
+  _lowerFlatOption({
+    caseMetas: [
+    [ 'none', null, 0, 0, 0 ],
+    [ 'some', _lowerFlatStringAny, 8, 4, 2],
+    ],
+    variantSize32: 12,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 3,
+    payloadMaybeNull: false,
+  })
+  ],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline62,
+});
+let trampoline63 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 63,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline63.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2),
   _liftFlatOption({
     caseMetas: [
     ['none', null, 0, 0, 0, [] ],
@@ -34597,7 +31967,2637 @@ let trampoline70 = _lowerImportBackwardsCompat.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: undefined,
-  importFn: _trampoline70,
+  importFn: _trampoline63,
+});
+let trampoline64 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 64,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline64.manuallyAsync,
+  paramLiftFns: [_liftFlatBorrow.bind(null, 2)],
+  resultLowerFns: [
+  _lowerFlatOption({
+    caseMetas: [
+    [ 'none', null, 0, 0, 0 ],
+    [ 'some', _lowerFlatVariant({
+      caseMetas: [[ "HTTP", null, 0, 0, 0 ],[ "HTTPS", null, 0, 0, 0 ],[ "other", _lowerFlatStringAny, 8, 4, 2 ],],
+      variantSize32: 12,
+      variantAlign32: 4,
+      variantPayloadOffset32: 4,
+      variantFlatCount: 3,
+    } ), 12, 4, 3],
+    ],
+    variantSize32: 16,
+    variantAlign32: 4,
+    variantPayloadOffset32: 4,
+    variantFlatCount: 4,
+    payloadMaybeNull: false,
+  })
+  ],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: () => realloc0,
+  importFn: _trampoline64,
+});
+const trampoline65 = futureWrite.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: undefined,
+  getReallocFn: undefined,
+  stringEncoding: 'utf8',
+  futureTableIdx: 1,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', 
+      _liftFlatOption({
+        caseMetas: [
+        ['none', null, 0, 0, 0, [] ],
+        ['some', _liftFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          classNameFn: () => Fields,
+          createResourceFn: 
+          (handle) => {
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
+            if (!resourceObj) {
+              resourceObj = Object.create(Fields.prototype);
+              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+            } else {
+              captureTable0.delete(rep);
+            }
+            rscTableRemove(handleTable0, handle);
+            return resourceObj;
+          }
+          ,
+        })
+        , 4, 4, 1, ['i32'] ],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        variantPayloadFlatTypes: ['i32'],
+        payloadMaybeNull: false,
+      })
+      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
+        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['infoCode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 2, 1],['alertMessage', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+    })
+    ,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', 
+      _lowerFlatOption({
+        caseMetas: [
+        [ 'none', null, 0, 0, 0 ],
+        [ 'some', _lowerFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          lowerFn: 
+          function lowerImportedOwnedHost_Fields(obj) {
+            if (!(obj instanceof Fields)) {
+              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+            }
+            let handle = obj[symbolRscHandle];
+            if (!handle) {
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
+            }
+            return handle;
+          }
+          ,
+        }), 4, 4, 1],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        payloadMaybeNull: false,
+      })
+      , 40, 8, 8 ],
+      [ 'err', _lowerFlatVariant({
+        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['infoCode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU16, 2, 2, 1],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU8, 1, 1, 1],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 2, 1 ],['alertMessage', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-header-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+      } ), 40, 8, 8 ],
+      ],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(2))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 8,
+    align32: 8,
+    size32: 40,
+  },
+  isAsync: true,
+});
+const trampoline66 = futureRead.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: 0,
+  getReallocFn: () => realloc0,
+  stringEncoding: 'utf8',
+  futureTableIdx: 1,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', 
+      _liftFlatOption({
+        caseMetas: [
+        ['none', null, 0, 0, 0, [] ],
+        ['some', _liftFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          classNameFn: () => Fields,
+          createResourceFn: 
+          (handle) => {
+            const rep = handleTable0[(handle << 1) + 1] % T_OWN;
+            let resourceObj = captureTable0.get(rep);
+            if (!resourceObj) {
+              resourceObj = Object.create(Fields.prototype);
+              Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
+              Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
+            } else {
+              captureTable0.delete(rep);
+            }
+            rscTableRemove(handleTable0, handle);
+            return resourceObj;
+          }
+          ,
+        })
+        , 4, 4, 1, ['i32'] ],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        variantPayloadFlatTypes: ['i32'],
+        payloadMaybeNull: false,
+      })
+      , 8, 4, 2, ['i32','i32']],['err', _liftFlatVariant({
+        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['infoCode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 2, 1],['alertMessage', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+    })
+    ,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', 
+      _lowerFlatOption({
+        caseMetas: [
+        [ 'none', null, 0, 0, 0 ],
+        [ 'some', _lowerFlatOwn({
+          componentIdx: 0,
+          tableIdx: 0,
+          lowerFn: 
+          function lowerImportedOwnedHost_Fields(obj) {
+            if (!(obj instanceof Fields)) {
+              throw new TypeError('Resource error: Not a valid \"Fields\" resource.');
+            }
+            let handle = obj[symbolRscHandle];
+            if (!handle) {
+              const rep = (obj[symbolRscRep] ?? ++captureCnt0) >>> 0;
+              captureTable0.set(rep, obj);
+              handle = rscTableCreateOwn(handleTable0, rep);
+            }
+            return handle;
+          }
+          ,
+        }), 4, 4, 1],
+        ],
+        variantSize32: 8,
+        variantAlign32: 4,
+        variantPayloadOffset32: 4,
+        variantFlatCount: 2,
+        payloadMaybeNull: false,
+      })
+      , 40, 8, 8 ],
+      [ 'err', _lowerFlatVariant({
+        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['infoCode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU16, 2, 2, 1],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU8, 1, 1, 1],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 2, 1 ],['alertMessage', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-header-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+      } ), 40, 8, 8 ],
+      ],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(2))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 8,
+    align32: 8,
+    size32: 40,
+  },
+  isAsync: true,
+});
+const trampoline67 = futureWrite.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: undefined,
+  getReallocFn: undefined,
+  stringEncoding: 'utf8',
+  futureTableIdx: 2,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
+        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['infoCode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 2, 1],['alertMessage', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+    })
+    ,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', null, 40, 8, 8 ],
+      [ 'err', _lowerFlatVariant({
+        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['infoCode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU16, 2, 2, 1],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU8, 1, 1, 1],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 2, 1 ],['alertMessage', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-header-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+      } ), 40, 8, 8 ],
+      ],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(3))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 8,
+    align32: 8,
+    size32: 40,
+  },
+  isAsync: true,
+});
+const trampoline68 = futureRead.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: 0,
+  getReallocFn: () => realloc0,
+  stringEncoding: 'utf8',
+  futureTableIdx: 2,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', null, 0, 0, 0, []],['err', _liftFlatVariant({
+        caseMetas: [["DNS-timeout", null, 0, 0, 0, []],["DNS-error", _liftFlatRecord({ fieldMetas: [['rcode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['infoCode', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU16, 2, 2, 1, ['i32'] ],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 4, 2],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["destination-not-found", null, 0, 0, 0, []],["destination-unavailable", null, 0, 0, 0, []],["destination-IP-prohibited", null, 0, 0, 0, []],["destination-IP-unroutable", null, 0, 0, 0, []],["connection-refused", null, 0, 0, 0, []],["connection-terminated", null, 0, 0, 0, []],["connection-timeout", null, 0, 0, 0, []],["connection-read-timeout", null, 0, 0, 0, []],["connection-write-timeout", null, 0, 0, 0, []],["connection-limit-reached", null, 0, 0, 0, []],["TLS-protocol-error", null, 0, 0, 0, []],["TLS-certificate-error", null, 0, 0, 0, []],["TLS-alert-received", _liftFlatRecord({ fieldMetas: [['alertId', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU8, 1, 1, 1, ['i32'] ],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 2, 1],['alertMessage', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],], size32: 16, align32: 4 }), 16, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-request-denied", null, 0, 0, 0, []],["HTTP-request-length-required", null, 0, 0, 0, []],["HTTP-request-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-request-method-invalid", null, 0, 0, 0, []],["HTTP-request-URI-invalid", null, 0, 0, 0, []],["HTTP-request-URI-too-long", null, 0, 0, 0, []],["HTTP-request-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-header-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatRecord({ fieldMetas: [['fieldName', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            variantPayloadFlatTypes: ['i32','i32'],
+            payloadMaybeNull: false,
+          })
+          , 12, 4],['fieldSize', 
+          _liftFlatOption({
+            caseMetas: [
+            ['none', null, 0, 0, 0, [] ],
+            ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            variantPayloadFlatTypes: ['i32'],
+            payloadMaybeNull: false,
+          })
+          , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32'] ],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          variantPayloadFlatTypes: ['i32','i32','i32','i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6, ['i32','i32','i32','i32','i32','i32']],["HTTP-request-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-request-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-incomplete", null, 0, 0, 0, []],["HTTP-response-header-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-header-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-body-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU64, 8, 8, 1, ['i64'] ],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i64'],
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2, ['i32','i64']],["HTTP-response-trailer-section-size", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2, ['i32','i32']],["HTTP-response-trailer-size", _liftFlatRecord({ fieldMetas: [['fieldName', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4],['fieldSize', 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatU32, 4, 4, 1, ['i32'] ],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          variantPayloadFlatTypes: ['i32'],
+          payloadMaybeNull: false,
+        })
+        , 8, 4],], size32: 20, align32: 4 }), 20, 4, 5, ['i32','i32','i32','i32','i32']],["HTTP-response-transfer-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-content-coding", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],["HTTP-response-timeout", null, 0, 0, 0, []],["HTTP-upgrade-failed", null, 0, 0, 0, []],["HTTP-protocol-error", null, 0, 0, 0, []],["loop-detected", null, 0, 0, 0, []],["configuration-error", null, 0, 0, 0, []],["internal-error", 
+        _liftFlatOption({
+          caseMetas: [
+          ['none', null, 0, 0, 0, [] ],
+          ['some', _liftFlatStringAny, 8, 4, 2, ['i32','i32'] ],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          variantPayloadFlatTypes: ['i32','i32'],
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3, ['i32','i32','i32']],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+        variantPayloadFlatTypes: ['i32','i64','i32','i32','i32','i32'],
+      } ), 32, 8, 7, ['i32','i32','i64','i32','i32','i32','i32']],],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+      variantPayloadFlatTypes: ['i32','i32','i64','i32','i32','i32','i32'],
+    })
+    ,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', null, 40, 8, 8 ],
+      [ 'err', _lowerFlatVariant({
+        caseMetas: [[ "DNS-timeout", null, 0, 0, 0 ],[ "DNS-error", _lowerFlatRecord({ fieldMetas: [['rcode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['infoCode', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU16, 2, 2, 1],
+          ],
+          variantSize32: 4,
+          variantAlign32: 2,
+          variantPayloadOffset32: 2,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 4, 2 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "destination-not-found", null, 0, 0, 0 ],[ "destination-unavailable", null, 0, 0, 0 ],[ "destination-IP-prohibited", null, 0, 0, 0 ],[ "destination-IP-unroutable", null, 0, 0, 0 ],[ "connection-refused", null, 0, 0, 0 ],[ "connection-terminated", null, 0, 0, 0 ],[ "connection-timeout", null, 0, 0, 0 ],[ "connection-read-timeout", null, 0, 0, 0 ],[ "connection-write-timeout", null, 0, 0, 0 ],[ "connection-limit-reached", null, 0, 0, 0 ],[ "TLS-protocol-error", null, 0, 0, 0 ],[ "TLS-certificate-error", null, 0, 0, 0 ],[ "TLS-alert-received", _lowerFlatRecord({ fieldMetas: [['alertId', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU8, 1, 1, 1],
+          ],
+          variantSize32: 2,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 2, 1 ],['alertMessage', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],], size32: 16, align32: 4 }), 16, 4, 5 ],[ "HTTP-request-denied", null, 0, 0, 0 ],[ "HTTP-request-length-required", null, 0, 0, 0 ],[ "HTTP-request-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-request-method-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-invalid", null, 0, 0, 0 ],[ "HTTP-request-URI-too-long", null, 0, 0, 0 ],[ "HTTP-request-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-header-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatRecord({ fieldMetas: [['fieldName', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatStringAny, 8, 4, 2],
+            ],
+            variantSize32: 12,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 3,
+            payloadMaybeNull: false,
+          })
+          , 12, 4 ],['fieldSize', 
+          _lowerFlatOption({
+            caseMetas: [
+            [ 'none', null, 0, 0, 0 ],
+            [ 'some', _lowerFlatU32, 4, 4, 1],
+            ],
+            variantSize32: 8,
+            variantAlign32: 4,
+            variantPayloadOffset32: 4,
+            variantFlatCount: 2,
+            payloadMaybeNull: false,
+          })
+          , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5],
+          ],
+          variantSize32: 24,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 6,
+          payloadMaybeNull: false,
+        })
+        , 24, 4, 6 ],[ "HTTP-request-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-request-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-incomplete", null, 0, 0, 0 ],[ "HTTP-response-header-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-header-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-body-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU64, 8, 8, 1],
+          ],
+          variantSize32: 16,
+          variantAlign32: 8,
+          variantPayloadOffset32: 8,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 16, 8, 2 ],[ "HTTP-response-trailer-section-size", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4, 2 ],[ "HTTP-response-trailer-size", _lowerFlatRecord({ fieldMetas: [['fieldName', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4 ],['fieldSize', 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatU32, 4, 4, 1],
+          ],
+          variantSize32: 8,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 2,
+          payloadMaybeNull: false,
+        })
+        , 8, 4 ],], size32: 20, align32: 4 }), 20, 4, 5 ],[ "HTTP-response-transfer-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-content-coding", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],[ "HTTP-response-timeout", null, 0, 0, 0 ],[ "HTTP-upgrade-failed", null, 0, 0, 0 ],[ "HTTP-protocol-error", null, 0, 0, 0 ],[ "loop-detected", null, 0, 0, 0 ],[ "configuration-error", null, 0, 0, 0 ],[ "internal-error", 
+        _lowerFlatOption({
+          caseMetas: [
+          [ 'none', null, 0, 0, 0 ],
+          [ 'some', _lowerFlatStringAny, 8, 4, 2],
+          ],
+          variantSize32: 12,
+          variantAlign32: 4,
+          variantPayloadOffset32: 4,
+          variantFlatCount: 3,
+          payloadMaybeNull: false,
+        })
+        , 12, 4, 3 ],],
+        variantSize32: 32,
+        variantAlign32: 8,
+        variantPayloadOffset32: 8,
+        variantFlatCount: 7,
+      } ), 40, 8, 8 ],
+      ],
+      variantSize32: 40,
+      variantAlign32: 8,
+      variantPayloadOffset32: 8,
+      variantFlatCount: 8,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(3))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 8,
+    align32: 8,
+    size32: 40,
+  },
+  isAsync: true,
+});
+const trampoline69 = streamWrite.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: undefined,
+  getReallocFn: undefined,
+  stringEncoding: 'utf8',
+  isAsync: true,
+  streamTableIdx: 0,
+  elemMeta: {
+    liftFn: _liftFlatU8,
+    lowerFn: _lowerFlatU8,
+    payloadTypeName: 'U8',
+    isNone: false,
+    isNumeric: true,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: Uint8Array,
+    flatCount: 1,
+    align32: 1,
+    size32: 1,
+  },
+});
+const trampoline70 = streamRead.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: undefined,
+  getReallocFn: undefined,
+  stringEncoding: 'utf8',
+  isAsync: true,
+  streamTableIdx: 0,
+  elemMeta: {
+    liftFn: _liftFlatU8,
+    lowerFn: _lowerFlatU8,
+    payloadTypeName: 'U8',
+    isNone: false,
+    isNumeric: true,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: Uint8Array,
+    flatCount: 1,
+    align32: 1,
+    size32: 1,
+  },
 });
 
 const trampoline71 = waitableSetPoll.bind(null, { componentIdx: 0, isAsync: false, isCancellable: false, memoryIdx: 0, getMemoryFn: () => memory0 });
@@ -34619,20 +34619,20 @@ const trampoline73 = taskReturn.bind(null, {
   _liftFlatResult({
     caseMetas: [['ok', _liftFlatOwn({
       componentIdx: 0,
-      tableIdx: 3,
+      tableIdx: 1,
       classNameFn: () => Response,
       createResourceFn: 
       (handle) => {
-        const rep = handleTable3[(handle << 1) + 1] % T_OWN;
-        let resourceObj = captureTable3.get(rep);
+        const rep = handleTable1[(handle << 1) + 1] % T_OWN;
+        let resourceObj = captureTable1.get(rep);
         if (!resourceObj) {
           resourceObj = Object.create(Response.prototype);
           Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
           Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
         } else {
-          captureTable3.delete(rep);
+          captureTable1.delete(rep);
         }
-        rscTableRemove(handleTable3, handle);
+        rscTableRemove(handleTable1, handle);
         return resourceObj;
       }
       ,
@@ -34943,7 +34943,7 @@ const trampoline73 = taskReturn.bind(null, {
     caseMetas: [
     [ 'ok', _lowerFlatOwn({
       componentIdx: 0,
-      tableIdx: 3,
+      tableIdx: 1,
       lowerFn: 
       function lowerImportedOwnedHost_Response(obj) {
         if (!(obj instanceof Response)) {
@@ -34951,9 +34951,9 @@ const trampoline73 = taskReturn.bind(null, {
         }
         let handle = obj[symbolRscHandle];
         if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-          captureTable3.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable3, rep);
+          const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
+          captureTable1.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable1, rep);
         }
         return handle;
       }
@@ -35263,27 +35263,174 @@ let trampoline74 = _lowerImportBackwardsCompat.bind(null, {
   getReallocFn: () => realloc0,
   importFn: _trampoline74,
 });
-let trampoline75 = _suspendingImport(0, _lowerImport.bind(null, {
-  trampolineIdx: 75,
+const trampoline75 = futureRead.bind(null, {
+  componentIdx: 0,
+  memoryIdx: 0,
+  getMemoryFn: () => memory0,
+  reallocIdx: undefined,
+  getReallocFn: undefined,
+  stringEncoding: 'utf8',
+  futureTableIdx: 0,
+  elemMeta: {
+    liftFn: 
+    _liftFlatResult({
+      caseMetas: [['ok', null, 0, 0, 0, []],['err', 
+      _liftFlatEnum({
+        caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+        variantSize32: 1,
+        variantAlign32: 1,
+        variantPayloadOffset32: 1,
+        variantFlatCount: 1,
+      })
+      , 1, 1, 1, ['i32']],],
+      variantSize32: 2,
+      variantAlign32: 1,
+      variantPayloadOffset32: 1,
+      variantFlatCount: 2,
+      variantPayloadFlatTypes: ['i32'],
+    })
+    ,
+    lowerFn: 
+    _lowerFlatResult({
+      caseMetas: [
+      [ 'ok', null, 2, 1, 1 ],
+      [ 'err', 
+      _lowerFlatEnum({
+        caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+        variantSize32: 1,
+        variantAlign32: 1,
+        variantPayloadOffset32: 1,
+        variantFlatCount: 1,
+      })
+      , 2, 1, 1 ],
+      ],
+      variantSize32: 2,
+      variantAlign32: 1,
+      variantPayloadOffset32: 1,
+      variantFlatCount: 2,
+    })
+    ,
+    payloadTypeName: 'Result(TypeResultIndex(0))',
+    isNone: false,
+    isNumeric: false,
+    isBorrowed: false,
+    isAsyncValue: false,
+    typedArray: undefined,
+    flatCount: 2,
+    align32: 1,
+    size32: 2,
+  },
+  isAsync: true,
+});
+let trampoline76 = _lowerImportBackwardsCompat.bind(null, {
+  trampolineIdx: 76,
+  componentIdx: 0,
+  isAsync: false,
+  isManualAsync: _trampoline76.manuallyAsync,
+  paramLiftFns: [],
+  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStream({
+    streamTableIdx: 0,
+    componentIdx: 0,
+    elemMeta: {
+      liftFn: _liftFlatU8,
+      lowerFn: _lowerFlatU8,
+      payloadTypeName: 'U8',
+      isNone: false,
+      isNumeric: true,
+      isBorrowed: false,
+      isAsyncValue: false,
+      typedArray: Uint8Array,
+      flatCount: 1,
+      align32: 1,
+      size32: 1,
+    },
+  })
+  , 4, 4],[_lowerFlatFuture({
+    futureTableIdx: 0,
+    futureNestingLevel: 0,
+    componentIdx: 0,
+    elemMeta: {
+      liftFn: 
+      _liftFlatResult({
+        caseMetas: [['ok', null, 0, 0, 0, []],['err', 
+        _liftFlatEnum({
+          caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+          variantSize32: 1,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 1,
+        })
+        , 1, 1, 1, ['i32']],],
+        variantSize32: 2,
+        variantAlign32: 1,
+        variantPayloadOffset32: 1,
+        variantFlatCount: 2,
+        variantPayloadFlatTypes: ['i32'],
+      })
+      ,
+      lowerFn: 
+      _lowerFlatResult({
+        caseMetas: [
+        [ 'ok', null, 2, 1, 1 ],
+        [ 'err', 
+        _lowerFlatEnum({
+          caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
+          variantSize32: 1,
+          variantAlign32: 1,
+          variantPayloadOffset32: 1,
+          variantFlatCount: 1,
+        })
+        , 2, 1, 1 ],
+        ],
+        variantSize32: 2,
+        variantAlign32: 1,
+        variantPayloadOffset32: 1,
+        variantFlatCount: 2,
+      })
+      ,
+      payloadTypeName: 'Result(TypeResultIndex(0))',
+      isNone: false,
+      isNumeric: false,
+      isBorrowed: false,
+      isAsyncValue: false,
+      flatCount: 2,
+      align32: 1,
+      size32: 2,
+    },
+  })
+  , 4, 4],], size32: 8, align32: 4 })],
+  hasResultPointer: true,
+  funcTypeIsAsync: false,
+  getCallbackFn: () => null,
+  getPostReturnFn: () => null,
+  isCancellable: false,
+  memoryIdx: 0,
+  stringEncoding: 'utf8',
+  getMemoryFn: () => memory0,
+  getReallocFn: undefined,
+  importFn: _trampoline76,
+});
+let trampoline77 = _suspendingImport(0, _lowerImport.bind(null, {
+  trampolineIdx: 77,
   componentIdx: 0,
   isAsync: true,
-  isManualAsync: _trampoline75.manuallyAsync,
+  isManualAsync: _trampoline77.manuallyAsync,
   paramLiftFns: [_liftFlatOwn({
     componentIdx: 0,
-    tableIdx: 1,
+    tableIdx: 2,
     classNameFn: () => Request,
     createResourceFn: 
     (handle) => {
-      const rep = handleTable1[(handle << 1) + 1] % T_OWN;
-      let resourceObj = captureTable1.get(rep);
+      const rep = handleTable2[(handle << 1) + 1] % T_OWN;
+      let resourceObj = captureTable2.get(rep);
       if (!resourceObj) {
         resourceObj = Object.create(Request.prototype);
         Object.defineProperty(resourceObj, symbolRscHandle, { writable: true, value: handle });
         Object.defineProperty(resourceObj, symbolRscRep, { writable: true, value: rep });
       } else {
-        captureTable1.delete(rep);
+        captureTable2.delete(rep);
       }
-      rscTableRemove(handleTable1, handle);
+      rscTableRemove(handleTable2, handle);
       return resourceObj;
     }
     ,
@@ -35294,7 +35441,7 @@ let trampoline75 = _suspendingImport(0, _lowerImport.bind(null, {
     caseMetas: [
     [ 'ok', _lowerFlatOwn({
       componentIdx: 0,
-      tableIdx: 3,
+      tableIdx: 1,
       lowerFn: 
       function lowerImportedOwnedHost_Response(obj) {
         if (!(obj instanceof Response)) {
@@ -35302,9 +35449,9 @@ let trampoline75 = _suspendingImport(0, _lowerImport.bind(null, {
         }
         let handle = obj[symbolRscHandle];
         if (!handle) {
-          const rep = (obj[symbolRscRep] ?? ++captureCnt3) >>> 0;
-          captureTable3.set(rep, obj);
-          handle = rscTableCreateOwn(handleTable3, rep);
+          const rep = (obj[symbolRscRep] ?? ++captureCnt1) >>> 0;
+          captureTable1.set(rep, obj);
+          handle = rscTableCreateOwn(handleTable1, rep);
         }
         return handle;
       }
@@ -35597,155 +35744,8 @@ let trampoline75 = _suspendingImport(0, _lowerImport.bind(null, {
   stringEncoding: 'utf8',
   getMemoryFn: () => memory0,
   getReallocFn: () => realloc0,
-  importFn: _trampoline75,
-}), true, false, false);
-const trampoline76 = futureRead.bind(null, {
-  componentIdx: 0,
-  memoryIdx: 0,
-  getMemoryFn: () => memory0,
-  reallocIdx: undefined,
-  getReallocFn: undefined,
-  stringEncoding: 'utf8',
-  futureTableIdx: 0,
-  elemMeta: {
-    liftFn: 
-    _liftFlatResult({
-      caseMetas: [['ok', null, 0, 0, 0, []],['err', 
-      _liftFlatEnum({
-        caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-        variantSize32: 1,
-        variantAlign32: 1,
-        variantPayloadOffset32: 1,
-        variantFlatCount: 1,
-      })
-      , 1, 1, 1, ['i32']],],
-      variantSize32: 2,
-      variantAlign32: 1,
-      variantPayloadOffset32: 1,
-      variantFlatCount: 2,
-      variantPayloadFlatTypes: ['i32'],
-    })
-    ,
-    lowerFn: 
-    _lowerFlatResult({
-      caseMetas: [
-      [ 'ok', null, 2, 1, 1 ],
-      [ 'err', 
-      _lowerFlatEnum({
-        caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-        variantSize32: 1,
-        variantAlign32: 1,
-        variantPayloadOffset32: 1,
-        variantFlatCount: 1,
-      })
-      , 2, 1, 1 ],
-      ],
-      variantSize32: 2,
-      variantAlign32: 1,
-      variantPayloadOffset32: 1,
-      variantFlatCount: 2,
-    })
-    ,
-    payloadTypeName: 'Result(TypeResultIndex(0))',
-    isNone: false,
-    isNumeric: false,
-    isBorrowed: false,
-    isAsyncValue: false,
-    typedArray: undefined,
-    flatCount: 2,
-    align32: 1,
-    size32: 2,
-  },
-  isAsync: true,
-});
-let trampoline77 = _lowerImportBackwardsCompat.bind(null, {
-  trampolineIdx: 77,
-  componentIdx: 0,
-  isAsync: false,
-  isManualAsync: _trampoline77.manuallyAsync,
-  paramLiftFns: [],
-  resultLowerFns: [_lowerFlatTuple({ elemLowerMetas: [[_lowerFlatStream({
-    streamTableIdx: 0,
-    componentIdx: 0,
-    elemMeta: {
-      liftFn: _liftFlatU8,
-      lowerFn: _lowerFlatU8,
-      payloadTypeName: 'U8',
-      isNone: false,
-      isNumeric: true,
-      isBorrowed: false,
-      isAsyncValue: false,
-      typedArray: Uint8Array,
-      flatCount: 1,
-      align32: 1,
-      size32: 1,
-    },
-  })
-  , 4, 4],[_lowerFlatFuture({
-    futureTableIdx: 0,
-    futureNestingLevel: 0,
-    componentIdx: 0,
-    elemMeta: {
-      liftFn: 
-      _liftFlatResult({
-        caseMetas: [['ok', null, 0, 0, 0, []],['err', 
-        _liftFlatEnum({
-          caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-          variantSize32: 1,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 1,
-        })
-        , 1, 1, 1, ['i32']],],
-        variantSize32: 2,
-        variantAlign32: 1,
-        variantPayloadOffset32: 1,
-        variantFlatCount: 2,
-        variantPayloadFlatTypes: ['i32'],
-      })
-      ,
-      lowerFn: 
-      _lowerFlatResult({
-        caseMetas: [
-        [ 'ok', null, 2, 1, 1 ],
-        [ 'err', 
-        _lowerFlatEnum({
-          caseMetas: [["io", null, 1, 1, 1],["illegal-byte-sequence", null, 1, 1, 1],["pipe", null, 1, 1, 1],],
-          variantSize32: 1,
-          variantAlign32: 1,
-          variantPayloadOffset32: 1,
-          variantFlatCount: 1,
-        })
-        , 2, 1, 1 ],
-        ],
-        variantSize32: 2,
-        variantAlign32: 1,
-        variantPayloadOffset32: 1,
-        variantFlatCount: 2,
-      })
-      ,
-      payloadTypeName: 'Result(TypeResultIndex(0))',
-      isNone: false,
-      isNumeric: false,
-      isBorrowed: false,
-      isAsyncValue: false,
-      flatCount: 2,
-      align32: 1,
-      size32: 2,
-    },
-  })
-  , 4, 4],], size32: 8, align32: 4 })],
-  hasResultPointer: true,
-  funcTypeIsAsync: false,
-  getCallbackFn: () => null,
-  getPostReturnFn: () => null,
-  isCancellable: false,
-  memoryIdx: 0,
-  stringEncoding: 'utf8',
-  getMemoryFn: () => memory0,
-  getReallocFn: undefined,
   importFn: _trampoline77,
-});
+}), true, false, false);
 let trampoline78 = _lowerImportBackwardsCompat.bind(null, {
   trampolineIdx: 78,
   componentIdx: 0,
@@ -36468,7 +36468,7 @@ const $init = (() => {
       ({ exports: exports0 } = yield instantiateCore(yield module1));
       ({ exports: exports1 } = yield instantiateCore(yield module0, (_setGlobalCurrentThreadMeta({ componentIdx: 0, taskID: _initTaskID0, threadID: _initThreadID0 }), {
         $root: {
-          "[subtask-cancel]": trampoline3,
+          "[subtask-cancel]": trampoline1,
           "[subtask-drop]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline31), true), { _jcoMaySuspend: false }),
           "[waitable-join]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline28), true), { _jcoMaySuspend: false }),
           "[waitable-set-drop]": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline29), true), { _jcoMaySuspend: false }),
@@ -36499,16 +36499,16 @@ const $init = (() => {
           "write-via-stream": Object.assign(_guardTrap(0, trampoline40, false), { _jcoMaySuspend: false }),
         },
         "wasi:cli/stdin@0.3.0": {
-          "[async-lower][future-read-1]read-via-stream": exports0["33"],
-          "[async-lower][stream-read-0]read-via-stream": exports0["32"],
-          "[async-lower][stream-write-0]read-via-stream": exports0["31"],
+          "[async-lower][future-read-1]read-via-stream": exports0["32"],
+          "[async-lower][stream-read-0]read-via-stream": exports0["31"],
+          "[async-lower][stream-write-0]read-via-stream": exports0["30"],
           "[future-drop-readable-1]read-via-stream": Object.assign(_guardTrap(0, trampoline32, true), { _jcoMaySuspend: false }),
-          "[stream-cancel-read-0]read-via-stream": trampoline21,
-          "[stream-cancel-write-0]read-via-stream": trampoline20,
-          "[stream-drop-readable-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline23), true), { _jcoMaySuspend: false }),
-          "[stream-drop-writable-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline22), true), { _jcoMaySuspend: false }),
-          "[stream-new-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline24), true), { _jcoMaySuspend: false }),
-          "read-via-stream": exports0["34"],
+          "[stream-cancel-read-0]read-via-stream": trampoline15,
+          "[stream-cancel-write-0]read-via-stream": trampoline14,
+          "[stream-drop-readable-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline17), true), { _jcoMaySuspend: false }),
+          "[stream-drop-writable-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline16), true), { _jcoMaySuspend: false }),
+          "[stream-new-0]read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline6), true), { _jcoMaySuspend: false }),
+          "read-via-stream": exports0["33"],
         },
         "wasi:cli/stdout@0.3.0": {
           "[async-lower][future-read-1]write-via-stream": exports0["36"],
@@ -36554,66 +36554,66 @@ const $init = (() => {
           "[method]descriptor.stat": exports0["42"],
           "[method]descriptor.write-via-stream": Object.assign(_guardTrap(0, trampoline44, false), { _jcoMaySuspend: false }),
           "[resource-drop]descriptor": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline35), true), { _jcoMaySuspend: false }),
-          "[stream-cancel-read-0][method]descriptor.read-via-stream": trampoline21,
-          "[stream-cancel-write-0][method]descriptor.read-via-stream": trampoline20,
-          "[stream-drop-readable-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline23), true), { _jcoMaySuspend: false }),
-          "[stream-drop-writable-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline22), true), { _jcoMaySuspend: false }),
-          "[stream-new-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline24), true), { _jcoMaySuspend: false }),
+          "[stream-cancel-read-0][method]descriptor.read-via-stream": trampoline15,
+          "[stream-cancel-write-0][method]descriptor.read-via-stream": trampoline14,
+          "[stream-drop-readable-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline17), true), { _jcoMaySuspend: false }),
+          "[stream-drop-writable-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline16), true), { _jcoMaySuspend: false }),
+          "[stream-new-0][method]descriptor.read-via-stream": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline6), true), { _jcoMaySuspend: false }),
         },
         "wasi:http/client@0.3.0": {
-          "[async-lower]send": exports0["30"],
+          "[async-lower]send": exports0["34"],
         },
         "wasi:http/types@0.3.0": {
-          "[async-lower][future-read-1][static]request.new": exports0["4"],
-          "[async-lower][future-read-2][static]request.new": exports0["1"],
-          "[async-lower][future-write-1][static]request.new": exports0["3"],
-          "[async-lower][future-write-2][static]request.new": exports0["0"],
-          "[async-lower][stream-read-0][static]request.new": exports0["11"],
-          "[async-lower][stream-write-0][static]request.new": exports0["10"],
-          "[constructor]request-options": Object.assign(_guardTrap(0, trampoline25, false), { _jcoMaySuspend: false }),
-          "[future-cancel-read-1][static]request.new": trampoline15,
-          "[future-cancel-read-2][static]request.new": trampoline10,
-          "[future-cancel-write-1][static]request.new": trampoline14,
-          "[future-cancel-write-2][static]request.new": trampoline9,
-          "[future-drop-readable-1][static]request.new": Object.assign(_guardTrap(0, trampoline17, true), { _jcoMaySuspend: false }),
-          "[future-drop-readable-2][static]request.new": Object.assign(_guardTrap(0, trampoline12, true), { _jcoMaySuspend: false }),
-          "[future-drop-writable-1][static]request.new": Object.assign(_guardTrap(0, trampoline16, true), { _jcoMaySuspend: false }),
-          "[future-drop-writable-2][static]request.new": Object.assign(_guardTrap(0, trampoline11, true), { _jcoMaySuspend: false }),
-          "[future-new-1][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline18), true), { _jcoMaySuspend: false }),
-          "[future-new-2][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline13), true), { _jcoMaySuspend: false }),
-          "[method]fields.copy-all": exports0["22"],
-          "[method]fields.get": exports0["21"],
-          "[method]request-options.clone": Object.assign(_guardTrap(0, trampoline8, false), { _jcoMaySuspend: false }),
-          "[method]request-options.set-between-bytes-timeout": exports0["17"],
-          "[method]request-options.set-connect-timeout": exports0["15"],
-          "[method]request-options.set-first-byte-timeout": exports0["16"],
-          "[method]request.get-authority": exports0["6"],
-          "[method]request.get-headers": Object.assign(_guardTrap(0, trampoline6, false), { _jcoMaySuspend: false }),
-          "[method]request.get-method": exports0["8"],
-          "[method]request.get-options": exports0["9"],
-          "[method]request.get-path-with-query": exports0["7"],
-          "[method]request.get-scheme": exports0["5"],
-          "[method]request.set-authority": exports0["13"],
-          "[method]request.set-method": exports0["24"],
-          "[method]request.set-path-with-query": exports0["25"],
-          "[method]request.set-scheme": exports0["12"],
-          "[method]response.get-headers": Object.assign(_guardTrap(0, trampoline7, false), { _jcoMaySuspend: false }),
-          "[method]response.get-status-code": Object.assign(_guardTrap(0, trampoline19, false), { _jcoMaySuspend: false }),
-          "[method]response.set-status-code": Object.assign(_guardTrap(0, trampoline26, false), { _jcoMaySuspend: false }),
-          "[resource-drop]fields": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline2), true), { _jcoMaySuspend: false }),
-          "[resource-drop]request": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline1), true), { _jcoMaySuspend: false }),
-          "[resource-drop]request-options": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline0), true), { _jcoMaySuspend: false }),
-          "[resource-drop]response": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline4), true), { _jcoMaySuspend: false }),
-          "[static]fields.from-list": exports0["20"],
-          "[static]request.consume-body": exports0["14"],
-          "[static]request.new": exports0["23"],
-          "[static]response.consume-body": exports0["19"],
-          "[static]response.new": exports0["18"],
-          "[stream-cancel-read-0][static]request.new": trampoline21,
-          "[stream-cancel-write-0][static]request.new": trampoline20,
-          "[stream-drop-readable-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline23), true), { _jcoMaySuspend: false }),
-          "[stream-drop-writable-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline22), true), { _jcoMaySuspend: false }),
-          "[stream-new-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline24), true), { _jcoMaySuspend: false }),
+          "[async-lower][future-read-1][static]request.new": exports0["21"],
+          "[async-lower][future-read-2][static]request.new": exports0["23"],
+          "[async-lower][future-write-1][static]request.new": exports0["20"],
+          "[async-lower][future-write-2][static]request.new": exports0["22"],
+          "[async-lower][stream-read-0][static]request.new": exports0["25"],
+          "[async-lower][stream-write-0][static]request.new": exports0["24"],
+          "[constructor]request-options": Object.assign(_guardTrap(0, trampoline9, false), { _jcoMaySuspend: false }),
+          "[future-cancel-read-1][static]request.new": trampoline19,
+          "[future-cancel-read-2][static]request.new": trampoline23,
+          "[future-cancel-write-1][static]request.new": trampoline18,
+          "[future-cancel-write-2][static]request.new": trampoline22,
+          "[future-drop-readable-1][static]request.new": Object.assign(_guardTrap(0, trampoline21, true), { _jcoMaySuspend: false }),
+          "[future-drop-readable-2][static]request.new": Object.assign(_guardTrap(0, trampoline25, true), { _jcoMaySuspend: false }),
+          "[future-drop-writable-1][static]request.new": Object.assign(_guardTrap(0, trampoline20, true), { _jcoMaySuspend: false }),
+          "[future-drop-writable-2][static]request.new": Object.assign(_guardTrap(0, trampoline24, true), { _jcoMaySuspend: false }),
+          "[future-new-1][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline7), true), { _jcoMaySuspend: false }),
+          "[future-new-2][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline26), true), { _jcoMaySuspend: false }),
+          "[method]fields.copy-all": exports0["13"],
+          "[method]fields.get": exports0["12"],
+          "[method]request-options.clone": Object.assign(_guardTrap(0, trampoline10, false), { _jcoMaySuspend: false }),
+          "[method]request-options.set-between-bytes-timeout": exports0["8"],
+          "[method]request-options.set-connect-timeout": exports0["6"],
+          "[method]request-options.set-first-byte-timeout": exports0["7"],
+          "[method]request.get-authority": exports0["1"],
+          "[method]request.get-headers": Object.assign(_guardTrap(0, trampoline8, false), { _jcoMaySuspend: false }),
+          "[method]request.get-method": exports0["15"],
+          "[method]request.get-options": exports0["4"],
+          "[method]request.get-path-with-query": exports0["17"],
+          "[method]request.get-scheme": exports0["19"],
+          "[method]request.set-authority": exports0["3"],
+          "[method]request.set-method": exports0["16"],
+          "[method]request.set-path-with-query": exports0["18"],
+          "[method]request.set-scheme": exports0["0"],
+          "[method]response.get-headers": Object.assign(_guardTrap(0, trampoline13, false), { _jcoMaySuspend: false }),
+          "[method]response.get-status-code": Object.assign(_guardTrap(0, trampoline11, false), { _jcoMaySuspend: false }),
+          "[method]response.set-status-code": Object.assign(_guardTrap(0, trampoline12, false), { _jcoMaySuspend: false }),
+          "[resource-drop]fields": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline0), true), { _jcoMaySuspend: false }),
+          "[resource-drop]request": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline3), true), { _jcoMaySuspend: false }),
+          "[resource-drop]request-options": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline4), true), { _jcoMaySuspend: false }),
+          "[resource-drop]response": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline2), true), { _jcoMaySuspend: false }),
+          "[static]fields.from-list": exports0["11"],
+          "[static]request.consume-body": exports0["5"],
+          "[static]request.new": exports0["14"],
+          "[static]response.consume-body": exports0["10"],
+          "[static]response.new": exports0["9"],
+          "[stream-cancel-read-0][static]request.new": trampoline15,
+          "[stream-cancel-write-0][static]request.new": trampoline14,
+          "[stream-drop-readable-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline17), true), { _jcoMaySuspend: false }),
+          "[stream-drop-writable-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline16), true), { _jcoMaySuspend: false }),
+          "[stream-new-0][static]request.new": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline6), true), { _jcoMaySuspend: false }),
         },
         "wasi:random/insecure-seed@0.3.0": {
           "get-insecure-seed": exports0["35"],
@@ -36635,10 +36635,10 @@ const $init = (() => {
       
       ({ exports: exports2 } = yield instantiateCore(yield module2, (_setGlobalCurrentThreadMeta({ componentIdx: 0, taskID: _initTaskID0, threadID: _initThreadID0 }), {
         actual: {
-          "0": Object.assign(_guardTrap(0, trampoline46, true), { _jcoMaySuspend: false }),
-          "1": Object.assign(_guardTrap(0, trampoline47, true), { _jcoMaySuspend: false }),
-          "10": Object.assign(_guardTrap(0, trampoline55, true), { _jcoMaySuspend: false }),
-          "11": Object.assign(_guardTrap(0, trampoline56, true), { _jcoMaySuspend: false }),
+          "0": Object.assign(_guardTrap(0, trampoline46, false), { _jcoMaySuspend: false }),
+          "1": Object.assign(_guardTrap(0, trampoline47, false), { _jcoMaySuspend: false }),
+          "10": Object.assign(_guardTrap(0, trampoline55, false), { _jcoMaySuspend: false }),
+          "11": Object.assign(_guardTrap(0, trampoline56, false), { _jcoMaySuspend: false }),
           "12": Object.assign(_guardTrap(0, trampoline57, false), { _jcoMaySuspend: false }),
           "13": Object.assign(_guardTrap(0, trampoline58, false), { _jcoMaySuspend: false }),
           "14": Object.assign(_guardTrap(0, trampoline59, false), { _jcoMaySuspend: false }),
@@ -36648,28 +36648,28 @@ const $init = (() => {
           "18": Object.assign(_guardTrap(0, trampoline63, false), { _jcoMaySuspend: false }),
           "19": Object.assign(_guardTrap(0, trampoline64, false), { _jcoMaySuspend: false }),
           "2": Object.assign(exports1.cabi_realloc, { _jcoMaySuspend: false }),
-          "20": Object.assign(_guardTrap(0, trampoline65, false), { _jcoMaySuspend: false }),
-          "21": Object.assign(_guardTrap(0, trampoline66, false), { _jcoMaySuspend: false }),
-          "22": Object.assign(_guardTrap(0, trampoline67, false), { _jcoMaySuspend: false }),
-          "23": Object.assign(_guardTrap(0, trampoline68, false), { _jcoMaySuspend: false }),
-          "24": Object.assign(_guardTrap(0, trampoline69, false), { _jcoMaySuspend: false }),
-          "25": Object.assign(_guardTrap(0, trampoline70, false), { _jcoMaySuspend: false }),
+          "20": Object.assign(_guardTrap(0, trampoline65, true), { _jcoMaySuspend: false }),
+          "21": Object.assign(_guardTrap(0, trampoline66, true), { _jcoMaySuspend: false }),
+          "22": Object.assign(_guardTrap(0, trampoline67, true), { _jcoMaySuspend: false }),
+          "23": Object.assign(_guardTrap(0, trampoline68, true), { _jcoMaySuspend: false }),
+          "24": Object.assign(_guardTrap(0, trampoline69, true), { _jcoMaySuspend: false }),
+          "25": Object.assign(_guardTrap(0, trampoline70, true), { _jcoMaySuspend: false }),
           "26": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline71), true), { _jcoMaySuspend: false }),
           "27": trampoline72,
           "28": Object.assign(_guardTrap(0, _guardMayLeave(0, trampoline73), true), { _jcoMaySuspend: false }),
           "29": Object.assign(_guardTrap(0, trampoline74, false), { _jcoMaySuspend: false }),
-          "3": Object.assign(_guardTrap(0, trampoline48, true), { _jcoMaySuspend: false }),
-          "30": trampoline75,
-          "31": Object.assign(_guardTrap(0, trampoline55, true), { _jcoMaySuspend: false }),
-          "32": Object.assign(_guardTrap(0, trampoline56, true), { _jcoMaySuspend: false }),
-          "33": Object.assign(_guardTrap(0, trampoline76, true), { _jcoMaySuspend: false }),
-          "34": Object.assign(_guardTrap(0, trampoline77, false), { _jcoMaySuspend: false }),
+          "3": Object.assign(_guardTrap(0, trampoline48, false), { _jcoMaySuspend: false }),
+          "30": Object.assign(_guardTrap(0, trampoline69, true), { _jcoMaySuspend: false }),
+          "31": Object.assign(_guardTrap(0, trampoline70, true), { _jcoMaySuspend: false }),
+          "32": Object.assign(_guardTrap(0, trampoline75, true), { _jcoMaySuspend: false }),
+          "33": Object.assign(_guardTrap(0, trampoline76, false), { _jcoMaySuspend: false }),
+          "34": trampoline77,
           "35": Object.assign(_guardTrap(0, trampoline78, false), { _jcoMaySuspend: false }),
-          "36": Object.assign(_guardTrap(0, trampoline76, true), { _jcoMaySuspend: false }),
-          "37": Object.assign(_guardTrap(0, trampoline56, true), { _jcoMaySuspend: false }),
-          "38": Object.assign(_guardTrap(0, trampoline55, true), { _jcoMaySuspend: false }),
+          "36": Object.assign(_guardTrap(0, trampoline75, true), { _jcoMaySuspend: false }),
+          "37": Object.assign(_guardTrap(0, trampoline70, true), { _jcoMaySuspend: false }),
+          "38": Object.assign(_guardTrap(0, trampoline69, true), { _jcoMaySuspend: false }),
           "39": Object.assign(_guardTrap(0, trampoline79, true), { _jcoMaySuspend: false }),
-          "4": Object.assign(_guardTrap(0, trampoline49, true), { _jcoMaySuspend: false }),
+          "4": Object.assign(_guardTrap(0, trampoline49, false), { _jcoMaySuspend: false }),
           "40": Object.assign(_guardTrap(0, trampoline80, false), { _jcoMaySuspend: false }),
           "41": trampoline81,
           "42": trampoline82,

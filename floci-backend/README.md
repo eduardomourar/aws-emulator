@@ -1,0 +1,174 @@
+# Floci UI backend, in the browser
+
+`secretsmanager.js`, `kms.js`, `iam.js`, `codebuild.js`, `cloudwatch.js`,
+`cognitoidentityprovider.js`, `kinesis.js`, `paymentcryptography.js`,
+`sqs.js`, `xray.js`, `ecr.js`, `sns.js`, `acm.js`, `route53.js`,
+`cloudfront.js`, `s3.js`, `cloudwatchlogs.js`, `opensearch.js`, `eks.js`,
+`elasticloadbalancingv2.js`, `dynamodb.js`, and `apigateway.js` are what
+replace Floci UI's own Node/Bun backend (`@floci/api`) for this embedded
+build: each is a browser bundle of that backend's *real* route/adapter
+source for one AWS service — `routes/secretsmanager.ts` for Secrets
+Manager, `routes/clouds.ts` +
+`AwsKmsAdapter`/`AwsIamAdapter`/`AwsCodeBuildAdapter`/`AwsCloudWatchAdapter`/
+`AwsCognitoAdapter`/`AwsKinesisAdapter`/`AwsPaymentCryptographyAdapter`/
+`AwsSqsAdapter`/`AwsXrayAdapter`/`AwsRegistryAdapter`/`AwsSnsAdapter`/
+`AwsAcmAdapter`/`AwsRoute53Adapter`/`AwsCloudFrontAdapter`/`AwsStorageAdapter`/
+`AwsLogsAdapter`/`AwsOpenSearchAdapter`/`AwsEksAdapter`/
+`AwsLoadBalancingAdapter`/`AwsDynamoDbAdapter`/`AwsApiGatewayAdapter` for the
+rest — with only the client construction swapped to point at this emulator's
+single synthetic authority (`emulator.local.invalid`) instead of a real
+network endpoint. Each one answers requests to its service's own Floci
+catalog key, which is not the same string as its AWS SigV4 signing name
+(`../external-dispatch-bridge.js` matches on the latter): `identity` for
+IAM, `cicd` for CodeBuild, `cloudwatch` for CloudWatch, `cognito` for
+Cognito, `streams` for Kinesis, `messaging` for SQS, `registry` for ECR,
+`certificates` for ACM, `dns` for Route 53, `cdn` for CloudFront, `storage`
+for S3, `logs` for CloudWatch Logs, `search` for OpenSearch (whose own
+signing name is the legacy `es`, not `opensearch`), `k8s` for EKS (own
+signing name `eks`), `loadbalancing` for Elastic Load Balancing (own
+signing name `elasticloadbalancing`), `nosql` for DynamoDB (own signing
+name `dynamodb`) —
+`paymentcryptography`, `xray`, `sns`, `s3` and `apigateway` happen to match
+their own signing names — see `router.js`'s own prefix constants.
+`apigateway.js` answers REST API (v1) operations only
+(`AwsApiGatewayAdapter`, `@aws-sdk/client-api-gateway`), backed by
+`service-com-amazonaws-apigateway-backplanecontrolservice`; HTTP APIs (v2,
+`service-com-amazonaws-apigatewayv2-apigatewayv2`) share the same `apigateway`
+signing name but have no Floci adapter, so there is no `apigatewayv2.js`
+bundle here.
+`AwsCloudFrontAdapter` and `AwsRoute53Adapter` both call `node:crypto`'s
+`randomUUID`, aliased to the Web Crypto API the same way as for route53
+(`node-crypto-stub.ts`).
+
+Aurora DSQL also has a Floci adapter (`AwsDsqlAdapter`), but it opens a real
+Postgres connection over `node:net`/`node:dns` to run the cluster's SQL data
+plane directly — not something a browser can do at all, regardless of what's
+injected into it — so it has no browser bundle here and no wiring in
+`router.js` or `../external-dispatch-bridge.js`, even though
+`core/embedded-dsql` itself builds and transpiles fine. `rds` and
+`elasticache` are the same story, for the same reason (a real wire-protocol
+TCP server as their data plane), and have no Floci bundle either. SES is the
+same story for a different reason: `core/embedded-ses` itself builds and
+transpiles fine, but Floci's only `ses`-related adapter, `AwsSesAdapter` for
+the catalog key `email` (displayed as "SES Mailbox"), does not take an AWS
+SDK client at all — it polls a raw mailbox endpoint
+(`cloudEndpoint('aws')` + `fetchInbox()`, parsed with `postal-mime`), an
+entirely different feature from the standard SigV4 SES API this crate
+implements, so there's no sensible adapter to wire it into. ECR has no
+`Aws*Ecr*` adapter name; it's `AwsRegistryAdapter` (catalog key `registry`)
+in Floci's own source.
+
+`catalog.js` is the one exception to "separate bundles, not one" below: it
+registers every adapter this build supports (KMS, IAM, CodeBuild,
+CloudWatch, Cognito, Secrets Manager, Kinesis, Payment Cryptography, SQS,
+X-Ray, ECR, SNS, ACM, Route 53, CloudFront, S3, CloudWatch Logs,
+OpenSearch, EKS, Elastic Load Balancing, DynamoDB, API Gateway), because
+the registry-dependent generic routes it answers —
+`GET /api/clouds`, `GET /api/clouds/aws/status`, `GET /api/clouds/aws/services`
+— need to see all of them to report the catalog and connection status
+correctly. It never answers a `/services/:service/resources` call itself;
+`router.js` sends those to the matching dedicated bundle.
+
+They are deliberately separate bundles otherwise. Floci's own `aws.ts` and
+`cloudProxy.ts` each construct nearly every AWS SDK client (and, for
+`cloudProxy.ts`, every Azure/GCP/OCI adapter too) as a module-level side
+effect the moment anything imports them — so bundling more than one service
+together, or going through Floci's generic multi-cloud wiring unmodified,
+pulls in every other service's SDK client whether it's used or not. Each
+bundle here aliases that fallback import away (see `build-src/*-stub.ts`) and
+constructs only the clients it actually needs. `router.js` is the one shared
+piece: it inspects an incoming `/api/*` request's path and `import()`s
+whichever bundle answers it, so a page that never opens the IAM screen never
+even downloads `iam.js`.
+
+`routes/clouds.ts` also has an unconditional `export default createCloudRoutes()`
+at its own bottom — called with no arguments, as a side effect of merely
+importing the module, regardless of what's actually imported from it. With
+no injected service, that falls through to `resolveScopedCloud()`, whose
+default parameter reads `process.env` directly. `process` doesn't exist in a
+browser, so that otherwise-unused call throws there. Every config for a
+bundle that imports `clouds.ts` (`kms`, `iam`, `codebuild`, `cloudwatch`,
+`cognitoidentityprovider`, `catalog` — not `secretsmanager`, which never
+imports it) defines `process.env` as `({})` to make that dead call harmless
+instead of fatal.
+
+## The dispatch that answers `emulator.local.invalid`
+
+Every bundle's AWS SDK client points at one shared synthetic authority,
+`emulator.local.invalid`. `../external-dispatch-bridge.js` answers it by
+reading the SigV4 credential scope out of the request's own `Authorization`
+header and calling whichever real component's authority claims that service
+name — directly, in the same patched-`fetch` call, no intermediate wasm
+component involved.
+
+`core/embedded-router` did this same dispatch as its own wasm component
+instead, originally: a `wasi:http` SERVER that, to answer a request, made an
+outgoing CLIENT call to the real target component. That's a nested async
+wasm call — a server's own handler making another outgoing call while still
+answering the first — and it reproducibly traps
+(`wasm trap: cannot enter component instance`, a wit-bindgen JSPI assertion
+failure) on this toolchain, the same limitation that already made
+`embedded-console-service`'s relay dead code earlier in this project's
+history. `embedded-router`'s crate still exists as the authoritative
+reference for the signing-name-to-authority table, but it's not part of any
+live request path — `build.rs` doesn't build it.
+
+Moving the dispatch into the browser avoids the nested-call trap, but
+surfaced a second, narrower limitation: two calls *into the same component
+instance* at once — not two different components, which is fine — also
+traps (`wasm trap: wasm \`unreachable\` instruction executed`), confirmed by
+direct testing. React Query alone routinely fires more than one request to
+the same authority at once (a status poll racing a resource list, say), so
+`external-dispatch-bridge.js` serializes calls per authority: a call to an
+idle authority runs immediately, the next call to that *same* authority
+waits for it. Draining each response's body fully before considering that
+queue slot done matters here — `fetch()`'s own promise resolves once headers
+arrive, while the wasm side can still be streaming the body, so waiting on
+just that promise let the next queued call start too early and hit the same
+trap this queue exists to prevent.
+
+## Rebuilding
+
+These bundles are vendored build output, the same way `web/jco-out-*/` is a
+vendored build output of the Rust `embedded-*` crates — regenerate them when
+Floci UI's upstream route/adapter source changes, don't hand-edit them.
+
+1. Clone `floci-io/floci-ui` and `pnpm install` at its root.
+2. Copy this directory's `build-src/*.ts` into `packages/api/browser-bundle/`
+   in that clone.
+3. From `packages/api/`, run each config:
+   ```
+   vite build --config browser-bundle/vite.secretsmanager.config.ts
+   vite build --config browser-bundle/vite.kms.config.ts
+   vite build --config browser-bundle/vite.iam.config.ts
+   vite build --config browser-bundle/vite.codebuild.config.ts
+   vite build --config browser-bundle/vite.cloudwatch.config.ts
+   vite build --config browser-bundle/vite.cognitoidentityprovider.config.ts
+   vite build --config browser-bundle/vite.kinesis.config.ts
+   vite build --config browser-bundle/vite.paymentcryptography.config.ts
+   vite build --config browser-bundle/vite.sqs.config.ts
+   vite build --config browser-bundle/vite.xray.config.ts
+   vite build --config browser-bundle/vite.ecr.config.ts
+   vite build --config browser-bundle/vite.sns.config.ts
+   vite build --config browser-bundle/vite.acm.config.ts
+   vite build --config browser-bundle/vite.route53.config.ts
+   vite build --config browser-bundle/vite.cloudfront.config.ts
+   vite build --config browser-bundle/vite.s3.config.ts
+   vite build --config browser-bundle/vite.cloudwatchlogs.config.ts
+   vite build --config browser-bundle/vite.opensearch.config.ts
+   vite build --config browser-bundle/vite.eks.config.ts
+   vite build --config browser-bundle/vite.elasticloadbalancingv2.config.ts
+   vite build --config browser-bundle/vite.dynamodb.config.ts
+   vite build --config browser-bundle/vite.apigateway.config.ts
+   vite build --config browser-bundle/vite.catalog.config.ts
+   ```
+   `vite` isn't resolvable from `packages/api` on its own (see below) — if
+   the build fails with `Cannot find package 'vite'`, symlink it in first:
+   `ln -s ../../frontend/node_modules/vite packages/api/node_modules/vite`.
+4. Copy `browser-bundle/dist/{secretsmanager,kms,iam,codebuild,cloudwatch,cognitoidentityprovider,kinesis,paymentcryptography,sqs,xray,ecr,sns,acm,route53,cloudfront,s3,cloudwatchlogs,opensearch,eks,elasticloadbalancingv2,dynamodb,apigateway,catalog}.js`
+   back into this directory, overwriting the committed copies.
+
+`vite` itself isn't a declared dependency of `packages/api` — it's only ever
+installed transitively for `packages/frontend`. Either run the build from
+there (`pnpm --filter @floci/frontend exec vite build --config ...`) or make
+sure `packages/api/node_modules/vite` resolves to it.

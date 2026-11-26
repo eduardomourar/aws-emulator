@@ -1,0 +1,1 @@
+function e(e){if(!e)return`-`;let t=typeof e==`number`?e:new Date(e).getTime();if(!Number.isFinite(t))return`-`;let n=Math.max(0,Date.now()-t),r=Math.floor(n/1e3);if(r<60)return`${r}s ago`;let i=Math.floor(r/60);if(i<60)return`${i}m ago`;let a=Math.floor(i/60);return a<24?`${a}h ago`:`${Math.floor(a/24)}d ago`}export{e as t};

@@ -1,39 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<title>AWS Emulator Console</title>
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
-<header>
-  <h1>AWS Emulator Console</h1>
-  <p class="subtitle">Each service keeps its own in-browser state while you switch tabs.</p>
-</header>
-<nav class="service-nav">
-  <button type="button" data-service="secretsmanager" class="active">Secrets Manager</button>
-  <button type="button" data-service="kms">KMS</button>
-  <button type="button" data-service="sts">STS</button>
-  <button type="button" data-service="iam">IAM</button>
-  <button type="button" data-service="codeguruprofiler">CodeGuru Profiler</button>
-  <button type="button" data-service="glacier">Glacier</button>
-  <button type="button" data-service="route53domains">Route 53 Domains</button>
-  <button type="button" data-service="dlm">DLM</button>
-  <button type="button" data-service="budgets">Budgets</button>
-</nav>
-
-<main class="shell-main">
-  <iframe class="service-frame" data-service="secretsmanager" data-src="secretsmanager.html" title="Secrets Manager"></iframe>
-  <iframe class="service-frame" data-service="kms" data-src="kms.html" title="KMS" hidden></iframe>
-  <iframe class="service-frame" data-service="sts" data-src="sts.html" title="STS" hidden></iframe>
-  <iframe class="service-frame" data-service="iam" data-src="iam.html" title="IAM" hidden></iframe>
-  <iframe class="service-frame" data-service="codeguruprofiler" data-src="codeguruprofiler.html" title="CodeGuru Profiler" hidden></iframe>
-  <iframe class="service-frame" data-service="glacier" data-src="glacier.html" title="Glacier" hidden></iframe>
-  <iframe class="service-frame" data-service="route53domains" data-src="route53domains.html" title="Route 53 Domains" hidden></iframe>
-  <iframe class="service-frame" data-service="dlm" data-src="dlm.html" title="DLM" hidden></iframe>
-  <iframe class="service-frame" data-service="budgets" data-src="budgets.html" title="Budgets" hidden></iframe>
-</main>
-
-<script type="module" src="shell.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Floci UI — Any Cloud. Locally. The local cloud console for Floci." />
+    <title>Floci UI</title>
+    <script>
+      (function () {
+        var t = localStorage.getItem("floci-theme");
+        var theme = t === "system"
+          ? (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+          : (t === "light" ? "light" : "dark");
+        document.documentElement.setAttribute(
+          "data-theme",
+          theme,
+        );
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="/assets/floci-black-BZXfF1vs.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+      Absolute paths (leading "/"), not relative ones: a relative import-map
+      value resolves against `document.baseURI`, which Floci's client-side
+      router changes via `history.pushState` (e.g. to
+      `/cloud-explorer/aws/streams`) without a real navigation. A relative
+      "./vendor/..." entry would then resolve under that deep path instead of
+      site root, 404ing every lazy-loaded wasm component's shim imports on
+      any page reached by a deep link or a client-side route change.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@bytecodealliance/preview3-shim/cli": "/vendor/preview3-shim/cli.js",
+          "@bytecodealliance/preview3-shim/clocks": "/vendor/preview3-shim/clocks.js",
+          "@bytecodealliance/preview3-shim/filesystem": "/vendor/preview3-shim/filesystem.js",
+          "@bytecodealliance/preview3-shim/http": "/vendor/preview3-shim/http.js",
+          "@bytecodealliance/preview3-shim/random": "/vendor/preview3-shim/random.js",
+          "@bytecodealliance/preview2-shim/cli": "/vendor/preview2-shim/cli.js",
+          "@bytecodealliance/preview2-shim/clocks": "/vendor/preview2-shim/clocks.js",
+          "@bytecodealliance/preview2-shim/filesystem": "/vendor/preview2-shim/filesystem.js",
+          "@bytecodealliance/preview2-shim/http": "/vendor/preview2-shim/http.js",
+          "@bytecodealliance/preview2-shim/io": "/vendor/preview2-shim/io.js",
+          "@bytecodealliance/preview2-shim/random": "/vendor/preview2-shim/random.js",
+          "@bytecodealliance/preview2-shim/sockets": "/vendor/preview2-shim/sockets.js"
+        }
+      }
+    </script>
+    <script type="module" src="/external-dispatch-bridge.js"></script>
+    <script type="module" crossorigin src="/assets/index-C3enzEpp.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-WkwZ5CU-.js">
+    <link rel="modulepreload" crossorigin href="/assets/query-vendor-BNocb5CH.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-vendor-ClGaHvmb.js">
+    <link rel="modulepreload" crossorigin href="/assets/api-Cd6YBozu.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-vendor-Cc6pvdrT.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BVZrkZSm.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

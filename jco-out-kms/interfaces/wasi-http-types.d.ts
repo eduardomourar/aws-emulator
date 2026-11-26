@@ -1,4 +1,5 @@
 /** @module Interface wasi:http/types@0.3.0 **/
+export type Trailers = Fields;
 export interface DnsErrorPayload {
   rcode?: string,
   infoCode?: number,
@@ -144,17 +145,26 @@ export interface ErrorCodeInternalError {
   tag: 'internal-error',
   val: string | undefined,
 }
-export type Trailers = Fields;
-export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
-export interface SchemeHttp {
-  tag: 'HTTP',
+export type Headers = Fields;
+export type StatusCode = number;
+export type FieldName = string;
+export type FieldValue = Uint8Array;
+export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable | HeaderErrorSizeExceeded | HeaderErrorOther;
+export interface HeaderErrorInvalidSyntax {
+  tag: 'invalid-syntax',
 }
-export interface SchemeHttps {
-  tag: 'HTTPS',
+export interface HeaderErrorForbidden {
+  tag: 'forbidden',
 }
-export interface SchemeOther {
+export interface HeaderErrorImmutable {
+  tag: 'immutable',
+}
+export interface HeaderErrorSizeExceeded {
+  tag: 'size-exceeded',
+}
+export interface HeaderErrorOther {
   tag: 'other',
-  val: string,
+  val: string | undefined,
 }
 export type Method = MethodGet | MethodHead | MethodPost | MethodPut | MethodDelete | MethodConnect | MethodOptions | MethodTrace | MethodPatch | MethodOther;
 export interface MethodGet {
@@ -188,26 +198,16 @@ export interface MethodOther {
   tag: 'other',
   val: string,
 }
-export type Headers = Fields;
-export type StatusCode = number;
-export type FieldName = string;
-export type FieldValue = Uint8Array;
-export type HeaderError = HeaderErrorInvalidSyntax | HeaderErrorForbidden | HeaderErrorImmutable | HeaderErrorSizeExceeded | HeaderErrorOther;
-export interface HeaderErrorInvalidSyntax {
-  tag: 'invalid-syntax',
+export type Scheme = SchemeHttp | SchemeHttps | SchemeOther;
+export interface SchemeHttp {
+  tag: 'HTTP',
 }
-export interface HeaderErrorForbidden {
-  tag: 'forbidden',
+export interface SchemeHttps {
+  tag: 'HTTPS',
 }
-export interface HeaderErrorImmutable {
-  tag: 'immutable',
-}
-export interface HeaderErrorSizeExceeded {
-  tag: 'size-exceeded',
-}
-export interface HeaderErrorOther {
+export interface SchemeOther {
   tag: 'other',
-  val: string | undefined,
+  val: string,
 }
 export type Result<T, E> = { tag: 'ok', val: T } | { tag: 'err', val: E };
 
