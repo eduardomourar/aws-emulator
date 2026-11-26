@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Floci UI — Any Cloud. Locally. The local cloud console for Floci." />
     <title>Floci UI</title>
+    <!--
+      An explicit `<base>`, computed once from the page's OWN initial load path (never
+      from a later `history.pushState`, which Floci's client-side router uses to change
+      `location.pathname` without a real navigation): per spec, `document.baseURI` only
+      tracks `location` when no `<base>` element is present, so setting one here freezes
+      it for the whole session. Every resource reference below is relative to it rather
+      than rooted at the origin, so the same `index.html` serves correctly both locally
+      (served at `/`) and as a GitHub Pages project site (served at `/aws-emulator/`) —
+      a rooted "/assets/..." reference 404s on the latter, since the origin's real root
+      is one path segment above where this site actually lives. Checked once, here,
+      before anything below resolves a single relative URL against it (an import map's
+      bare-specifier resolution in particular happens at each `import`, against
+      whatever `document.baseURI` is AT THAT MOMENT — not frozen at page-parse time —
+      which is exactly what made a plain relative import-map value unsafe before this
+      tag existed: it drifted with `pushState` same as everything else did).
+    -->
+    <script>
+      document.write(
+        '<base href="' +
+          (location.pathname.indexOf("/aws-emulator/") === 0 ? "/aws-emulator/" : "/") +
+          '">',
+      );
+    </script>
     <script>
       (function () {
         var t = localStorage.getItem("floci-theme");
@@ -19,46 +42,37 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" href="/assets/floci-black-BZXfF1vs.svg" />
+    <link rel="icon" href="./assets/floci-black-BZXfF1vs.svg" />
     <link
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <!--
-      Absolute paths (leading "/"), not relative ones: a relative import-map
-      value resolves against `document.baseURI`, which Floci's client-side
-      router changes via `history.pushState` (e.g. to
-      `/cloud-explorer/aws/streams`) without a real navigation. A relative
-      "./vendor/..." entry would then resolve under that deep path instead of
-      site root, 404ing every lazy-loaded wasm component's shim imports on
-      any page reached by a deep link or a client-side route change.
-    -->
     <script type="importmap">
       {
         "imports": {
-          "@bytecodealliance/preview3-shim/cli": "/vendor/preview3-shim/cli.js",
-          "@bytecodealliance/preview3-shim/clocks": "/vendor/preview3-shim/clocks.js",
-          "@bytecodealliance/preview3-shim/filesystem": "/vendor/preview3-shim/filesystem.js",
-          "@bytecodealliance/preview3-shim/http": "/vendor/preview3-shim/http.js",
-          "@bytecodealliance/preview3-shim/random": "/vendor/preview3-shim/random.js",
-          "@bytecodealliance/preview2-shim/cli": "/vendor/preview2-shim/cli.js",
-          "@bytecodealliance/preview2-shim/clocks": "/vendor/preview2-shim/clocks.js",
-          "@bytecodealliance/preview2-shim/filesystem": "/vendor/preview2-shim/filesystem.js",
-          "@bytecodealliance/preview2-shim/http": "/vendor/preview2-shim/http.js",
-          "@bytecodealliance/preview2-shim/io": "/vendor/preview2-shim/io.js",
-          "@bytecodealliance/preview2-shim/random": "/vendor/preview2-shim/random.js",
-          "@bytecodealliance/preview2-shim/sockets": "/vendor/preview2-shim/sockets.js"
+          "@bytecodealliance/preview3-shim/cli": "./vendor/preview3-shim/cli.js",
+          "@bytecodealliance/preview3-shim/clocks": "./vendor/preview3-shim/clocks.js",
+          "@bytecodealliance/preview3-shim/filesystem": "./vendor/preview3-shim/filesystem.js",
+          "@bytecodealliance/preview3-shim/http": "./vendor/preview3-shim/http.js",
+          "@bytecodealliance/preview3-shim/random": "./vendor/preview3-shim/random.js",
+          "@bytecodealliance/preview2-shim/cli": "./vendor/preview2-shim/cli.js",
+          "@bytecodealliance/preview2-shim/clocks": "./vendor/preview2-shim/clocks.js",
+          "@bytecodealliance/preview2-shim/filesystem": "./vendor/preview2-shim/filesystem.js",
+          "@bytecodealliance/preview2-shim/http": "./vendor/preview2-shim/http.js",
+          "@bytecodealliance/preview2-shim/io": "./vendor/preview2-shim/io.js",
+          "@bytecodealliance/preview2-shim/random": "./vendor/preview2-shim/random.js",
+          "@bytecodealliance/preview2-shim/sockets": "./vendor/preview2-shim/sockets.js"
         }
       }
     </script>
-    <script type="module" src="/external-dispatch-bridge.js"></script>
-    <script type="module" crossorigin src="/assets/index-C3enzEpp.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-WkwZ5CU-.js">
-    <link rel="modulepreload" crossorigin href="/assets/query-vendor-BNocb5CH.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-vendor-ClGaHvmb.js">
-    <link rel="modulepreload" crossorigin href="/assets/api-Cd6YBozu.js">
-    <link rel="modulepreload" crossorigin href="/assets/ui-vendor-Cc6pvdrT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BVZrkZSm.css">
+    <script type="module" src="./external-dispatch-bridge.js"></script>
+    <script type="module" crossorigin src="./assets/index-C3enzEpp.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-WkwZ5CU-.js">
+    <link rel="modulepreload" crossorigin href="./assets/query-vendor-BNocb5CH.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-vendor-ClGaHvmb.js">
+    <link rel="modulepreload" crossorigin href="./assets/api-Cd6YBozu.js">
+    <link rel="modulepreload" crossorigin href="./assets/ui-vendor-Cc6pvdrT.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BVZrkZSm.css">
   </head>
   <body>
     <div id="root"></div>
