@@ -86,6 +86,7 @@ const RDS_PREFIX = "/api/clouds/aws/services/database";
 const ELASTICACHE_PREFIX = "/api/clouds/aws/services/cache";
 const CATALOG_EXACT_PATHS = new Set(["/api/clouds", "/api/clouds/aws/status", "/api/clouds/aws/services"]);
 const ACTIVITY_PATH = "/api/activity";
+const VPC_WIZARD_PATH = "/api/ec2/vpc-wizard";
 
 // The catalog key a dispatched request's `service` activity field names, read
 // straight back out of its own path rather than carried alongside each of the
@@ -94,6 +95,7 @@ const ACTIVITY_PATH = "/api/activity";
 // key as the path segment right after `/api/clouds/aws/services/`.
 function serviceKeyFromPath(pathname) {
   if (matchesPrefix(pathname, SECRETSMANAGER_PREFIX)) return "secretsmanager";
+  if (pathname === VPC_WIZARD_PATH) return "networking";
   return pathname.match(/^\/api\/clouds\/aws\/services\/([^/]+)/)?.[1] ?? null;
 }
 
@@ -106,19 +108,23 @@ async function recordActivity(request, response, pathname) {
   const service = serviceKeyFromPath(pathname);
   if (service == null) return;
 
-  const operation = { POST: "Create", PUT: "Update", PATCH: "Update", DELETE: "Delete" }[request.method] ?? request.method;
+  const operation = pathname === VPC_WIZARD_PATH ? "Create" : { POST: "Create", PUT: "Update", PATCH: "Update", DELETE: "Delete" }[request.method] ?? request.method;
   const resourceSegment = pathname.split("/").filter(Boolean).pop();
-  const resourceName = resourceSegment && resourceSegment !== "resources" ? resourceSegment : undefined;
+  let resourceName = resourceSegment && resourceSegment !== "resources" ? resourceSegment : undefined;
   const status = response.status < 400 ? "success" : "failed";
   let detail;
-  if (status === "failed") {
-    try {
-      const body = await response.clone().json();
+  try {
+    const body = await response.clone().json();
+    if (status === "failed") {
       detail = body.message ?? body.error ?? undefined;
-    } catch {
-      // A non-JSON error body (plain text, or none at all) names nothing
-      // further to show; the status code and operation already do.
+    } else if (pathname === VPC_WIZARD_PATH) {
+      // The wizard's own path segment ("vpc-wizard") names nothing a reader
+      // would recognize; the VPC it actually created does.
+      resourceName = body.vpcId ?? resourceName;
     }
+  } catch {
+    // A non-JSON body (plain text, or none at all) names nothing further to
+    // show beyond the status code and operation already shown.
   }
 
   const { recordActivity: record } = await import("./activity.js");
@@ -131,6 +137,12 @@ export async function handleApiRequest(request) {
   if (pathname === ACTIVITY_PATH) {
     const { handleActivityRequest } = await import("./activity.js");
     return handleActivityRequest(request);
+  }
+  if (pathname === VPC_WIZARD_PATH) {
+    const { handleVpcWizardRequest } = await import("./vpc-wizard.js");
+    const response = await handleVpcWizardRequest(request);
+    await recordActivity(request, response, pathname);
+    return response;
   }
 
   const response = await dispatchApiRequest(request, pathname);
